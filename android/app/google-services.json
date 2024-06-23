@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "678085430899",
+    "project_id": "lets-jam-ad269",
+    "storage_bucket": "lets-jam-ad269.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678085430899:android:3c551ff059d217af016406",
+        "android_client_info": {
+          "package_name": "com.jam.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwlu3MJtntJ8wo37cSBPS9i5I8VI54Jms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
