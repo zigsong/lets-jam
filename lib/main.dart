@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+
+  await Supabase.initialize(
+      url: dotenv.env['SUPABASE_URL'] ?? '',
+      anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '');
   runApp(const MyApp());
 }
 
@@ -46,16 +54,13 @@ class _JamAppState extends State<JamApp> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      '밴드찾기/멤버찾기',
-      style: optionStyle,
-    ),
-    Text(
+  final List<Widget> _widgetOptions = <Widget>[
+    const SupabaseContent(),
+    const Text(
       '게시글 올리기',
       style: optionStyle,
     ),
-    Text(
+    const Text(
       '내 프로필',
       style: optionStyle,
     ),
@@ -138,5 +143,40 @@ class _JamAppState extends State<JamApp> {
             ],
           ),
         ));
+  }
+}
+
+class SupabaseContent extends StatefulWidget {
+  const SupabaseContent({
+    super.key,
+  });
+
+  @override
+  State<SupabaseContent> createState() => _SupabaseContentState();
+}
+
+class _SupabaseContentState extends State<SupabaseContent> {
+  final posts = Supabase.instance.client.from('posts').select('*');
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: FutureBuilder(
+            future: posts,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final posts = snapshot.data!;
+              return ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: ((context, index) {
+                    final post = posts[index];
+                    return ListTile(
+                      title: Text(post['title']),
+                    );
+                  }));
+            }));
   }
 }
