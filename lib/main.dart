@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:lets_jam/screens/explore_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
@@ -55,7 +56,7 @@ class _JamAppState extends State<JamApp> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   final List<Widget> _widgetOptions = <Widget>[
-    const SupabaseContent(),
+    const ExploreScreen(),
     const Text(
       '게시글 올리기',
       style: optionStyle,
@@ -143,40 +144,5 @@ class _JamAppState extends State<JamApp> {
             ],
           ),
         ));
-  }
-}
-
-class SupabaseContent extends StatefulWidget {
-  const SupabaseContent({
-    super.key,
-  });
-
-  @override
-  State<SupabaseContent> createState() => _SupabaseContentState();
-}
-
-class _SupabaseContentState extends State<SupabaseContent> {
-  final posts = Supabase.instance.client.from('posts').select('*');
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: FutureBuilder(
-            future: posts,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              final posts = snapshot.data!;
-              return ListView.builder(
-                  itemCount: posts.length,
-                  itemBuilder: ((context, index) {
-                    final post = posts[index];
-                    return ListTile(
-                      title: Text(post['title']),
-                    );
-                  }));
-            }));
   }
 }
