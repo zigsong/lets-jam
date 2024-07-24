@@ -12,7 +12,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
-  String _additionalInfo = '';
+  String sessionInfo = '';
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
@@ -23,23 +23,24 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Future<void> _saveUserToSupabase() async {
-    // final response = await Supabase.instance.client.from('users').insert({
-    //   'id': widget.user.id,
-    //   'email': widget.user.kakaoAccount?.email,
-    //   'additional_info': _additionalInfo,
-    // }).execute();
-
-    // if (response.error != null) {
-    //   print('Error saving to Supabase: ${response.error?.message}');
-    // } else {
-    //   print('User saved to Supabase');
-    // }
+    try {
+      final response = await Supabase.instance.client.from('users').insert({
+        'email': widget.user.email,
+        'session': sessionInfo,
+      });
+    } catch (err) {
+      print('회원가입 에러: $err');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Additional Information')),
+      appBar: AppBar(
+          title: const Text(
+        'JAM 회원가입',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      )),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -47,21 +48,21 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Column(
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Additional Info'),
+                decoration: const InputDecoration(labelText: '세션 입력'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return '추가 정보를 입력하세요';
+                    return '세션을 입력하세요';
                   }
                   return null;
                 },
                 onSaved: (value) {
-                  _additionalInfo = value ?? '';
+                  sessionInfo = value ?? '';
                 },
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submit,
-                child: const Text('Submit'),
+                child: const Text('완료'),
               ),
             ],
           ),
