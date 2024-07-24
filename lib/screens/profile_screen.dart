@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:lets_jam/main.dart';
+import 'package:lets_jam/screens/login_screen.dart';
+import 'package:lets_jam/screens/my_info_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_svg/svg.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -16,86 +15,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 20),
-          loginButton(
-              context: context,
-              text: '카카오 로그인',
-              textColor: Colors.black,
-              buttonColor: Colors.yellow,
-              svgPath: 'assets/images/kakao.svg',
-              width: 20,
-              height: 20,
-              onPressed: () async {
-                try {
-                  await supabase.auth.signInWithOAuth(
-                    OAuthProvider.kakao,
-                    authScreenLaunchMode: LaunchMode.externalApplication,
-                  );
-                  supabase.auth.onAuthStateChange.listen((data) {
-                    final AuthChangeEvent event = data.event;
-                    if (event == AuthChangeEvent.signedIn) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => const HomeScreen()));
-                    }
-                  });
-                } on PlatformException catch (err) {
-                  print('에러: $err');
-                }
-              })
-        ],
-      )),
-    );
-  }
-}
+    final bool isLoggedIn = supabase.auth.currentSession != null;
 
-Widget loginButton({
-  required BuildContext context,
-  required String text,
-  required VoidCallback onPressed,
-  String? svgPath,
-  int? width,
-  int? height,
-  Color? textColor,
-  Color? buttonColor,
-  BorderSide? side,
-}) {
-  return SizedBox(
-    width: MediaQuery.of(context).size.width * 0.8,
-    height: MediaQuery.of(context).size.height * 0.06,
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        elevation: 2,
-        backgroundColor: buttonColor,
-        side: side,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
-      onPressed: onPressed,
-      child: Row(
-        children: [
-          Container(
-              child: svgPath != null
-                  ? SvgPicture.asset(
-                      svgPath,
-                      width: width?.toDouble(),
-                      height: height?.toDouble(),
-                    )
-                  : Container()),
-          Expanded(
-            child: Text(
-              text,
-              textAlign: TextAlign.center, // 텍스트 가운데 정렬
-              style: TextStyle(color: textColor),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+    // return isLoggedIn ? const MyInfoScreen() : LoginScreen(supabase: supabase);
+    return LoginScreen(supabase: supabase);
+  }
 }
