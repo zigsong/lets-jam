@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lets_jam/screens/explore_screen.dart';
+import 'package:lets_jam/screens/post_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -36,45 +37,26 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const JamApp(),
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.amber[100],
-        useMaterial3: true,
-      ),
-    );
-  }
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class JamApp extends StatefulWidget {
-  const JamApp({super.key});
-
-  @override
-  State<JamApp> createState() => _JamAppState();
-}
-
-class _JamAppState extends State<JamApp> {
+class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = 0;
+  }
 
   final List<Widget> _widgetOptions = <Widget>[
     const ExploreScreen(),
-    const Text(
-      '게시글 올리기',
-      style: optionStyle,
-    ),
+    const PostScreen(),
     const ProfileScreen()
-    // const Text(
-    //   '내 프로필',
-    //   style: optionStyle,
-    // ),
   ];
 
   void _onHomeButtonTapped() {
@@ -102,24 +84,11 @@ class _JamAppState extends State<JamApp> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.amber[100],
           elevation: 0,
           title: const Text(
             "Let's JAM! 🍯",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          // actions: [
-          //   IconButton(
-          //     visualDensity: const VisualDensity(horizontal: -4.0, vertical: 0),
-          //     onPressed: () {},
-          //     icon: Icon(Icons.notifications_outlined, color: Colors.grey[700]),
-          //   ),
-          //   IconButton(
-          //     visualDensity: const VisualDensity(horizontal: -4.0, vertical: 0),
-          //     onPressed: () {},
-          //     icon: Icon(Icons.settings_outlined, color: Colors.grey[700]),
-          //   )
-          // ],
         ),
         body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
         floatingActionButton: FloatingActionButton(

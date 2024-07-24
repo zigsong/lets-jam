@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lets_jam/screens/explore_screen.dart';
+import 'package:lets_jam/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -40,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     final AuthChangeEvent event = data.event;
                     if (event == AuthChangeEvent.signedIn) {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => const ExploreScreen()));
+                          builder: (context) => const HomeScreen()));
                     }
                   });
                 } on PlatformException catch (err) {

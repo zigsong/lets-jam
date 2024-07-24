@@ -25,13 +25,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
               Tab(text: "멤버찾기"),
             ],
             labelColor: Colors.amber[700],
-            dividerColor: Colors.amber[700],
+            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+            unselectedLabelStyle:
+                const TextStyle(fontWeight: FontWeight.normal),
+            dividerColor: Colors.amber[300],
             indicatorColor: Colors.amber[700],
             unselectedLabelColor: Colors.grey,
+            indicatorSize: TabBarIndicatorSize.tab,
           ),
           const Expanded(
             child: TabBarView(children: [
-              // ExploreBandContent(),
               Center(child: Text("밴드를 찾아보세요")),
               Center(child: Text("멤버를 찾아보세요")),
             ]),
