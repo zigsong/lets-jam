@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/widgets/tag_checkbox.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,8 +15,10 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
-  List<SessionEnum> sessionInfo = [];
-  String nickname = '';
+
+  late String _nickname = '';
+  late final List<SessionEnum> _sessionInfo = [];
+  late LevelEnum _level;
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
@@ -32,8 +35,9 @@ class _SignupScreenState extends State<SignupScreen> {
     try {
       final response = await Supabase.instance.client.from('users').insert({
         'email': widget.user.email,
-        'nickname': nickname,
-        'sessions': sessionInfo.map((el) => el.name).toList(),
+        'nickname': _nickname,
+        'sessions': _sessionInfo.map((el) => el.name).toList(),
+        'level': _level.name,
       });
     } catch (err) {
       print('회원가입 에러: $err');
@@ -63,7 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  nickname = value ?? '';
+                  _nickname = value ?? '';
                 },
               ),
               const SizedBox(
@@ -80,11 +84,26 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   SessionCheckbox(
                     onChange: (session) {
-                      if (sessionInfo.contains(session)) {
-                        sessionInfo.remove(session);
+                      if (_sessionInfo.contains(session)) {
+                        _sessionInfo.remove(session);
                       } else {
-                        sessionInfo.add(session);
+                        _sessionInfo.add(session);
                       }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '레벨',
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  LevelOption(
+                    onChange: (level) {
+                      _level = level;
                     },
                   ),
                 ],
@@ -125,6 +144,44 @@ class _SessionCheckboxState extends State<SessionCheckbox> {
                       widget.onChange(session);
                     },
                   ),
+                ))
+            .toList());
+  }
+}
+
+class LevelOption extends StatefulWidget {
+  final Function(LevelEnum level) onChange;
+
+  const LevelOption({super.key, required this.onChange});
+
+  @override
+  State<LevelOption> createState() => _LevelOptionState();
+}
+
+class _LevelOptionState extends State<LevelOption> {
+  LevelEnum _level = LevelEnum.newbie;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+        children: LevelEnum.values
+            .map((level) => RadioListTile(
+                  title: Text(levelMap[level] ?? ''),
+                  value: level,
+                  groupValue: _level,
+                  activeColor: Colors.amber.shade700,
+                  visualDensity: const VisualDensity(
+                    horizontal: VisualDensity.minimumDensity,
+                    vertical: VisualDensity.minimumDensity,
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  contentPadding: EdgeInsets.zero,
+                  onChanged: (LevelEnum? value) {
+                    widget.onChange(value ?? LevelEnum.newbie);
+                    setState(() {
+                      _level = value!;
+                    });
+                  },
                 ))
             .toList());
   }
