@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/widgets/tag_checkbox.dart';
@@ -19,6 +20,7 @@ class _SignupScreenState extends State<SignupScreen> {
   late String _nickname = '';
   late final List<SessionEnum> _sessionInfo = [];
   late LevelEnum _level;
+  late AgeEnum _age;
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
@@ -38,6 +40,7 @@ class _SignupScreenState extends State<SignupScreen> {
         'nickname': _nickname,
         'sessions': _sessionInfo.map((el) => el.name).toList(),
         'level': _level.name,
+        'age': _age.name,
       });
     } catch (err) {
       print('회원가입 에러: $err');
@@ -73,41 +76,57 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(
                 height: 16,
               ),
-              Column(
-                children: [
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '세션',
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  SessionCheckbox(
-                    onChange: (session) {
-                      if (_sessionInfo.contains(session)) {
-                        _sessionInfo.remove(session);
-                      } else {
-                        _sessionInfo.add(session);
-                      }
-                    },
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '레벨',
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  LevelOption(
-                    onChange: (level) {
-                      _level = level;
-                    },
-                  ),
-                ],
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '세션',
+                  textAlign: TextAlign.left,
+                ),
               ),
+              SessionCheckbox(
+                onChange: (session) {
+                  if (_sessionInfo.contains(session)) {
+                    _sessionInfo.remove(session);
+                  } else {
+                    _sessionInfo.add(session);
+                  }
+                },
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '레벨',
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              LevelOption(
+                onSelect: (level) {
+                  _level = level;
+                },
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '연령대',
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: AgeDropdown(
+                      onSelect: (age) {
+                        _age = age;
+                      },
+                    ),
+                  )),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submit,
@@ -150,9 +169,9 @@ class _SessionCheckboxState extends State<SessionCheckbox> {
 }
 
 class LevelOption extends StatefulWidget {
-  final Function(LevelEnum level) onChange;
+  final Function(LevelEnum level) onSelect;
 
-  const LevelOption({super.key, required this.onChange});
+  const LevelOption({super.key, required this.onSelect});
 
   @override
   State<LevelOption> createState() => _LevelOptionState();
@@ -177,12 +196,41 @@ class _LevelOptionState extends State<LevelOption> {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   contentPadding: EdgeInsets.zero,
                   onChanged: (LevelEnum? value) {
-                    widget.onChange(value ?? LevelEnum.newbie);
+                    widget.onSelect(value ?? LevelEnum.newbie);
                     setState(() {
                       _level = value!;
                     });
                   },
                 ))
             .toList());
+  }
+}
+
+class AgeDropdown extends StatefulWidget {
+  final Function(AgeEnum age) onSelect;
+
+  const AgeDropdown({super.key, required this.onSelect});
+
+  @override
+  State<AgeDropdown> createState() => _AgeDropdownState();
+}
+
+class _AgeDropdownState extends State<AgeDropdown> {
+  AgeEnum _age = AgeEnum.lt20;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<AgeEnum>(
+        value: _age,
+        items: AgeEnum.values
+            .map((age) =>
+                DropdownMenuItem(value: age, child: Text(ageMap[age]!)))
+            .toList(),
+        onChanged: (AgeEnum? value) {
+          widget.onSelect(value!);
+          setState(() {
+            _age = value;
+          });
+        });
   }
 }
