@@ -5,16 +5,18 @@ import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/widgets/tag_checkbox.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SignupScreen extends StatefulWidget {
+class RequiredPage extends StatefulWidget {
   final User user;
+  final Function() onChangePage;
 
-  const SignupScreen({super.key, required this.user});
+  const RequiredPage(
+      {super.key, required this.user, required this.onChangePage});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<RequiredPage> createState() => _RequiredPageState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _RequiredPageState extends State<RequiredPage> {
   final _formKey = GlobalKey<FormState>();
 
   late String _nickname = '';
@@ -25,11 +27,15 @@ class _SignupScreenState extends State<SignupScreen> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
-      // Supabase에 정보 저장 로직
-      _saveUserToSupabase();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('회원가입이 완료되었습니다')),
-      );
+      // supabase에 정보 저장
+      /** TODO: 상태관리를 추가할 시점 */
+      // _saveUserToSupabase();
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('회원가입이 완료되었습니다')),
+      // );
+
+      // optional 정보 입력 페이지로 이동
+      widget.onChangePage();
     }
   }
 
@@ -52,7 +58,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       appBar: AppBar(
           title: const Text(
-        'JAM 회원가입',
+        '필수정보 입력',
         style: TextStyle(fontWeight: FontWeight.bold),
       )),
       body: Padding(
@@ -130,7 +136,7 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submit,
-                child: const Text('완료'),
+                child: const Text('계속'),
               ),
             ],
           ),
