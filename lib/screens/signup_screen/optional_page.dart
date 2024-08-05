@@ -16,6 +16,7 @@ class _OptionalPageState extends State<OptionalPage> {
   String _phone = '';
   final List<XFile> _images = [];
   final ImagePicker picker = ImagePicker();
+  String _bio = '';
 
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
@@ -93,7 +94,43 @@ class _OptionalPageState extends State<OptionalPage> {
                       },
                     ),
                   ],
-                )
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '자기소개',
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                TextField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                      hintText: "소개",
+                      contentPadding: EdgeInsets.symmetric(vertical: 20)),
+                  onChanged: (text) {
+                    setState(() {
+                      _bio = text;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('완료'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('다음에 작성하기'),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
