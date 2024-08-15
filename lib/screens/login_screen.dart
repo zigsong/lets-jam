@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lets_jam/screens/signup_screen.dart';
+import 'package:lets_jam/screens/signup_screen/signup_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -38,6 +38,8 @@ class LoginScreen extends StatelessWidget {
                   supabase.auth.onAuthStateChange.listen((data) {
                     final AuthChangeEvent event = data.event;
                     final user = Supabase.instance.client.auth.currentUser;
+                    /** @zigsong TODO: 이건 뭘까 확인 */
+                    final ddd = data.session?.user;
 
                     if (event == AuthChangeEvent.signedIn && user != null) {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
