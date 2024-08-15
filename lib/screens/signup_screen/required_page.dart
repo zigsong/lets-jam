@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/models/signup_model.dart';
 import 'package:lets_jam/widgets/tag_checkbox.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RequiredPage extends StatefulWidget {
   final User user;
   final Function() onChangePage;
+  final SignupModel signupData;
 
   const RequiredPage(
-      {super.key, required this.user, required this.onChangePage});
+      {super.key,
+      required this.user,
+      required this.onChangePage,
+      required this.signupData});
 
   @override
   State<RequiredPage> createState() => _RequiredPageState();
@@ -19,37 +24,11 @@ class RequiredPage extends StatefulWidget {
 class _RequiredPageState extends State<RequiredPage> {
   final _formKey = GlobalKey<FormState>();
 
-  late String _nickname = '';
-  late final List<SessionEnum> _sessionInfo = [];
-  late LevelEnum _level;
-  late AgeEnum _age;
+  void _changePage() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
 
-  void _submit() {
-    if (_formKey.currentState?.validate() ?? false) {
-      _formKey.currentState?.save();
-      // supabase에 정보 저장
-      /** TODO: 상태관리를 추가할 시점 */
-      // _saveUserToSupabase();
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(content: Text('회원가입이 완료되었습니다')),
-      // );
-
-      // optional 정보 입력 페이지로 이동
       widget.onChangePage();
-    }
-  }
-
-  Future<void> _saveUserToSupabase() async {
-    try {
-      final response = await Supabase.instance.client.from('users').insert({
-        'email': widget.user.email,
-        'nickname': _nickname,
-        'sessions': _sessionInfo.map((el) => el.name).toList(),
-        'level': _level.name,
-        'age': _age.name,
-      });
-    } catch (err) {
-      print('회원가입 에러: $err');
     }
   }
 
@@ -76,7 +55,7 @@ class _RequiredPageState extends State<RequiredPage> {
                   return null;
                 },
                 onSaved: (value) {
-                  _nickname = value ?? '';
+                  widget.signupData.nickname = value ?? '';
                 },
               ),
               const SizedBox(
@@ -91,10 +70,10 @@ class _RequiredPageState extends State<RequiredPage> {
               ),
               SessionCheckbox(
                 onChange: (session) {
-                  if (_sessionInfo.contains(session)) {
-                    _sessionInfo.remove(session);
+                  if (widget.signupData.sessions.contains(session)) {
+                    widget.signupData.sessions.remove(session);
                   } else {
-                    _sessionInfo.add(session);
+                    widget.signupData.sessions.add(session);
                   }
                 },
               ),
@@ -110,7 +89,7 @@ class _RequiredPageState extends State<RequiredPage> {
               ),
               LevelOption(
                 onSelect: (level) {
-                  _level = level;
+                  widget.signupData.level = level;
                 },
               ),
               const SizedBox(
@@ -129,13 +108,13 @@ class _RequiredPageState extends State<RequiredPage> {
                     padding: const EdgeInsets.only(left: 16),
                     child: AgeDropdown(
                       onSelect: (age) {
-                        _age = age;
+                        widget.signupData.age = age;
                       },
                     ),
                   )),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _submit,
+                onPressed: _changePage,
                 child: const Text('계속'),
               ),
             ],

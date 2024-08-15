@@ -2,9 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lets_jam/models/signup_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OptionalPage extends StatefulWidget {
-  const OptionalPage({super.key});
+  final User user;
+  final Function() onSubmit;
+  final SignupModel signupData;
+
+  const OptionalPage(
+      {super.key,
+      required this.user,
+      required this.onSubmit,
+      required this.signupData});
 
   @override
   State<OptionalPage> createState() => _OptionalPageState();
@@ -12,18 +22,22 @@ class OptionalPage extends StatefulWidget {
 
 class _OptionalPageState extends State<OptionalPage> {
   final _formKey = GlobalKey<FormState>();
-
-  String _phone = '';
-  final List<XFile> _images = [];
-  final ImagePicker picker = ImagePicker();
-  String _bio = '';
+  late ImagePicker picker = ImagePicker();
 
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
       setState(() {
-        _images.add(XFile(pickedFile.path));
+        widget.signupData.images.add(XFile(pickedFile.path));
       });
+    }
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      widget.onSubmit();
     }
   }
 
@@ -43,14 +57,8 @@ class _OptionalPageState extends State<OptionalPage> {
               children: [
                 TextFormField(
                   decoration: const InputDecoration(labelText: '연락처'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '연락처를 입력하세요';
-                    }
-                    return null;
-                  },
                   onSaved: (value) {
-                    _phone = value ?? '';
+                    widget.signupData.contact = value ?? '';
                   },
                 ),
                 const SizedBox(
@@ -65,7 +73,7 @@ class _OptionalPageState extends State<OptionalPage> {
                 ),
                 Row(
                   children: [
-                    ..._images.map((image) => Container(
+                    ...widget.signupData.images.map((image) => Container(
                           margin: const EdgeInsets.symmetric(horizontal: 4),
                           width: 60,
                           height: 60,
@@ -113,7 +121,7 @@ class _OptionalPageState extends State<OptionalPage> {
                       contentPadding: EdgeInsets.symmetric(vertical: 20)),
                   onChanged: (text) {
                     setState(() {
-                      _bio = text;
+                      widget.signupData.bio = text;
                     });
                   },
                 ),
@@ -122,11 +130,11 @@ class _OptionalPageState extends State<OptionalPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _submit,
                       child: const Text('완료'),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _submit,
                       child: const Text('다음에 작성하기'),
                     ),
                   ],

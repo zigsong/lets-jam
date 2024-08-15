@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/models/signup_model.dart';
+import 'package:lets_jam/screens/home_screen.dart';
 import 'package:lets_jam/screens/signup_screen/optional_page.dart';
 import 'package:lets_jam/screens/signup_screen/required_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,6 +20,8 @@ class _SignupScreenState extends State<SignupScreen>
   late TabController _tabController;
   int _currentPageIndex = 0;
 
+  final SignupModel _signupData = SignupModel.init();
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +36,35 @@ class _SignupScreenState extends State<SignupScreen>
     _tabController.dispose();
   }
 
+  void _submit() {
+    _saveUserToSupabase();
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const HomeScreen(
+              fromIndex: 2,
+            )));
+  }
+
+  Future<void> _saveUserToSupabase() async {
+    try {
+      final response = await Supabase.instance.client.from('users').insert({
+        'email': widget.user.email,
+        'nickname': _signupData.nickname,
+        'sessions': _signupData.sessions.map((el) => el.name).toList(),
+        'level': _signupData.level.name,
+        'age': _signupData.age.name,
+        'contact': _signupData.contact,
+        'images': _signupData.images.map((image) => image.path).toList(),
+        'bio': _signupData.bio,
+      });
+    } catch (err) {
+      print('회원가입 에러: $err');
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('회원가입이 완료되었습니다')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -43,11 +76,14 @@ class _SignupScreenState extends State<SignupScreen>
           onPageChanged: _handlePageViewChanged,
           children: <Widget>[
             RequiredPage(
-                user: widget.user,
-                onChangePage: () {
-                  _updateCurrentPageIndex(1);
-                }),
-            const OptionalPage()
+              user: widget.user,
+              signupData: _signupData,
+              onChangePage: () {
+                _updateCurrentPageIndex(1);
+              },
+            ),
+            OptionalPage(
+                user: widget.user, signupData: _signupData, onSubmit: _submit)
           ],
         ),
       ],

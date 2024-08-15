@@ -39,7 +39,7 @@ class LoginScreen extends StatelessWidget {
                     final AuthChangeEvent event = data.event;
                     final user = Supabase.instance.client.auth.currentUser;
                     /** @zigsong TODO: 이건 뭘까 확인 */
-                    final ddd = data.session?.user;
+                    final currentUser = data.session?.user;
 
                     if (event == AuthChangeEvent.signedIn && user != null) {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(

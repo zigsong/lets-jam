@@ -4,7 +4,8 @@ import 'package:lets_jam/screens/post_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int? fromIndex;
+  const HomeScreen({super.key, this.fromIndex});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -16,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = 0;
+    _selectedIndex = widget.fromIndex ?? 0;
   }
 
   final List<Widget> _widgetOptions = <Widget>[
