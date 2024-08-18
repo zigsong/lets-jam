@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/user_model.dart';
 import 'package:lets_jam/screens/login_screen.dart';
