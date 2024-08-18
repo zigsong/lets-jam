@@ -73,6 +73,38 @@ class _MyInfoScreenState extends State<MyInfoScreen> {
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20),
                     )),
+                child: Column(
+                  children: [
+                    // 필요한 다른 위젯들
+                    SizedBox(
+                      height: 200, // 이 부분이 ListView의 높이를 제한합니다.
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 16),
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            ...widget.user.images.asMap().entries.map(
+                                  (entry) => Container(
+                                    alignment: Alignment.center,
+                                    width: 180,
+                                    height: 200,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text('이미지 ${entry.key + 1}'),
+                                  ),
+                                ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // 필요한 다른 위젯들
+                  ],
+                ),
               ),
             ),
             Positioned(
