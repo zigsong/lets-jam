@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/screens/explore_screen.dart';
 import 'package:lets_jam/screens/post_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _onAddButtonTapped() {
+  void _onFilterButtonTapped() {
     setState(() {
       _selectedIndex = 1;
     });
@@ -42,6 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = 2;
     });
+  }
+
+  void _onAddButtonTapped() {
+    print('포스팅 추가');
   }
 
   @override
@@ -62,33 +67,74 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: _onAddButtonTapped,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.amber[700],
+          foregroundColor: Colors.grey[700],
+          elevation: 2,
+          backgroundColor: Colors.white,
           child: const Icon(Icons.add),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
-          padding: const EdgeInsets.symmetric(horizontal: 50),
-          height: 50,
+          padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
+          height: 90,
           color: Colors.white,
-          shape: const CircularNotchedRectangle(),
+          shadowColor: Colors.grey[700],
           notchMargin: 5,
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              IconButton(
-                  onPressed: _onHomeButtonTapped,
-                  icon: Icon(Icons.home,
-                      color: isHomeSelected ? Colors.amber[700] : Colors.grey)),
-              IconButton(
-                  onPressed: _onProfileButtonTapped,
-                  icon: Icon(
-                    Icons.person,
-                    color: isProfileSelected ? Colors.amber[700] : Colors.grey,
-                  ))
+              BottomAppBarItem(
+                icon: SvgPicture.asset('assets/icons/home.svg'),
+                label: '홈',
+                onPressed: _onHomeButtonTapped,
+              ),
+              BottomAppBarItem(
+                icon: SvgPicture.asset('assets/icons/filter.svg'),
+                label: '필터',
+                onPressed: _onFilterButtonTapped,
+              ),
+              BottomAppBarItem(
+                icon: SvgPicture.asset('assets/icons/profile.svg'),
+                label: '프로필',
+                onPressed: _onProfileButtonTapped,
+              )
             ],
           ),
         ));
+  }
+}
+
+class BottomAppBarItem extends StatefulWidget {
+  final Widget icon;
+  final String label;
+  final Function() onPressed;
+
+  const BottomAppBarItem(
+      {super.key,
+      required this.icon,
+      required this.label,
+      required this.onPressed});
+
+  @override
+  State<BottomAppBarItem> createState() => _BottomAppBarItemState();
+}
+
+class _BottomAppBarItemState extends State<BottomAppBarItem> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        onTap: widget.onPressed,
+        child: Column(
+          children: <Widget>[
+            widget.icon,
+            const SizedBox(height: 4),
+            Text(
+              widget.label,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
