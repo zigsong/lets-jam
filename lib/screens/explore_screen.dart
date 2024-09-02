@@ -12,75 +12,100 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final posts = Supabase.instance.client.from('posts').select('*');
-  int _selectedIndex = 0;
+  final PageController _pageViewController = PageController();
+
+  int _selectedPage = 0;
+
+  void _slidePage() {
+    setState(() {
+      _selectedPage = _selectedPage == 0 ? 1 : 0;
+    });
+
+    _pageViewController.animateToPage(
+      _selectedPage,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    var isBandTabSelected = _selectedIndex == 0;
-    var isMemberTabSelected = _selectedIndex == 1;
+    var isBandTabSelected = _selectedPage == 0;
+    var isMemberTabSelected = _selectedPage == 1;
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-          body: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                _selectedIndex = _selectedIndex == 0 ? 1 : 0;
-              });
-            },
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  height: 32,
-                  width: 160,
-                  decoration: BoxDecoration(
-                      color: const Color(0xffefeff0),
-                      borderRadius: BorderRadius.circular(25)),
-                ),
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 100),
-                  left: isBandTabSelected ? 0 : 76,
-                  child: Container(
-                    alignment: Alignment.center,
+    return Scaffold(
+        body: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: _slidePage,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
                     height: 32,
-                    width: 84,
+                    width: 160,
                     decoration: BoxDecoration(
-                      color: const Color(0xffffb4b4),
-                      borderRadius: BorderRadius.circular(25),
+                        color: const Color(0xffefeff0),
+                        borderRadius: BorderRadius.circular(25)),
+                  ),
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 100),
+                    left: isBandTabSelected ? 0 : 76,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 32,
+                      width: 84,
+                      decoration: BoxDecoration(
+                        color: const Color(0xffffb4b4),
+                        borderRadius: BorderRadius.circular(25),
+                      ),
                     ),
                   ),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      '밴드찾기',
-                      style: TextStyle(
-                          color: isBandTabSelected
-                              ? Colors.white
-                              : const Color(0xffafb1b6)),
-                    ),
-                    const SizedBox(
-                      width: 28,
-                    ),
-                    Text(
-                      '멤버찾기',
-                      style: TextStyle(
-                          color: isMemberTabSelected
-                              ? Colors.white
-                              : const Color(0xffafb1b6)),
-                    ),
-                  ],
-                )
-              ],
+                  Row(
+                    children: [
+                      Text(
+                        '밴드찾기',
+                        style: TextStyle(
+                            color: isBandTabSelected
+                                ? Colors.white
+                                : const Color(0xffafb1b6)),
+                      ),
+                      const SizedBox(
+                        width: 28,
+                      ),
+                      Text(
+                        '멤버찾기',
+                        style: TextStyle(
+                            color: isMemberTabSelected
+                                ? Colors.white
+                                : const Color(0xffafb1b6)),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
+          ],
+        ),
+        Expanded(
+          child: PageView(
+            controller: _pageViewController,
+            physics: const NeverScrollableScrollPhysics(), // 기본 슬라이드 동작을 막음
+            children: const [
+              Center(
+                child: Text('밴드를 찾아보세요!'),
+              ),
+              Center(
+                child: Text('멤버를 찾아보세요!'),
+              )
+            ],
           ),
-        ],
-      )),
-    );
+        )
+      ],
+    ));
   }
 }
 
