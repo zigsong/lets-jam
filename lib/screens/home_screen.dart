@@ -55,12 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
     var isProfileSelected = _selectedIndex == 2;
 
     return Scaffold(
+        /** @zigsong TODO: appbar height 정하기 */
         appBar: AppBar(
-          elevation: 0,
-          title: const Text(
-            "Let's JAM! 🍯",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          toolbarHeight: 20,
         ),
         body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
         floatingActionButton: FloatingActionButton(
