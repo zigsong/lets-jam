@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/widgets/filter_tag.dart';
 import 'package:lets_jam/widgets/page_toggler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -34,6 +35,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
     var isBandTabSelected = _selectedPage == 0;
     var isMemberTabSelected = _selectedPage == 1;
 
+    var mockFilteredTags = ['태그1', '태그22', '태그333', '태그4444', '태그55555'];
+
     return Scaffold(
         body: Column(
       children: [
@@ -54,6 +57,23 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   icon: const Icon(Icons.notifications_outlined)),
             ),
           ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SizedBox(
+            height: 28,
+            child: ListView.separated(
+              itemCount: mockFilteredTags.length,
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                return FilterTag(text: mockFilteredTags[index]);
+              },
+            ),
+          ),
         ),
         Expanded(
           child: PageView(
