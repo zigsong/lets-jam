@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/widgets/filter_tag.dart';
 import 'package:lets_jam/widgets/page_toggler.dart';
+import 'package:lets_jam/widgets/post_thumbnail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -79,12 +80,30 @@ class _ExploreScreenState extends State<ExploreScreen> {
           child: PageView(
             controller: _pageViewController,
             physics: const NeverScrollableScrollPhysics(), // 기본 슬라이드 동작을 막음
-            children: const [
-              Center(
-                child: Text('밴드를 찾아보세요!'),
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+                child: ListView.separated(
+                    itemCount: 10,
+                    separatorBuilder: (context, index) => const SizedBox(
+                          height: 12,
+                        ),
+                    itemBuilder: (context, index) {
+                      return const PostThumbnail(title: '밴드찾기');
+                    }),
               ),
-              Center(
-                child: Text('멤버를 찾아보세요!'),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+                child: ListView.separated(
+                    itemCount: 10,
+                    separatorBuilder: (context, index) => const SizedBox(
+                          height: 12,
+                        ),
+                    itemBuilder: (context, index) {
+                      return const PostThumbnail(title: '멤버찾기');
+                    }),
               )
             ],
           ),
