@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lets_jam/screens/home_screen.dart';
 import 'package:lets_jam/screens/signup_screen/signup_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -35,15 +36,28 @@ class LoginScreen extends StatelessWidget {
                     authScreenLaunchMode: LaunchMode.externalApplication,
                   );
 
-                  supabase.auth.onAuthStateChange.listen((data) {
+                  supabase.auth.onAuthStateChange.listen((data) async {
                     final AuthChangeEvent event = data.event;
                     final user = Supabase.instance.client.auth.currentUser;
-                    /** @zigsong TODO: 이건 뭘까 확인 */
-                    final currentUser = data.session?.user;
 
-                    if (event == AuthChangeEvent.signedIn && user != null) {
+                    if (user == null) return;
+
+                    final jamUser = await supabase
+                        .from('users')
+                        .select()
+                        .eq('email', user.email!);
+
+                    /** 
+                     * 이미 가입된 사용자면 HomeScreen으로,
+                     * 신규 가입 사용자라면 SignupScreen으로
+                     */
+                    if (event == AuthChangeEvent.signedIn) {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => SignupScreen(user: user)));
+                          builder: (context) => jamUser.isEmpty
+                              ? SignupScreen(user: user)
+                              : const HomeScreen(
+                                  fromIndex: 0,
+                                )));
                     }
                   });
                 } on PlatformException catch (err) {

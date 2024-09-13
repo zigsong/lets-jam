@@ -24,16 +24,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _checkUserStatus() async {
     final user = supabase.auth.currentUser;
-    if (user == null || user.email == null) {
-      setState(() {
-        _isLoggedIn = false;
-      });
-      return; // 유저가 없으면 더 이상 진행하지 않음
-    }
+    if (user == null || user.email == null) return;
 
     final data = await supabase.from('users').select().eq('email', user.email!);
 
-    if (data.length == 1) {
+    /** TODO: 이미 가입된 사용자 이메일일 경우 알럿 */
+    if (data.isNotEmpty) {
       setState(() {
         _user = UserModel.fromJson(data[0]);
         _isLoggedIn = true;
