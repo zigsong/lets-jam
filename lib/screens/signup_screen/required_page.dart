@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
@@ -26,6 +29,17 @@ class _RequiredPageState extends State<RequiredPage> {
   final _formKey = GlobalKey<FormState>();
   double percent = 0.5;
 
+  final ImagePicker picker = ImagePicker();
+
+  Future getImage(ImageSource imageSource) async {
+    final XFile? pickedFile = await picker.pickImage(source: imageSource);
+    if (pickedFile != null) {
+      setState(() {
+        widget.signupData.profileImage = XFile(pickedFile.path);
+      });
+    }
+  }
+
   void _changePage() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -41,8 +55,57 @@ class _RequiredPageState extends State<RequiredPage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 36),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProgressBar(percent: percent),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: GestureDetector(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: 138,
+                            height: 138,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100)),
+                            clipBehavior: Clip.antiAlias, //
+                            child: widget.signupData.profileImage != null
+                                ? Image.file(
+                                    File(widget.signupData.profileImage!.path),
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.asset('assets/images/avatar.png'),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 20,
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xffBFFFAF),
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/icons/edit.png',
+                                  width: 10,
+                                  height: 10,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      getImage(ImageSource.gallery);
+                    },
+                  ),
+                ),
+              ),
               Form(
                 key: _formKey,
                 child: Column(

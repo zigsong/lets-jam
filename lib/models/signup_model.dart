@@ -5,27 +5,25 @@ import 'package:lets_jam/models/session_enum.dart';
 
 class SignupModel {
   /// Required Fields
-  late String nickname;
-  late List<SessionEnum> sessions = [];
-  late LevelEnum level;
-  late AgeEnum age;
+  String nickname;
+  XFile? profileImage;
+  List<SessionEnum> sessions;
+  LevelEnum? level;
+  AgeEnum? age;
 
   /// Optional Fields
-  late String contact;
-  late List<XFile> images = [];
-  late String bio;
+  String? contact;
+  List<XFile> images;
+  String? bio;
 
   SignupModel.init()
       : nickname = '',
         sessions = [],
-        level = LevelEnum.newbie,
-        age = AgeEnum.gt20,
-        contact = '',
-        images = [],
-        bio = '';
+        images = [];
 
   toJson() {
     print('nickname: $nickname');
+    print('profileImage: $profileImage');
     print('sessions: $sessions');
     print('level: $level');
     print('age: $age');
