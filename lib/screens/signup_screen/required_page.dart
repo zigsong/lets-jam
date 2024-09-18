@@ -44,7 +44,6 @@ class _RequiredPageState extends State<RequiredPage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 36),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProgressBar(percent: percent),
               Center(
@@ -59,7 +58,22 @@ class _RequiredPageState extends State<RequiredPage> {
               Form(
                 key: _formKey,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Text(
+                      '회원가입',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text(
+                      '회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트',
+                      style: TextStyle(fontSize: 12),
+                    ),
                     TextFormField(
                       decoration: const InputDecoration(labelText: '닉네임'),
                       validator: (value) {
