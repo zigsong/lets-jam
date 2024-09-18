@@ -3,6 +3,7 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
+import 'package:lets_jam/widgets/progress_bar.dart';
 import 'package:lets_jam/widgets/tag_checkbox.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -23,6 +24,7 @@ class RequiredPage extends StatefulWidget {
 
 class _RequiredPageState extends State<RequiredPage> {
   final _formKey = GlobalKey<FormState>();
+  double percent = 0.5;
 
   void _changePage() {
     if (_formKey.currentState!.validate()) {
@@ -35,87 +37,89 @@ class _RequiredPageState extends State<RequiredPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: const Text(
-        '필수정보 입력',
-        style: TextStyle(fontWeight: FontWeight.bold),
-      )),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 36),
           child: Column(
             children: [
-              TextFormField(
-                decoration: const InputDecoration(labelText: '닉네임'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '닉네임을 입력하세요';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  widget.signupData.nickname = value ?? '';
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '세션',
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              SessionCheckbox(
-                onChange: (session) {
-                  if (widget.signupData.sessions.contains(session)) {
-                    widget.signupData.sessions.remove(session);
-                  } else {
-                    widget.signupData.sessions.add(session);
-                  }
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '레벨',
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              LevelOption(
-                onSelect: (level) {
-                  widget.signupData.level = level;
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  '연령대',
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: AgeDropdown(
-                      onSelect: (age) {
-                        widget.signupData.age = age;
+              ProgressBar(percent: percent),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      decoration: const InputDecoration(labelText: '닉네임'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '닉네임을 입력하세요';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        widget.signupData.nickname = value ?? '';
                       },
                     ),
-                  )),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _changePage,
-                child: const Text('계속'),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '세션',
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    SessionCheckbox(
+                      onChange: (session) {
+                        if (widget.signupData.sessions.contains(session)) {
+                          widget.signupData.sessions.remove(session);
+                        } else {
+                          widget.signupData.sessions.add(session);
+                        }
+                      },
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '레벨',
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    LevelOption(
+                      onSelect: (level) {
+                        widget.signupData.level = level;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '연령대',
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: AgeDropdown(
+                            onSelect: (age) {
+                              widget.signupData.age = age;
+                            },
+                          ),
+                        )),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _changePage,
+                      child: const Text('계속'),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
