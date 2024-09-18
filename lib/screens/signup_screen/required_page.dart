@@ -29,17 +29,6 @@ class _RequiredPageState extends State<RequiredPage> {
   final _formKey = GlobalKey<FormState>();
   double percent = 0.5;
 
-  final ImagePicker picker = ImagePicker();
-
-  Future getImage(ImageSource imageSource) async {
-    final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    if (pickedFile != null) {
-      setState(() {
-        widget.signupData.profileImage = XFile(pickedFile.path);
-      });
-    }
-  }
-
   void _changePage() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -59,53 +48,14 @@ class _RequiredPageState extends State<RequiredPage> {
             children: [
               ProgressBar(percent: percent),
               Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 30),
-                  child: GestureDetector(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: 138,
-                            height: 138,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100)),
-                            clipBehavior: Clip.antiAlias, //
-                            child: widget.signupData.profileImage != null
-                                ? Image.file(
-                                    File(widget.signupData.profileImage!.path),
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.asset('assets/images/avatar.png'),
-                          ),
-                          Positioned(
-                            right: 0,
-                            top: 20,
-                            child: Container(
-                              width: 24,
-                              height: 24,
-                              decoration: BoxDecoration(
-                                  color: const Color(0xffBFFFAF),
-                                  borderRadius: BorderRadius.circular(100)),
-                              child: Center(
-                                child: Image.asset(
-                                  'assets/icons/edit.png',
-                                  width: 10,
-                                  height: 10,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    onTap: () {
-                      getImage(ImageSource.gallery);
-                    },
-                  ),
-                ),
-              ),
+                  child: ProfileImagePicker(
+                onSelect: (file) {
+                  setState(() {
+                    widget.signupData.profileImage = file;
+                  });
+                },
+                profileImage: widget.signupData.profileImage,
+              )),
               Form(
                 key: _formKey,
                 child: Column(
@@ -187,6 +137,78 @@ class _RequiredPageState extends State<RequiredPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ProfileImagePicker extends StatefulWidget {
+  final Function(XFile file) onSelect;
+  final XFile? profileImage;
+
+  const ProfileImagePicker(
+      {super.key, required this.onSelect, this.profileImage});
+
+  @override
+  State<ProfileImagePicker> createState() => _ProfileImagePickerState();
+}
+
+class _ProfileImagePickerState extends State<ProfileImagePicker> {
+  final ImagePicker picker = ImagePicker();
+
+  Future getImage(ImageSource imageSource) async {
+    final XFile? pickedFile = await picker.pickImage(source: imageSource);
+    if (pickedFile != null) {
+      widget.onSelect(XFile(pickedFile.path));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 30),
+      child: GestureDetector(
+        child: Align(
+          alignment: Alignment.center,
+          child: Stack(
+            children: [
+              Container(
+                width: 138,
+                height: 138,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(100)),
+                clipBehavior: Clip.antiAlias, //
+                child: widget.profileImage != null
+                    ? Image.file(
+                        File(widget.profileImage!.path),
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset('assets/images/avatar.png'),
+              ),
+              Positioned(
+                right: 0,
+                top: 20,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                      color: const Color(0xffBFFFAF),
+                      borderRadius: BorderRadius.circular(100)),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/icons/edit.png',
+                      width: 10,
+                      height: 10,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        onTap: () {
+          getImage(ImageSource.gallery);
+        },
       ),
     );
   }
