@@ -68,23 +68,41 @@ class _RequiredPageState extends State<RequiredPage> {
                       ),
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 16,
                     ),
                     const Text(
                       '회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트',
                       style: TextStyle(fontSize: 12),
                     ),
-                    TextFormField(
-                      decoration: const InputDecoration(labelText: '닉네임'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '닉네임을 입력하세요';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        widget.signupData.nickname = value ?? '';
-                      },
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: SignupInput(
+                        label: '닉네임',
+                        onSave: (value) {
+                          widget.signupData.nickname = value ?? '';
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '닉네임을 입력하세요';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: SignupInput(
+                        label: '연락처',
+                        onSave: (value) {
+                          widget.signupData.contact = value ?? '';
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '연락처를 입력하세요';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
                     const SizedBox(
                       height: 16,
@@ -152,6 +170,52 @@ class _RequiredPageState extends State<RequiredPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class SignupInput extends StatelessWidget {
+  const SignupInput(
+      {super.key, required this.label, required this.onSave, this.validator});
+
+  final String label;
+  final void Function(String?) onSave;
+  final String? Function(String?)? validator;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+            child: Text(
+          label,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        )),
+        Padding(
+          padding: const EdgeInsets.only(top: 24),
+          child: SizedBox(
+            height: 44,
+            child: TextFormField(
+              style: const TextStyle(fontSize: 14),
+              decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Color(0xffAED3FF), width: 2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Color(0xffAED3FF), width: 2),
+                      borderRadius: BorderRadius.circular(12)),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
+              cursorColor: const Color(0xffAED3FF),
+              validator: validator,
+              onSaved: onSave,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

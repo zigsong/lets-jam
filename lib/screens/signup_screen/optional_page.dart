@@ -55,12 +55,6 @@ class _OptionalPageState extends State<OptionalPage> {
             key: _formKey,
             child: Column(
               children: [
-                TextFormField(
-                  decoration: const InputDecoration(labelText: '연락처'),
-                  onSaved: (value) {
-                    widget.signupData.contact = value ?? '';
-                  },
-                ),
                 const SizedBox(
                   height: 16,
                 ),
