@@ -96,6 +96,7 @@ class _RequiredPageState extends State<RequiredPage> {
                       }
                       return null;
                     },
+                    keyboardType: TextInputType.phone,
                   ),
                 ),
                 const SizedBox(
@@ -134,26 +135,37 @@ class _RequiredPageState extends State<RequiredPage> {
                 const SizedBox(
                   height: 16,
                 ),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '레벨',
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                LevelOption(
-                  onSelect: (level) {
-                    widget.signupData.level = level;
+                SignupInput(
+                  label: '자기소개',
+                  onSave: (value) {
+                    widget.signupData.bio = value;
                   },
+                  keyboardType: TextInputType.multiline,
+                  height: 96,
                 ),
                 const SizedBox(
                   height: 16,
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _changePage,
-                  child: const Text('계속'),
-                ),
+                // const Align(
+                //   alignment: Alignment.centerLeft,
+                //   child: Text(
+                //     '레벨',
+                //     textAlign: TextAlign.left,
+                //   ),
+                // ),
+                // LevelOption(
+                //   onSelect: (level) {
+                //     widget.signupData.level = level;
+                //   },
+                // ),
+                // const SizedBox(
+                //   height: 16,
+                // ),
+                // const SizedBox(height: 20),
+                // ElevatedButton(
+                //   onPressed: _changePage,
+                //   child: const Text('계속'),
+                // ),
               ],
             ),
           ),
@@ -165,11 +177,18 @@ class _RequiredPageState extends State<RequiredPage> {
 
 class SignupInput extends StatelessWidget {
   const SignupInput(
-      {super.key, required this.label, required this.onSave, this.validator});
+      {super.key,
+      required this.label,
+      required this.onSave,
+      this.validator,
+      this.keyboardType,
+      this.height});
 
   final String label;
   final void Function(String?) onSave;
   final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -183,8 +202,11 @@ class SignupInput extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 24),
           child: SizedBox(
-            height: 44,
+            height: height ?? 44,
             child: TextFormField(
+              keyboardType: keyboardType,
+              minLines: keyboardType == TextInputType.multiline ? 5 : 1,
+              maxLines: keyboardType == TextInputType.multiline ? null : 1,
               style: const TextStyle(fontSize: 14),
               decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
