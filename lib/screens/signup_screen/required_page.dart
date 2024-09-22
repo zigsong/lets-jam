@@ -6,7 +6,6 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
-import 'package:lets_jam/widgets/tag_checkbox.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RequiredPage extends StatefulWidget {
@@ -114,21 +113,23 @@ class _RequiredPageState extends State<RequiredPage> {
                     });
                   },
                 ),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '세션',
-                    textAlign: TextAlign.left,
-                  ),
+                const SizedBox(
+                  height: 16,
                 ),
-                SessionCheckbox(
-                  onChange: (session) {
-                    if (widget.signupData.sessions.contains(session)) {
-                      widget.signupData.sessions.remove(session);
-                    } else {
-                      widget.signupData.sessions.add(session);
-                    }
-                  },
+                const SessionSelector(
+                    label: '세션', subtext: '다룰 수 있는 세션을 모두 선택해주세요!'),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: SessionCheckbox(
+                    selectedList: widget.signupData.sessions,
+                    onChange: (session) {
+                      if (widget.signupData.sessions.contains(session)) {
+                        widget.signupData.sessions.remove(session);
+                      } else {
+                        widget.signupData.sessions.add(session);
+                      }
+                    },
+                  ),
                 ),
                 const SizedBox(
                   height: 16,
@@ -354,6 +355,36 @@ class _SignupDropdownState<T> extends State<SignupDropdown<T>> {
   }
 }
 
+class SessionSelector extends StatelessWidget {
+  const SessionSelector({super.key, required this.label, this.subtext});
+
+  final String label;
+  final String? subtext;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            if (subtext != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(subtext!, style: const TextStyle(fontSize: 12)),
+              )
+          ],
+        )),
+      ],
+    );
+  }
+}
+
 class ProfileImagePicker extends StatefulWidget {
   final Function(XFile file) onSelect;
   final XFile? profileImage;
@@ -427,9 +458,11 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
 }
 
 class SessionCheckbox extends StatefulWidget {
+  final List<SessionEnum> selectedList;
   final Function(SessionEnum session) onChange;
 
-  const SessionCheckbox({super.key, required this.onChange});
+  const SessionCheckbox(
+      {super.key, required this.selectedList, required this.onChange});
 
   @override
   State<SessionCheckbox> createState() => _SessionCheckboxState();
@@ -438,19 +471,38 @@ class SessionCheckbox extends StatefulWidget {
 class _SessionCheckboxState extends State<SessionCheckbox> {
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-        children: SessionEnum.values
-            .map((session) => Padding(
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+          children: SessionEnum.values
+              .map((session) => Padding(
                   padding: const EdgeInsets.all(4.0),
-                  child: TagCheckbox(
-                    value: session,
-                    label: sessionMap[session] ?? '',
-                    onChange: (isChecked) {
-                      widget.onChange(session);
+                  child: GestureDetector(
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: const Color(0xffBFFFAF),
+                          borderRadius: BorderRadius.circular(12),
+                          border: widget.selectedList.contains(session)
+                              ? Border.all(
+                                  color: const Color(0xffFF60F9),
+                                  width: 3,
+                                )
+                              : null),
+                      child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: Text(sessionMap[session]!)),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        widget.onChange(session);
+                      });
                     },
-                  ),
-                ))
-            .toList());
+                  )))
+              .toList()),
+    );
   }
 }
 
