@@ -3,6 +3,7 @@ import 'package:lets_jam/models/signup_model.dart';
 import 'package:lets_jam/screens/home_screen.dart';
 import 'package:lets_jam/screens/signup_screen/optional_page.dart';
 import 'package:lets_jam/screens/signup_screen/required_page.dart';
+import 'package:lets_jam/widgets/progress_bar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _SignupScreenState extends State<SignupScreen>
   late PageController _pageViewController;
   late TabController _tabController;
   int _currentPageIndex = 0;
+  double progressPercent = 0.5;
 
   final SignupModel _signupData = SignupModel.init();
 
@@ -70,27 +72,48 @@ class _SignupScreenState extends State<SignupScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: <Widget>[
-        PageView(
-          scrollDirection: Axis.vertical,
-          controller: _pageViewController,
-          onPageChanged: _handlePageViewChanged,
-          children: <Widget>[
-            RequiredPage(
-              user: widget.user,
-              signupData: _signupData,
-              onChangePage: () {
-                _updateCurrentPageIndex(1);
-              },
-            ),
-            OptionalPage(
-                user: widget.user, signupData: _signupData, onSubmit: _submit)
-          ],
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 36),
+          child: Column(
+            children: [
+              ProgressBar(percent: progressPercent),
+              Expanded(
+                child: RequiredPage(
+                  user: widget.user,
+                  signupData: _signupData,
+                  onChangePage: () {
+                    _updateCurrentPageIndex(1);
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
-      ],
+      ),
     );
+    // return Stack(
+    //   alignment: Alignment.bottomCenter,
+    //   children: <Widget>[
+    // PageView(
+    //   scrollDirection: Axis.vertical,
+    //   controller: _pageViewController,
+    //   onPageChanged: _handlePageViewChanged,
+    //   children: <Widget>[
+    //     RequiredPage(
+    //       user: widget.user,
+    //       signupData: _signupData,
+    //       onChangePage: () {
+    //         _updateCurrentPageIndex(1);
+    //       },
+    //     ),
+    //     OptionalPage(
+    //         user: widget.user, signupData: _signupData, onSubmit: _submit)
+    //   ],
+    // ),
+    //   ],
+    // );
   }
 
   void _handlePageViewChanged(int currentPageIndex) {

@@ -6,7 +6,6 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
-import 'package:lets_jam/widgets/progress_bar.dart';
 import 'package:lets_jam/widgets/tag_checkbox.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -39,136 +38,125 @@ class _RequiredPageState extends State<RequiredPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 36),
-          child: Column(
-            children: [
-              ProgressBar(percent: percent),
-              Center(
-                  child: ProfileImagePicker(
-                onSelect: (file) {
-                  setState(() {
-                    widget.signupData.profileImage = file;
-                  });
-                },
-                profileImage: widget.signupData.profileImage,
-              )),
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      '회원가입',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    const Text(
-                      '회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트',
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: SignupInput(
-                        label: '닉네임',
-                        onSave: (value) {
-                          widget.signupData.nickname = value ?? '';
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return '닉네임을 입력하세요';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: SignupInput(
-                        label: '연락처',
-                        onSave: (value) {
-                          widget.signupData.contact = value ?? '';
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return '연락처를 입력하세요';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '세션',
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    SessionCheckbox(
-                      onChange: (session) {
-                        if (widget.signupData.sessions.contains(session)) {
-                          widget.signupData.sessions.remove(session);
-                        } else {
-                          widget.signupData.sessions.add(session);
-                        }
-                      },
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '레벨',
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    LevelOption(
-                      onSelect: (level) {
-                        widget.signupData.level = level;
-                      },
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '연령대',
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 16),
-                          child: AgeDropdown(
-                            onSelect: (age) {
-                              widget.signupData.age = age;
-                            },
-                          ),
-                        )),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _changePage,
-                      child: const Text('계속'),
-                    ),
-                  ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Center(
+              child: ProfileImagePicker(
+            onSelect: (file) {
+              setState(() {
+                widget.signupData.profileImage = file;
+              });
+            },
+            profileImage: widget.signupData.profileImage,
+          )),
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '회원가입',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 16,
+                ),
+                const Text(
+                  '회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트',
+                  style: TextStyle(fontSize: 12),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: SignupInput(
+                    label: '닉네임',
+                    onSave: (value) {
+                      widget.signupData.nickname = value ?? '';
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '닉네임을 입력하세요';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: SignupInput(
+                    label: '연락처',
+                    onSave: (value) {
+                      widget.signupData.contact = value ?? '';
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '연락처를 입력하세요';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                SignupDropdown<AgeEnum>(
+                  label: '나이',
+                  placeholder: '나이를 선택해 주세요',
+                  currentValue: widget.signupData.age,
+                  options: AgeEnum.values,
+                  optionValues: ageMap,
+                  onSelect: (AgeEnum age) {
+                    setState(() {
+                      widget.signupData.age = age;
+                    });
+                  },
+                ),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '세션',
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                SessionCheckbox(
+                  onChange: (session) {
+                    if (widget.signupData.sessions.contains(session)) {
+                      widget.signupData.sessions.remove(session);
+                    } else {
+                      widget.signupData.sessions.add(session);
+                    }
+                  },
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '레벨',
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                LevelOption(
+                  onSelect: (level) {
+                    widget.signupData.level = level;
+                  },
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _changePage,
+                  child: const Text('계속'),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -220,6 +208,152 @@ class SignupInput extends StatelessWidget {
   }
 }
 
+class SignupDropdown<T> extends StatefulWidget {
+  const SignupDropdown(
+      {super.key,
+      required this.label,
+      required this.placeholder,
+      required this.currentValue,
+      required this.options,
+      required this.optionValues,
+      required this.onSelect});
+
+  final String label;
+  final String placeholder;
+  final T? currentValue;
+  final List<T> options;
+  final Map<T, String> optionValues;
+  final Function(T value) onSelect;
+
+  @override
+  State<SignupDropdown<T>> createState() => _SignupDropdownState<T>();
+}
+
+class _SignupDropdownState<T> extends State<SignupDropdown<T>> {
+  OverlayEntry? _overlayEntry;
+  final LayerLink _layerLink = LayerLink();
+  final GlobalKey _targetKey = GlobalKey();
+
+  void _showDropdown() {
+    final targetContext = _targetKey.currentContext;
+    final renderBox = targetContext!.findRenderObject() as RenderBox;
+    final overlay = Overlay.of(context);
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        width: renderBox.size.width,
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          offset: const Offset(0, 24),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(width: 2, color: const Color(0xffAED3FF)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: widget.options
+                  .asMap()
+                  .entries
+                  .map((entry) => Material(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: InkWell(
+                          splashColor: const Color(0xffAED3FF),
+                          highlightColor: const Color(0xffAED3FF),
+                          child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              width: double.infinity,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                  border: entry.key > 0
+                                      ? const Border(
+                                          top: BorderSide(
+                                              width: 2,
+                                              color: Color(0xffAED3FF)),
+                                        )
+                                      : null,
+                                  borderRadius: entry.key == 0
+                                      ? BorderRadius.circular(12)
+                                      : null),
+                              child: Text(widget.optionValues[entry.value]!)),
+                          onTap: () {
+                            widget.onSelect(entry.value);
+                            _hideDropdown();
+                          },
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+    overlay.insert(_overlayEntry!);
+  }
+
+  void _hideDropdown() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String displayValue;
+    if (widget.currentValue is Enum) {
+      displayValue = widget.optionValues[(widget.currentValue as Enum)]!;
+    } else if (widget.currentValue is String) {
+      displayValue = widget.currentValue as String; // 그대로 사용
+    } else {
+      displayValue = widget.placeholder;
+    }
+
+    return Stack(
+      children: [
+        Positioned(
+            child: Text(
+          widget.label,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        )),
+        GestureDetector(
+          onTap: _showDropdown,
+          child: CompositedTransformTarget(
+            link: _layerLink,
+            child: Padding(
+                padding: const EdgeInsets.only(top: 24),
+                key: _targetKey,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  width: double.infinity,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    border:
+                        Border.all(width: 2, color: const Color(0xffAED3FF)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(displayValue),
+                      Image.asset(
+                        'assets/icons/arrow_down.png',
+                        width: 12,
+                        height: 12,
+                      ),
+                    ],
+                  ),
+                )),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class ProfileImagePicker extends StatefulWidget {
   final Function(XFile file) onSelect;
   final XFile? profileImage;
@@ -255,7 +389,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
                 height: 138,
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                clipBehavior: Clip.antiAlias, //
+                clipBehavior: Clip.antiAlias,
                 child: widget.profileImage != null
                     ? Image.file(
                         File(widget.profileImage!.path),
@@ -355,34 +489,5 @@ class _LevelOptionState extends State<LevelOption> {
                   },
                 ))
             .toList());
-  }
-}
-
-class AgeDropdown extends StatefulWidget {
-  final Function(AgeEnum age) onSelect;
-
-  const AgeDropdown({super.key, required this.onSelect});
-
-  @override
-  State<AgeDropdown> createState() => _AgeDropdownState();
-}
-
-class _AgeDropdownState extends State<AgeDropdown> {
-  AgeEnum _age = AgeEnum.lt20;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButton<AgeEnum>(
-        value: _age,
-        items: AgeEnum.values
-            .map((age) =>
-                DropdownMenuItem(value: age, child: Text(ageMap[age]!)))
-            .toList(),
-        onChanged: (AgeEnum? value) {
-          widget.onSelect(value!);
-          setState(() {
-            _age = value;
-          });
-        });
   }
 }
