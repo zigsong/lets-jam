@@ -72,6 +72,7 @@ class _RequiredPageState extends State<RequiredPage> {
                   padding: const EdgeInsets.only(top: 20),
                   child: SignupInput(
                     label: '닉네임',
+                    placeholder: '닉네임을 입력하세요',
                     onSave: (value) {
                       widget.signupData.nickname = value ?? '';
                     },
@@ -87,6 +88,7 @@ class _RequiredPageState extends State<RequiredPage> {
                   padding: const EdgeInsets.only(top: 20),
                   child: SignupInput(
                     label: '연락처',
+                    placeholder: '연락처를 입력하세요',
                     onSave: (value) {
                       widget.signupData.contact = value ?? '';
                     },
@@ -180,11 +182,13 @@ class SignupInput extends StatelessWidget {
       {super.key,
       required this.label,
       required this.onSave,
+      this.placeholder,
       this.validator,
       this.keyboardType,
       this.height});
 
   final String label;
+  final String? placeholder;
   final void Function(String?) onSave;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
@@ -209,6 +213,7 @@ class SignupInput extends StatelessWidget {
               maxLines: keyboardType == TextInputType.multiline ? null : 1,
               style: const TextStyle(fontSize: 14),
               decoration: InputDecoration(
+                  hintText: placeholder,
                   focusedBorder: OutlineInputBorder(
                     borderSide:
                         const BorderSide(color: Color(0xffAED3FF), width: 2),
@@ -273,6 +278,7 @@ class _SignupDropdownState<T> extends State<SignupDropdown<T>> {
             decoration: BoxDecoration(
               border: Border.all(width: 2, color: const Color(0xffAED3FF)),
               borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
