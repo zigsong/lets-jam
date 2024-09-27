@@ -49,13 +49,13 @@ class _MyInfoScreenState extends State<MyInfoScreen> {
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold),
                           ),
-                          Text(
-                            'Lv.${levelMap[widget.user.level]!}',
-                            style: textStyle.copyWith(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                          // Text(
+                          //   'Lv.${levelMap[widget.user.level]!}',
+                          //   style: textStyle.copyWith(
+                          //     fontSize: 12,
+                          //     fontWeight: FontWeight.w500,
+                          //   ),
+                          // ),
                         ],
                       ),
                       const Icon(

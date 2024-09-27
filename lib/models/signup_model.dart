@@ -8,7 +8,7 @@ class SignupModel {
   String nickname;
   XFile? profileImage;
   List<SessionEnum> sessions;
-  LevelEnum? level;
+  Map<SessionEnum, LevelEnum>? sessionLevel;
   AgeEnum? age;
 
   /// Optional Fields
@@ -25,7 +25,7 @@ class SignupModel {
     print('nickname: $nickname');
     print('profileImage: $profileImage');
     print('sessions: $sessions');
-    print('level: $level');
+    print('sessionLevel: $sessionLevel');
     print('age: $age');
     print('contact: $contact');
     print('images: $images');

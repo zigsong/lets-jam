@@ -126,16 +126,37 @@ class _RequiredPageState extends State<RequiredPage> {
                   child: SessionCheckbox(
                     selectedList: widget.signupData.sessions,
                     onChange: (session) {
-                      if (widget.signupData.sessions.contains(session)) {
-                        widget.signupData.sessions.remove(session);
-                      } else {
-                        widget.signupData.sessions.add(session);
-                      }
+                      setState(() {
+                        if (widget.signupData.sessions.contains(session)) {
+                          widget.signupData.sessions.remove(session);
+                        } else {
+                          widget.signupData.sessions.add(session);
+                        }
+                      });
                     },
                   ),
                 ),
                 const SizedBox(
                   height: 16,
+                ),
+                ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: widget.signupData.sessions.map((session) {
+                    return Column(
+                      children: [
+                        LevelSelector(
+                          session: session,
+                          onSelect: (level) {
+                            widget.signupData.sessionLevel?[session] = level;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    );
+                  }).toList(),
                 ),
                 SignupInput(
                   label: '자기소개',
@@ -148,22 +169,6 @@ class _RequiredPageState extends State<RequiredPage> {
                 const SizedBox(
                   height: 16,
                 ),
-                // const Align(
-                //   alignment: Alignment.centerLeft,
-                //   child: Text(
-                //     '레벨',
-                //     textAlign: TextAlign.left,
-                //   ),
-                // ),
-                // LevelOption(
-                //   onSelect: (level) {
-                //     widget.signupData.level = level;
-                //   },
-                // ),
-                // const SizedBox(
-                //   height: 16,
-                // ),
-                // const SizedBox(height: 20),
                 // ElevatedButton(
                 //   onPressed: _changePage,
                 //   child: const Text('계속'),
@@ -534,40 +539,105 @@ class _SessionCheckboxState extends State<SessionCheckbox> {
   }
 }
 
-class LevelOption extends StatefulWidget {
-  final Function(LevelEnum level) onSelect;
+class Item {
+  Item({
+    required this.expandedValue,
+    required this.headerValue,
+    this.isExpanded = false,
+  });
 
-  const LevelOption({super.key, required this.onSelect});
-
-  @override
-  State<LevelOption> createState() => _LevelOptionState();
+  String expandedValue;
+  String headerValue;
+  bool isExpanded;
 }
 
-class _LevelOptionState extends State<LevelOption> {
+class LevelSelector extends StatefulWidget {
+  final SessionEnum session;
+  final Function(LevelEnum level) onSelect;
+
+  const LevelSelector(
+      {super.key, required this.session, required this.onSelect});
+
+  @override
+  State<LevelSelector> createState() => _LevelSelectorState();
+}
+
+class _LevelSelectorState extends State<LevelSelector> {
   LevelEnum _level = LevelEnum.newbie;
+  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-        children: LevelEnum.values
-            .map((level) => RadioListTile(
-                  title: Text(levelMap[level] ?? ''),
-                  value: level,
-                  groupValue: _level,
-                  activeColor: Colors.amber.shade700,
-                  visualDensity: const VisualDensity(
-                    horizontal: VisualDensity.minimumDensity,
-                    vertical: VisualDensity.minimumDensity,
-                  ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  contentPadding: EdgeInsets.zero,
-                  onChanged: (LevelEnum? value) {
-                    widget.onSelect(value ?? LevelEnum.newbie);
-                    setState(() {
-                      _level = value!;
-                    });
-                  },
-                ))
-            .toList());
+    return (Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _isExpanded = !_isExpanded;
+            });
+          },
+          child: Container(
+            height: 48,
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              color: Color(0xffBFFFAF),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${sessionMap[widget.session]} 레벨',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Icon(
+                    _isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: const Color(0xff8F9098)),
+              ],
+            ),
+          ),
+        ),
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          // height: _isExpanded ? 100 : 0,
+          decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xffBFFFAF), width: 2),
+              borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12))),
+          child: _isExpanded
+              ? Wrap(
+                  children: LevelEnum.values
+                      .map((level) => RadioListTile(
+                            title: Text(
+                              sessionLevelText[widget.session]?[level] ?? '',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            value: level,
+                            groupValue: _level,
+                            activeColor: const Color(0xff006FFD),
+                            visualDensity: const VisualDensity(
+                              vertical: VisualDensity.minimumDensity,
+                            ),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            controlAffinity: ListTileControlAffinity.trailing,
+                            contentPadding: const EdgeInsets.only(
+                                top: 4, left: 12, right: 4, bottom: 4),
+                            onChanged: (LevelEnum? value) {
+                              widget.onSelect(value!);
+                              setState(() {
+                                _level = value;
+                              });
+                            },
+                          ))
+                      .toList())
+              : null,
+        ),
+      ],
+    ));
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({super.key});

@@ -8,7 +8,7 @@ class UserModel {
   late String email;
   late String nickname;
   late List<SessionEnum> sessions = [];
-  late LevelEnum level;
+  late Map<SessionEnum, LevelEnum>? sessionLevel;
   late AgeEnum age;
 
   /// Optional Fields
@@ -23,8 +23,14 @@ class UserModel {
             .map((e) => SessionEnum.values
                 .firstWhere((s) => s.toString() == 'SessionEnum.$e'))
             .toList(),
-        level = LevelEnum.values
-            .firstWhere((e) => e.toString() == 'LevelEnum.${json['level']}'),
+        sessionLevel = (json['sessionLevel'] as Map<String, dynamic>?)?.map(
+          (key, value) => MapEntry(
+            SessionEnum.values
+                .firstWhere((e) => e.toString() == 'SessionEnum.$key'),
+            LevelEnum.values
+                .firstWhere((e) => e.toString() == 'LevelEnum.$value'),
+          ),
+        ),
         age = AgeEnum.values
             .firstWhere((e) => e.toString() == 'AgeEnum.${json['age']}'),
         contact = json['contact'],

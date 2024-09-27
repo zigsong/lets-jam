@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/signup_model.dart';
 import 'package:lets_jam/screens/home_screen.dart';
@@ -39,8 +41,6 @@ class _SignupScreenState extends State<SignupScreen>
   }
 
   void _submit() {
-    if (_signupData.level == null || _signupData.age == null) return;
-
     _saveUserToSupabase();
 
     Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -55,8 +55,9 @@ class _SignupScreenState extends State<SignupScreen>
         'email': widget.user.email,
         'nickname': _signupData.nickname,
         'sessions': _signupData.sessions.map((el) => el.name).toList(),
-        'level': _signupData.level!.name,
-        'age': _signupData.age!.name,
+        'sessionLevel': jsonEncode(_signupData.sessionLevel
+            ?.map((key, value) => MapEntry(key.toString(), value.toString()))),
+        'age': _signupData.age?.name,
         'contact': _signupData.contact,
         'images': _signupData.images.map((image) => image.path).toList(),
         'bio': _signupData.bio,
