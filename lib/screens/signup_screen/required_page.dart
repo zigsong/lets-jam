@@ -563,7 +563,7 @@ class LevelSelector extends StatefulWidget {
 }
 
 class _LevelSelectorState extends State<LevelSelector> {
-  LevelEnum _level = LevelEnum.newbie;
+  LevelEnum? _level;
   bool _isExpanded = false;
 
   @override
@@ -601,42 +601,43 @@ class _LevelSelectorState extends State<LevelSelector> {
           ),
         ),
         AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          // height: _isExpanded ? 100 : 0,
-          decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xffBFFFAF), width: 2),
-              borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(12),
-                  bottomRight: Radius.circular(12))),
-          child: _isExpanded
-              ? Wrap(
-                  children: LevelEnum.values
-                      .map((level) => RadioListTile(
-                            title: Text(
-                              sessionLevelText[widget.session]?[level] ?? '',
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                            value: level,
-                            groupValue: _level,
-                            activeColor: const Color(0xff006FFD),
-                            visualDensity: const VisualDensity(
-                              vertical: VisualDensity.minimumDensity,
-                            ),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            controlAffinity: ListTileControlAffinity.trailing,
-                            contentPadding: const EdgeInsets.only(
-                                top: 4, left: 12, right: 4, bottom: 4),
-                            onChanged: (LevelEnum? value) {
-                              widget.onSelect(value!);
-                              setState(() {
-                                _level = value;
-                              });
-                            },
-                          ))
-                      .toList())
-              : null,
-        ),
+            duration: const Duration(milliseconds: 300),
+            // height: _isExpanded ? 100 : 0,
+            decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xffBFFFAF), width: 2),
+                borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12))),
+            child: !_isExpanded && _level == null
+                ? null
+                : Wrap(
+                    children: (!_isExpanded && _level != null
+                            ? LevelEnum.values.where((level) => level == _level)
+                            : LevelEnum.values)
+                        .map((level) => RadioListTile(
+                              title: Text(
+                                sessionLevelText[widget.session]?[level] ?? '',
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                              value: level,
+                              groupValue: _level,
+                              activeColor: const Color(0xff006FFD),
+                              visualDensity: const VisualDensity(
+                                vertical: VisualDensity.minimumDensity,
+                              ),
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              controlAffinity: ListTileControlAffinity.trailing,
+                              contentPadding: const EdgeInsets.only(
+                                  top: 4, left: 12, right: 4, bottom: 4),
+                              onChanged: (LevelEnum? value) {
+                                widget.onSelect(value!);
+                                setState(() {
+                                  _level = value;
+                                });
+                              },
+                            ))
+                        .toList())),
       ],
     ));
   }
