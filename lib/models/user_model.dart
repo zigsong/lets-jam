@@ -8,7 +8,7 @@ class UserModel {
   late String email;
   late String nickname;
   late List<SessionEnum> sessions = [];
-  late Map<SessionEnum, LevelEnum>? sessionLevel;
+  late Map<SessionEnum, LevelEnum> sessionLevel;
   late AgeEnum age;
 
   /// Optional Fields
