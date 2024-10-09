@@ -13,11 +13,17 @@ class RequiredPage extends StatefulWidget {
   final Function() onChangePage;
   final SignupModel signupData;
 
+  /// TODO: 상태관리로 수정하기
+  final Function(SessionEnum key, LevelEnum value) updateSessionLevel;
+  final Function() onSubmit;
+
   const RequiredPage(
       {super.key,
       required this.user,
       required this.onChangePage,
-      required this.signupData});
+      required this.signupData,
+      required this.updateSessionLevel,
+      required this.onSubmit});
 
   @override
   State<RequiredPage> createState() => _RequiredPageState();
@@ -25,6 +31,7 @@ class RequiredPage extends StatefulWidget {
 
 class _RequiredPageState extends State<RequiredPage> {
   final _formKey = GlobalKey<FormState>();
+  Map<SignupRequiredEnum, bool> valiators = {};
   double percent = 0.5;
 
   void _changePage() {
@@ -32,6 +39,29 @@ class _RequiredPageState extends State<RequiredPage> {
       _formKey.currentState!.save();
 
       widget.onChangePage();
+    }
+  }
+
+  bool _validate() {
+    if (widget.signupData.nickname.isEmpty) {
+      setState(() {
+        valiators[SignupRequiredEnum.nickname] = false;
+      });
+    }
+    if (widget.signupData.sessions.isEmpty) {
+      // NOTE: setState 안하면 SessionCheckbox validation이 안된다
+      setState(() {
+        valiators[SignupRequiredEnum.sessions] = false;
+      });
+    }
+    return valiators.values.every((value) => value == true);
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate() && _validate()) {
+      _formKey.currentState!.save();
+
+      widget.onSubmit();
     }
   }
 
@@ -73,7 +103,8 @@ class _RequiredPageState extends State<RequiredPage> {
                   child: SignupInput(
                     label: '닉네임',
                     placeholder: '닉네임을 입력하세요',
-                    onSave: (value) {
+                    onChange: (value) {
+                      valiators[SignupRequiredEnum.nickname] = true;
                       widget.signupData.nickname = value ?? '';
                     },
                     validator: (value) {
@@ -89,14 +120,8 @@ class _RequiredPageState extends State<RequiredPage> {
                   child: SignupInput(
                     label: '연락처',
                     placeholder: '연락처를 입력하세요',
-                    onSave: (value) {
+                    onChange: (value) {
                       widget.signupData.contact = value ?? '';
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '연락처를 입력하세요';
-                      }
-                      return null;
                     },
                     keyboardType: TextInputType.phone,
                   ),
@@ -119,8 +144,18 @@ class _RequiredPageState extends State<RequiredPage> {
                 const SizedBox(
                   height: 16,
                 ),
-                const SessionSelector(
-                    label: '세션', subtext: '다룰 수 있는 세션을 모두 선택해주세요!'),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SessionSelector(
+                        label: '세션', subtext: '다룰 수 있는 세션을 모두 선택해주세요!'),
+                    if (valiators[SignupRequiredEnum.sessions] == false)
+                      const Text(
+                        '세션을 선택해주세요',
+                        style: TextStyle(color: Colors.red, fontSize: 12),
+                      )
+                  ],
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: SessionCheckbox(
@@ -129,8 +164,10 @@ class _RequiredPageState extends State<RequiredPage> {
                       setState(() {
                         if (widget.signupData.sessions.contains(session)) {
                           widget.signupData.sessions.remove(session);
+                          valiators[SignupRequiredEnum.sessions] = true;
                         } else {
                           widget.signupData.sessions.add(session);
+                          valiators[SignupRequiredEnum.sessions] = true;
                         }
                       });
                     },
@@ -148,7 +185,10 @@ class _RequiredPageState extends State<RequiredPage> {
                         LevelSelector(
                           session: session,
                           onSelect: (level) {
-                            widget.signupData.sessionLevel?[session] = level;
+                            setState(() {
+                              print('레벨 선택: $session, $level');
+                              widget.updateSessionLevel(session, level);
+                            });
                           },
                         ),
                         const SizedBox(
@@ -160,19 +200,36 @@ class _RequiredPageState extends State<RequiredPage> {
                 ),
                 SignupInput(
                   label: '자기소개',
-                  onSave: (value) {
+                  onChange: (value) {
                     widget.signupData.bio = value;
                   },
                   keyboardType: TextInputType.multiline,
                   height: 96,
                 ),
                 const SizedBox(
-                  height: 16,
+                  height: 30,
                 ),
-                // ElevatedButton(
-                //   onPressed: _changePage,
-                //   child: const Text('계속'),
-                // ),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _submit,
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: const Color(0xffBFFFAF),
+                      foregroundColor: const Color(0xff1c1c1c),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'JAM 시작하기',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -186,7 +243,7 @@ class SignupInput extends StatelessWidget {
   const SignupInput(
       {super.key,
       required this.label,
-      required this.onSave,
+      required this.onChange,
       this.placeholder,
       this.validator,
       this.keyboardType,
@@ -194,7 +251,7 @@ class SignupInput extends StatelessWidget {
 
   final String label;
   final String? placeholder;
-  final void Function(String?) onSave;
+  final void Function(String?) onChange;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final double? height;
@@ -232,7 +289,7 @@ class SignupInput extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
               cursorColor: const Color(0xffAED3FF),
               validator: validator,
-              onSaved: onSave,
+              onChanged: onChange,
             ),
           ),
         ),

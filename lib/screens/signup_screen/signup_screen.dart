@@ -1,10 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:lets_jam/models/level_enum.dart';
+import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
 import 'package:lets_jam/screens/home_screen.dart';
 import 'package:lets_jam/screens/signup_screen/optional_page.dart';
 import 'package:lets_jam/screens/signup_screen/required_page.dart';
+import 'package:lets_jam/utils/helper.dart';
 import 'package:lets_jam/widgets/progress_bar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -40,6 +41,12 @@ class _SignupScreenState extends State<SignupScreen>
     _tabController.dispose();
   }
 
+  void _updateSessionLevel(SessionEnum key, LevelEnum value) {
+    setState(() {
+      _signupData.sessionLevel[key] = value;
+    });
+  }
+
   void _submit() {
     _saveUserToSupabase();
 
@@ -55,8 +62,8 @@ class _SignupScreenState extends State<SignupScreen>
         'email': widget.user.email,
         'nickname': _signupData.nickname,
         'sessions': _signupData.sessions.map((el) => el.name).toList(),
-        'sessionLevel': jsonEncode(_signupData.sessionLevel
-            ?.map((key, value) => MapEntry(key.toString(), value.toString()))),
+        'sessionLevel': _signupData.sessionLevel.map(
+            (key, value) => MapEntry(enumToString(key), enumToString(value))),
         'age': _signupData.age?.name,
         'contact': _signupData.contact,
         'images': _signupData.images.map((image) => image.path).toList(),
@@ -82,12 +89,13 @@ class _SignupScreenState extends State<SignupScreen>
               ProgressBar(percent: progressPercent),
               Expanded(
                 child: RequiredPage(
-                  user: widget.user,
-                  signupData: _signupData,
-                  onChangePage: () {
-                    _updateCurrentPageIndex(1);
-                  },
-                ),
+                    user: widget.user,
+                    signupData: _signupData,
+                    updateSessionLevel: _updateSessionLevel,
+                    onChangePage: () {
+                      _updateCurrentPageIndex(1);
+                    },
+                    onSubmit: _submit),
               ),
             ],
           ),

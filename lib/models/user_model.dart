@@ -23,7 +23,7 @@ class UserModel {
             .map((e) => SessionEnum.values
                 .firstWhere((s) => s.toString() == 'SessionEnum.$e'))
             .toList(),
-        sessionLevel = (json['sessionLevel'] as Map<String, dynamic>?)?.map(
+        sessionLevel = (json['sessionLevel'] as Map<String, dynamic>).map(
           (key, value) => MapEntry(
             SessionEnum.values
                 .firstWhere((e) => e.toString() == 'SessionEnum.$key'),

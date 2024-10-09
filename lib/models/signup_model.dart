@@ -3,12 +3,14 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 
+enum SignupRequiredEnum { nickname, sessions }
+
 class SignupModel {
   /// Required Fields
   String nickname;
   XFile? profileImage;
   List<SessionEnum> sessions;
-  Map<SessionEnum, LevelEnum>? sessionLevel;
+  Map<SessionEnum, LevelEnum> sessionLevel;
   AgeEnum? age;
 
   /// Optional Fields
@@ -19,16 +21,6 @@ class SignupModel {
   SignupModel.init()
       : nickname = '',
         sessions = [],
-        images = [];
-
-  toJson() {
-    print('nickname: $nickname');
-    print('profileImage: $profileImage');
-    print('sessions: $sessions');
-    print('sessionLevel: $sessionLevel');
-    print('age: $age');
-    print('contact: $contact');
-    print('images: $images');
-    print('bio: $bio');
-  }
+        images = [],
+        sessionLevel = {};
 }
