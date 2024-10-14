@@ -70,6 +70,13 @@ class _RequiredPageState extends State<RequiredPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
+          const Text(
+            'JAM 가입하기',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Center(
               child: ProfileImagePicker(
             onSelect: (file) {
@@ -84,13 +91,6 @@ class _RequiredPageState extends State<RequiredPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  '회원가입',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 const SizedBox(
                   height: 16,
                 ),
@@ -186,7 +186,6 @@ class _RequiredPageState extends State<RequiredPage> {
                           session: session,
                           onSelect: (level) {
                             setState(() {
-                              print('레벨 선택: $session, $level');
                               widget.updateSessionLevel(session, level);
                             });
                           },
@@ -499,7 +498,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 30),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: GestureDetector(
         child: Align(
           alignment: Alignment.center,
@@ -659,7 +658,6 @@ class _LevelSelectorState extends State<LevelSelector> {
         ),
         AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            // height: _isExpanded ? 100 : 0,
             decoration: BoxDecoration(
                 border: Border.all(color: const Color(0xffBFFFAF), width: 2),
                 borderRadius: const BorderRadius.only(
@@ -691,6 +689,9 @@ class _LevelSelectorState extends State<LevelSelector> {
                                 widget.onSelect(value!);
                                 setState(() {
                                   _level = value;
+                                  setState(() {
+                                    _isExpanded = false;
+                                  });
                                 });
                               },
                             ))

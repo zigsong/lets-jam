@@ -23,7 +23,6 @@ class _SignupScreenState extends State<SignupScreen>
   late PageController _pageViewController;
   late TabController _tabController;
   int _currentPageIndex = 0;
-  double progressPercent = 0.5;
 
   final SignupModel _signupData = SignupModel.init();
 
@@ -86,7 +85,6 @@ class _SignupScreenState extends State<SignupScreen>
           padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 36),
           child: Column(
             children: [
-              ProgressBar(percent: progressPercent),
               Expanded(
                 child: RequiredPage(
                     user: widget.user,
