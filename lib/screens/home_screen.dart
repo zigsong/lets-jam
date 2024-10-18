@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/screens/explore_screen.dart';
-import 'package:lets_jam/screens/post_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,7 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _widgetOptions = <Widget>[
     const ExploreScreen(),
-    const PostScreen(),
+    const ExploreScreen(),
+    const ProfileScreen(),
     const ProfileScreen()
   ];
 
@@ -33,15 +33,21 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _onFilterButtonTapped() {
+  void _onLikeButtonTapped() {
     setState(() {
       _selectedIndex = 1;
     });
   }
 
-  void _onProfileButtonTapped() {
+  void _onBandButtonTapped() {
     setState(() {
       _selectedIndex = 2;
+    });
+  }
+
+  void _onProfileButtonTapped() {
+    setState(() {
+      _selectedIndex = 3;
     });
   }
 
@@ -51,51 +57,61 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var isHomeSelected = _selectedIndex == 0;
-    var isProfileSelected = _selectedIndex == 2;
-
     return Scaffold(
         /** @zigsong TODO: appbar height 정하기 */
         appBar: AppBar(
           toolbarHeight: 20,
         ),
         body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _onAddButtonTapped,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-          foregroundColor: Colors.grey[700],
-          elevation: 2,
-          backgroundColor: Colors.white,
-          child: const Icon(Icons.add),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-          height: 90,
-          color: Colors.white,
-          shadowColor: Colors.grey[700],
-          notchMargin: 5,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              BottomAppBarItem(
-                icon: SvgPicture.asset('assets/icons/home.svg'),
-                label: '홈',
-                onPressed: _onHomeButtonTapped,
+        bottomNavigationBar: Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: [
+            BottomAppBar(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+              height: 84,
+              color: Colors.white,
+              shape: const CircularNotchedRectangle(),
+              notchMargin: 5,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  BottomAppBarItem(
+                      icon: SvgPicture.asset('assets/icons/home.svg'),
+                      label: '홈',
+                      onPressed: _onHomeButtonTapped),
+                  BottomAppBarItem(
+                      icon: SvgPicture.asset('assets/icons/like.svg'),
+                      label: '좋아요',
+                      onPressed: _onLikeButtonTapped),
+                  BottomAppBarItem(
+                      icon: SvgPicture.asset('assets/icons/band-temp.svg'),
+                      label: '',
+                      onPressed: _onLikeButtonTapped),
+                  BottomAppBarItem(
+                      icon: SvgPicture.asset('assets/icons/band-temp.svg'),
+                      label: '밴드',
+                      onPressed: _onBandButtonTapped),
+                  BottomAppBarItem(
+                      icon: SvgPicture.asset('assets/icons/profile.svg'),
+                      label: '프로필',
+                      onPressed: _onProfileButtonTapped),
+                ],
               ),
-              BottomAppBarItem(
-                icon: SvgPicture.asset('assets/icons/filter.svg'),
-                label: '필터',
-                onPressed: _onFilterButtonTapped,
-              ),
-              BottomAppBarItem(
-                icon: SvgPicture.asset('assets/icons/profile.svg'),
-                label: '프로필',
-                onPressed: _onProfileButtonTapped,
-              )
-            ],
-          ),
+            ),
+            Positioned(
+                top: -12,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(20),
+                      backgroundColor: const Color(0xffBFFFAF),
+                      elevation: 0),
+                  child: SvgPicture.asset('assets/icons/add.svg'),
+                  onPressed: () {},
+                ))
+          ],
         ));
   }
 }
