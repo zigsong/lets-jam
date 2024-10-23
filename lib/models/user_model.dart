@@ -14,6 +14,7 @@ class UserModel {
   /// Optional Fields
   late String contact;
   late List<XFile> images = [];
+  late XFile profileImage;
   late String bio;
 
   UserModel.fromJson(Map<String, dynamic> json)
@@ -23,7 +24,7 @@ class UserModel {
             .map((e) => SessionEnum.values
                 .firstWhere((s) => s.toString() == 'SessionEnum.$e'))
             .toList(),
-        sessionLevel = (json['sessionLevel'] as Map<String, dynamic>).map(
+        sessionLevel = (json['session_level'] as Map<String, dynamic>).map(
           (key, value) => MapEntry(
             SessionEnum.values
                 .firstWhere((e) => e.toString() == 'SessionEnum.$key'),
@@ -34,6 +35,7 @@ class UserModel {
         age = AgeEnum.values
             .firstWhere((e) => e.toString() == 'AgeEnum.${json['age']}'),
         contact = json['contact'],
+        profileImage = XFile(json['profile_image']),
         images = (json['images'] as List<dynamic>)
             .map((image) => XFile(image as String))
             .toList(),

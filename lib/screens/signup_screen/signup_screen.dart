@@ -61,10 +61,11 @@ class _SignupScreenState extends State<SignupScreen>
         'email': widget.user.email,
         'nickname': _signupData.nickname,
         'sessions': _signupData.sessions.map((el) => el.name).toList(),
-        'sessionLevel': _signupData.sessionLevel.map(
+        'session_level': _signupData.sessionLevel.map(
             (key, value) => MapEntry(enumToString(key), enumToString(value))),
         'age': _signupData.age?.name,
         'contact': _signupData.contact,
+        'profile_image': _signupData.profileImage?.path,
         'images': _signupData.images.map((image) => image.path).toList(),
         'bio': _signupData.bio,
       });
@@ -100,27 +101,6 @@ class _SignupScreenState extends State<SignupScreen>
         ),
       ),
     );
-    // return Stack(
-    //   alignment: Alignment.bottomCenter,
-    //   children: <Widget>[
-    // PageView(
-    //   scrollDirection: Axis.vertical,
-    //   controller: _pageViewController,
-    //   onPageChanged: _handlePageViewChanged,
-    //   children: <Widget>[
-    //     RequiredPage(
-    //       user: widget.user,
-    //       signupData: _signupData,
-    //       onChangePage: () {
-    //         _updateCurrentPageIndex(1);
-    //       },
-    //     ),
-    //     OptionalPage(
-    //         user: widget.user, signupData: _signupData, onSubmit: _submit)
-    //   ],
-    // ),
-    //   ],
-    // );
   }
 
   void _handlePageViewChanged(int currentPageIndex) {
