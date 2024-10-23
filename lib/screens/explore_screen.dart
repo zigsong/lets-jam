@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/widgets/filter_tag.dart';
 import 'package:lets_jam/widgets/page_toggler.dart';
 import 'package:lets_jam/widgets/post_thumbnail.dart';
@@ -14,7 +15,7 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  final posts = Supabase.instance.client.from('posts').select('*');
+  final _posts = Supabase.instance.client.from('posts').select('*');
   final PageController _pageViewController = PageController();
 
   int _selectedPage = 0;
@@ -81,66 +82,44 @@ class _ExploreScreenState extends State<ExploreScreen> {
             controller: _pageViewController,
             physics: const NeverScrollableScrollPhysics(), // 기본 슬라이드 동작을 막음
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-                child: ListView.separated(
-                    itemCount: 10,
-                    separatorBuilder: (context, index) => const SizedBox(
-                          height: 12,
-                        ),
-                    itemBuilder: (context, index) {
-                      return const PostThumbnail(title: '밴드찾기');
-                    }),
+              FutureBuilder(
+                future: _posts,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final posts = snapshot.data!;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 32),
+                    child: ListView.separated(
+                        itemCount: posts.length,
+                        separatorBuilder: (context, index) => const SizedBox(
+                              height: 8,
+                            ),
+                        itemBuilder: (context, index) {
+                          final post = posts[index];
+                          return PostThumbnail(post: PostModel.fromJson(post));
+                        }),
+                  );
+                },
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-                child: ListView.separated(
-                    itemCount: 10,
-                    separatorBuilder: (context, index) => const SizedBox(
-                          height: 12,
-                        ),
-                    itemBuilder: (context, index) {
-                      return const PostThumbnail(title: '멤버찾기');
-                    }),
-              )
+              // Padding(
+              //   padding:
+              //       const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+              //   child: ListView.separated(
+              //       itemCount: 10,
+              //       separatorBuilder: (context, index) => const SizedBox(
+              //             height: 12,
+              //           ),
+              //       itemBuilder: (context, index) {
+              //         return const PostThumbnail(title: '멤버찾기');
+              //       }),
+              // )
             ],
           ),
         )
       ],
     ));
-  }
-}
-
-class ExploreBandContent extends StatefulWidget {
-  const ExploreBandContent({super.key});
-
-  @override
-  State<ExploreBandContent> createState() => _ExploreBandContentState();
-}
-
-class _ExploreBandContentState extends State<ExploreBandContent> {
-  final posts = Supabase.instance.client.from('posts').select('*');
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: posts,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final posts = snapshot.data!;
-          return ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: ((context, index) {
-                final post = posts[index];
-                return ListTile(
-                  title: Text(post['title']),
-                );
-              }));
-        });
   }
 }
