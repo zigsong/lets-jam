@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/screens/explore_screen.dart';
@@ -11,13 +13,37 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController? _controller;
+  Animation<Offset>? _offsetAnimation;
   int _selectedIndex = 0;
+  bool _isBottomSheetOpen = false;
 
   @override
   void initState() {
     super.initState();
+
     _selectedIndex = widget.fromIndex ?? 0;
+    // 애니메이션 컨트롤러 초기화
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 1.0), // 아래에서 시작
+      end: const Offset(0.0, 0.0), // 제자리로 이동
+    ).animate(CurvedAnimation(
+      parent: _controller!,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   final List<Widget> _widgetOptions = <Widget>[
@@ -55,6 +81,17 @@ class _HomeScreenState extends State<HomeScreen> {
     print('포스팅 추가');
   }
 
+  void _toggleBottomSheet() {
+    if (_isBottomSheetOpen) {
+      _controller!.reverse();
+    } else {
+      _controller!.forward();
+    }
+    setState(() {
+      _isBottomSheetOpen = !_isBottomSheetOpen;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +99,52 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           toolbarHeight: 20,
         ),
-        body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+        body: Stack(children: [
+          Positioned.fill(
+              child: Center(child: _widgetOptions.elementAt(_selectedIndex))),
+          // dimmed 배경
+          if (_isBottomSheetOpen)
+            GestureDetector(
+              onTap: _toggleBottomSheet,
+              child: AnimatedOpacity(
+                opacity: _isBottomSheetOpen ? 0.5 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: Container(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          // BottomSheet
+          if (_isBottomSheetOpen)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SlideTransition(
+                position: _offsetAnimation!,
+                child: GestureDetector(
+                  onTap: () {
+                    // BottomSheet 동작
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0xffBFFFAF),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    height: 200,
+                    child: const Center(
+                      child: Text(
+                        '어떤 글을 써볼까요?',
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ]),
         bottomNavigationBar: Stack(
           alignment: Alignment.center,
           clipBehavior: Clip.none,
@@ -104,12 +186,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 top: -12,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                      side: const BorderSide(width: 3, color: Colors.white),
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(20),
                       backgroundColor: const Color(0xffBFFFAF),
                       elevation: 0),
-                  child: SvgPicture.asset('assets/icons/add.svg'),
-                  onPressed: () {},
+                  onPressed: _toggleBottomSheet,
+                  child: Transform.rotate(
+                      angle: _isBottomSheetOpen ? 45 * pi / 180 : 0,
+                      child: SvgPicture.asset('assets/icons/add.svg')),
                 ))
           ],
         ));
