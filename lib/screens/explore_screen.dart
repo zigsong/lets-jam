@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/models/post_model.dart';
-import 'package:lets_jam/widgets/filter_tag.dart';
 import 'package:lets_jam/widgets/page_toggler.dart';
 import 'package:lets_jam/widgets/post_thumbnail.dart';
+import 'package:lets_jam/widgets/tag.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     var isBandTabSelected = _selectedPage == 0;
     var isMemberTabSelected = _selectedPage == 1;
 
-    var mockFilteredTags = ['태그1', '태그22', '태그333', '태그4444', '태그55555'];
+    var mockFilteredTags = ['태그1', '태그22', '태그333'];
 
     return Scaffold(
         body: Column(
@@ -60,22 +61,35 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 20,
-        ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: SizedBox(
-            height: 28,
-            child: ListView.separated(
-              itemCount: mockFilteredTags.length,
-              scrollDirection: Axis.horizontal,
-              separatorBuilder: (context, index) => const SizedBox(width: 8),
-              itemBuilder: (context, index) {
-                return FilterTag(text: mockFilteredTags[index]);
-              },
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          child: Row(
+            children: [
+              SizedBox(
+                  width: 36,
+                  child: SvgPicture.asset('assets/icons/filter.svg')),
+              const SizedBox(
+                width: 4,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(mockFilteredTags.length, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Tag(text: mockFilteredTags[index]),
+                        );
+                      }),
+                    )),
+              ),
+            ],
           ),
+        ),
+        const Divider(
+          height: 0,
+          thickness: 2,
+          color: Color(0xffD9D9D9),
         ),
         Expanded(
           child: PageView(
@@ -91,7 +105,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   final posts = snapshot.data!;
                   return Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 32),
+                        horizontal: 16, vertical: 12),
                     child: ListView.separated(
                         itemCount: posts.length,
                         separatorBuilder: (context, index) => const SizedBox(
