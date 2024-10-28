@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/screens/explore_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
+import 'package:lets_jam/widgets/post_bottom_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   final int? fromIndex;
@@ -134,12 +135,7 @@ class _HomeScreenState extends State<HomeScreen>
                         topRight: Radius.circular(20),
                       ),
                     ),
-                    height: 200,
-                    child: const Center(
-                      child: Text(
-                        '어떤 글을 써볼까요?',
-                      ),
-                    ),
+                    child: const PostBottomSheet(),
                   ),
                 ),
               ),
