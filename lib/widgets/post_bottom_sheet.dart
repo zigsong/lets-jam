@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/screens/post_screen.dart';
 
 class PostBottomSheet extends StatelessWidget {
-  const PostBottomSheet({super.key});
+  final VoidCallback onClose;
+  const PostBottomSheet({super.key, required this.onClose});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: const Column(
+      child: Column(
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
             child: Text('어떤 글을 써볼까요?'),
           ),
           Column(
             children: [
               PostBottomSheetSelect(
+                postType: PostTypeEnum.findSession,
+                onClose: onClose,
                 title: '세션 구하기',
                 desc:
                     '세션을 구하기 위해 우리 밴드를 소개해요.\n글은 밴드를 찾고 있는 세션들이 볼 수 있도록 ‘밴드찾기’ 게시판에 올라가요.',
               ),
               PostBottomSheetSelect(
+                postType: PostTypeEnum.findBand,
+                onClose: onClose,
                 title: '밴드 구하기',
                 desc:
                     '밴드에 들어가기 위해 저(세션)를 소개해요.\n글은 세션을 찾고 있는 밴드들이 볼수 있도록 ‘세션찾기’ 게시판에 올라가요.',
@@ -34,16 +40,29 @@ class PostBottomSheet extends StatelessWidget {
 }
 
 class PostBottomSheetSelect extends StatelessWidget {
+  final PostTypeEnum postType;
+  final VoidCallback onClose;
   final String title;
   final String desc;
-  const PostBottomSheetSelect(
-      {super.key, required this.title, required this.desc});
+
+  const PostBottomSheetSelect({
+    super.key,
+    required this.postType,
+    required this.onClose,
+    required this.title,
+    required this.desc,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // 글쓰기 페이지
+        onClose();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PostScreen(postType: postType),
+          ),
+        );
       },
       child: Container(
         decoration: const BoxDecoration(

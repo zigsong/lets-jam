@@ -78,10 +78,6 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
-  void _onAddButtonTapped() {
-    print('포스팅 추가');
-  }
-
   void _toggleBottomSheet() {
     if (_isBottomSheetOpen) {
       _controller!.reverse();
@@ -135,7 +131,12 @@ class _HomeScreenState extends State<HomeScreen>
                         topRight: Radius.circular(20),
                       ),
                     ),
-                    child: const PostBottomSheet(),
+                    child: PostBottomSheet(onClose: () {
+                      _controller!.reverse();
+                      setState(() {
+                        _isBottomSheetOpen = !_isBottomSheetOpen;
+                      });
+                    }),
                   ),
                 ),
               ),
