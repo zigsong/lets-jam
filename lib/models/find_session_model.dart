@@ -1,3 +1,4 @@
+import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 
@@ -6,9 +7,13 @@ class FindSessionModel {
   String title;
   List<LevelEnum> levels;
   List<SessionEnum> sessions;
+  List<AgeEnum> ages;
+  List<String> regions;
 
   FindSessionModel.init()
       : title = '',
         levels = [],
-        sessions = [];
+        sessions = [],
+        ages = [],
+        regions = [];
 }
