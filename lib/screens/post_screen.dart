@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lets_jam/models/find_session_model.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
+import 'package:lets_jam/widgets/session_selector.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 
@@ -57,6 +58,23 @@ class _PostScreenState extends State<PostScreen> {
                       _findSessionData.levels.remove(level);
                     } else {
                       _findSessionData.levels.add(level);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomForm(
+                label: '세션',
+                subTitle: '밴드가 구하는 세션을 모두 선택해주세요.',
+                content: SessionSelector(
+                  selectedSessions: _findSessionData.sessions,
+                  onChange: (session) {
+                    if (_findSessionData.sessions.contains(session)) {
+                      _findSessionData.sessions.remove(session);
+                    } else {
+                      _findSessionData.sessions.add(session);
                     }
                   },
                 ),

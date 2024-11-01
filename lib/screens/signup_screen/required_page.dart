@@ -6,6 +6,8 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
+import 'package:lets_jam/widgets/custom_form.dart';
+import 'package:lets_jam/widgets/session_selector.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -148,8 +150,8 @@ class _RequiredPageState extends State<RequiredPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SessionSelector(
-                        label: '세션', subtext: '다룰 수 있는 세션을 모두 선택해주세요!'),
+                    const CustomForm(
+                        label: '세션', subTitle: '다룰 수 있는 세션을 모두 선택해주세요!'),
                     if (valiators[SignupRequiredEnum.sessions] == false)
                       const Text(
                         '세션을 선택해주세요',
@@ -159,8 +161,8 @@ class _RequiredPageState extends State<RequiredPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
-                  child: SessionCheckbox(
-                    selectedList: widget.signupData.sessions,
+                  child: SessionSelector(
+                    selectedSessions: widget.signupData.sessions,
                     onChange: (session) {
                       setState(() {
                         if (widget.signupData.sessions.contains(session)) {
@@ -386,36 +388,6 @@ class _SignupDropdownState<T> extends State<SignupDropdown<T>> {
   }
 }
 
-class SessionSelector extends StatelessWidget {
-  const SessionSelector({super.key, required this.label, this.subtext});
-
-  final String label;
-  final String? subtext;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            if (subtext != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(subtext!, style: const TextStyle(fontSize: 12)),
-              )
-          ],
-        )),
-      ],
-    );
-  }
-}
-
 class ProfileImagePicker extends StatefulWidget {
   final Function(XFile file) onSelect;
   final XFile? profileImage;
@@ -484,55 +456,6 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
           getImage(ImageSource.gallery);
         },
       ),
-    );
-  }
-}
-
-class SessionCheckbox extends StatefulWidget {
-  final List<SessionEnum> selectedList;
-  final Function(SessionEnum session) onChange;
-
-  const SessionCheckbox(
-      {super.key, required this.selectedList, required this.onChange});
-
-  @override
-  State<SessionCheckbox> createState() => _SessionCheckboxState();
-}
-
-class _SessionCheckboxState extends State<SessionCheckbox> {
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-          children: SessionEnum.values
-              .map((session) => Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: GestureDetector(
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: const Color(0xffBFFFAF),
-                          borderRadius: BorderRadius.circular(12),
-                          border: widget.selectedList.contains(session)
-                              ? Border.all(
-                                  color: const Color(0xffFF60F9),
-                                  width: 3,
-                                )
-                              : null),
-                      child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: Text(sessionMap[session]!)),
-                    ),
-                    onTap: () {
-                      setState(() {
-                        widget.onChange(session);
-                      });
-                    },
-                  )))
-              .toList()),
     );
   }
 }
