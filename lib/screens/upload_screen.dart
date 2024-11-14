@@ -253,9 +253,10 @@ class _RegionSelectorState extends State<RegionSelector> {
         ),
         Container(
           height: 192,
+          /** NOTE: borderRadius를 넘는 이슈 때문에 임시로 padding을 사용 */
+          padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-              border: const Border(
-                  top: BorderSide(width: 2, color: Color(0xffAED3FF))),
+              border: Border.all(width: 2, color: const Color(0xffAED3FF)),
               borderRadius: BorderRadius.circular(12)),
           child: SingleChildScrollView(
             child: Column(
@@ -263,9 +264,9 @@ class _RegionSelectorState extends State<RegionSelector> {
                   .asMap()
                   .entries
                   .map((entry) => Material(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.circular(12),
+                        // ),
                         child: InkWell(
                           splashColor: const Color(0xffAED3FF),
                           highlightColor: const Color(0xffAED3FF),
@@ -274,14 +275,6 @@ class _RegionSelectorState extends State<RegionSelector> {
                                   horizontal: 16, vertical: 8),
                               width: double.infinity,
                               height: 48,
-                              decoration: BoxDecoration(
-                                border: entry.key > 0
-                                    ? const Border(
-                                        top: BorderSide(
-                                            width: 2, color: Color(0xffAED3FF)),
-                                      )
-                                    : null,
-                              ),
                               child: Text(entry.value)),
                           onTap: () {
                             setState(() {
