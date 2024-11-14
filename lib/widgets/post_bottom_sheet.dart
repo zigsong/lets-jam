@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_jam/screens/post_screen.dart';
+import 'package:lets_jam/screens/upload_screen.dart';
 
 class PostBottomSheet extends StatelessWidget {
   final VoidCallback onClose;
@@ -60,7 +60,7 @@ class PostBottomSheetSelect extends StatelessWidget {
         onClose();
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => PostScreen(postType: postType),
+            builder: (context) => UploadScreen(postType: postType),
           ),
         );
       },

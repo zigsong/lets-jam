@@ -14,16 +14,15 @@ Map<PostTypeEnum, String> postTypeTitle = {
   PostTypeEnum.findSession: '세션',
 };
 
-/// TODO: 이름 바꾸기 - UploadScreen
-class PostScreen extends StatefulWidget {
+class UploadScreen extends StatefulWidget {
   final PostTypeEnum postType;
-  const PostScreen({super.key, required this.postType});
+  const UploadScreen({super.key, required this.postType});
 
   @override
-  State<PostScreen> createState() => _PostScreenState();
+  State<UploadScreen> createState() => _UploadScreenState();
 }
 
-class _PostScreenState extends State<PostScreen> {
+class _UploadScreenState extends State<UploadScreen> {
   final FindSessionModel _findSessionData = FindSessionModel.init();
 
   @override
