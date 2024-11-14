@@ -111,6 +111,29 @@ class _UploadScreenState extends State<UploadScreen> {
                   },
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomForm(
+                label: '연락처',
+                subTitle: '카톡아이디 또는 오픈카톡프로필 링크',
+                content: TextInput(onChange: (value) {
+                  print('연락처: $value');
+                }),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomForm(
+                label: '자세한 글',
+                content: TextInput(
+                  onChange: (value) {
+                    print('자세한 글: $value');
+                  },
+                  keyboardType: TextInputType.multiline,
+                  height: 96,
+                ),
+              ),
             ],
           ),
         ),

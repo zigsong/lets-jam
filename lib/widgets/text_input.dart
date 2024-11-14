@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class TextInput extends StatelessWidget {
   const TextInput(
       {super.key,
-      required this.label,
       required this.onChange,
+      this.label,
       this.placeholder,
       this.validator,
       this.keyboardType,
       this.height});
 
-  final String label;
+  final String? label;
   final String? placeholder;
   final void Function(String?) onChange;
   final String? Function(String?)? validator;
@@ -21,13 +21,16 @@ class TextInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned(
-            child: Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        )),
+        if (label != null)
+          Positioned(
+              child: Text(
+            label!,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          )),
         Padding(
-          padding: const EdgeInsets.only(top: 24),
+          padding: label != null
+              ? const EdgeInsets.only(top: 24)
+              : const EdgeInsets.all(0),
           child: SizedBox(
             height: height ?? 44,
             child: TextFormField(
