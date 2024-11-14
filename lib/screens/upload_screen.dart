@@ -3,6 +3,7 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/find_session_model.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
+import 'package:lets_jam/widgets/multiple_image_picker.dart';
 import 'package:lets_jam/widgets/session_selector.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/text_input.dart';
@@ -134,6 +135,25 @@ class _UploadScreenState extends State<UploadScreen> {
                   height: 96,
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomForm(
+                label: '사진',
+                subTitle: '밴드를 소개할 수 있는 사진을 올려주세요!(최대 5장)',
+                content: MultipleImagePicker(
+                  onSelect: (file) {
+                    setState(() {
+                      if (_findSessionData.images.contains(file)) {
+                        _findSessionData.images.remove(file);
+                      } else {
+                        _findSessionData.images.add(file);
+                      }
+                    });
+                  },
+                  images: _findSessionData.images,
+                ),
+              )
             ],
           ),
         ),
@@ -287,9 +307,6 @@ class _RegionSelectorState extends State<RegionSelector> {
                   .asMap()
                   .entries
                   .map((entry) => Material(
-                        // shape: RoundedRectangleBorder(
-                        //   borderRadius: BorderRadius.circular(12),
-                        // ),
                         child: InkWell(
                           splashColor: const Color(0xffAED3FF),
                           highlightColor: const Color(0xffAED3FF),

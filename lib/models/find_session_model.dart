@@ -1,3 +1,4 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
@@ -9,11 +10,13 @@ class FindSessionModel {
   List<SessionEnum> sessions;
   List<AgeEnum> ages;
   List<String> regions;
+  List<XFile> images;
 
   FindSessionModel.init()
       : title = '',
         levels = [],
         sessions = [],
         ages = [],
-        regions = [];
+        regions = [],
+        images = [];
 }
