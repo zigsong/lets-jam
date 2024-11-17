@@ -62,9 +62,9 @@ class PostModel {
 
   static PostTypeEnum _postTypeFromString(String postType) {
     switch (postType) {
-      case 'find_band':
+      case 'findBand':
         return PostTypeEnum.findBand;
-      case 'find_session':
+      case 'findSession':
         return PostTypeEnum.findSession;
       default:
         throw Exception('Invalid postType value: $postType');
