@@ -18,8 +18,9 @@ class Tag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: size == TagSizeEnum.small ? 28 : 32,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      height: size == TagSizeEnum.small ? 24 : 32,
+      padding:
+          EdgeInsets.symmetric(horizontal: size == TagSizeEnum.small ? 6 : 12),
       decoration: BoxDecoration(
           color: bgColor ?? const Color(0xffffb4b4),
           borderRadius: BorderRadius.circular(25)),
