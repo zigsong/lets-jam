@@ -10,6 +10,7 @@ import 'package:lets_jam/widgets/custom_dropdown.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:lets_jam/widgets/session_selector.dart';
 import 'package:lets_jam/widgets/text_input.dart';
+import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RequiredPage extends StatefulWidget {
@@ -212,26 +213,8 @@ class _RequiredPageState extends State<RequiredPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _submit,
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: const Color(0xffBFFFAF),
-                      foregroundColor: const Color(0xff1c1c1c),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'JAM 시작하기',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
+                const WideButton(
+                  text: 'JAM 시작하기',
                 ),
               ],
             ),

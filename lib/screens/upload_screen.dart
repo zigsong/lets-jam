@@ -7,6 +7,7 @@ import 'package:lets_jam/widgets/multiple_image_picker.dart';
 import 'package:lets_jam/widgets/session_selector.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/text_input.dart';
+import 'package:lets_jam/widgets/wide_button.dart';
 
 enum PostTypeEnum { findBand, findSession }
 
@@ -153,7 +154,13 @@ class _UploadScreenState extends State<UploadScreen> {
                   },
                   images: _findSessionData.images,
                 ),
-              )
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const WideButton(
+                text: '게시하기',
+              ),
             ],
           ),
         ),
