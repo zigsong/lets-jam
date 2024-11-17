@@ -213,8 +213,9 @@ class _RequiredPageState extends State<RequiredPage> {
                 const SizedBox(
                   height: 30,
                 ),
-                const WideButton(
+                WideButton(
                   text: 'JAM 시작하기',
+                  onPressed: _submit,
                 ),
               ],
             ),

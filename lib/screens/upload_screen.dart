@@ -158,8 +158,9 @@ class _UploadScreenState extends State<UploadScreen> {
               const SizedBox(
                 height: 20,
               ),
-              const WideButton(
+              WideButton(
                 text: '게시하기',
+                onPressed: () {},
               ),
             ],
           ),
