@@ -27,17 +27,20 @@ class _SessionSelectorState extends State<SessionSelector> {
                       height: 80,
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                          color: const Color(0xffBFFFAF),
-                          borderRadius: BorderRadius.circular(12),
-                          border: widget.selectedSessions.contains(session)
-                              ? Border.all(
-                                  color: const Color(0xffFF60F9),
-                                  width: 3,
-                                )
-                              : null),
+                        color: widget.selectedSessions.contains(session)
+                            ? const Color(0xffBFFFAF)
+                            : const Color(0xffBFBFBF),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Align(
                           alignment: Alignment.bottomRight,
-                          child: Text(sessionMap[session]!)),
+                          child: Text(
+                            sessionMap[session]!,
+                            style: TextStyle(
+                                color: widget.selectedSessions.contains(session)
+                                    ? Colors.black
+                                    : Colors.white),
+                          )),
                     ),
                     onTap: () {
                       setState(() {
