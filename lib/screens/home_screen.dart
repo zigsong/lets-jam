@@ -157,11 +157,15 @@ class _HomeScreenState extends State<HomeScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   BottomAppBarItem(
-                      icon: SvgPicture.asset('assets/icons/home.svg'),
+                      icon: SvgPicture.asset(_selectedIndex == 0
+                          ? 'assets/icons/home_filled.svg'
+                          : 'assets/icons/home_outline.svg'),
                       label: '홈',
                       onPressed: _onHomeButtonTapped),
                   BottomAppBarItem(
-                      icon: SvgPicture.asset('assets/icons/like.svg'),
+                      icon: SvgPicture.asset(_selectedIndex == 1
+                          ? 'assets/icons/like_filled.svg'
+                          : 'assets/icons/like_outline.svg'),
                       label: '좋아요',
                       onPressed: _onLikeButtonTapped),
                   BottomAppBarItem(
@@ -173,7 +177,9 @@ class _HomeScreenState extends State<HomeScreen>
                       label: '밴드',
                       onPressed: _onBandButtonTapped),
                   BottomAppBarItem(
-                      icon: SvgPicture.asset('assets/icons/profile.svg'),
+                      icon: SvgPicture.asset(_selectedIndex == 3
+                          ? 'assets/icons/profile_filled.svg'
+                          : 'assets/icons/profile_outline.svg'),
                       label: '프로필',
                       onPressed: _onProfileButtonTapped),
                 ],
