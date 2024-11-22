@@ -14,8 +14,6 @@ class PostThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('여긴데: ${post.ages}');
-
     return Container(
       height: 106,
       decoration: BoxDecoration(
