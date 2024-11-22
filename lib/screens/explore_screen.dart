@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/models/post_model.dart';
+import 'package:lets_jam/screens/post_detail_screen.dart';
 import 'package:lets_jam/widgets/page_toggler.dart';
 import 'package:lets_jam/widgets/post_thumbnail.dart';
 import 'package:lets_jam/widgets/tag.dart';
@@ -113,7 +114,15 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             ),
                         itemBuilder: (context, index) {
                           final post = posts[index];
-                          return PostThumbnail(post: PostModel.fromJson(post));
+                          return GestureDetector(
+                            child:
+                                PostThumbnail(post: PostModel.fromJson(post)),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PostDetailScreen(
+                                      post: PostModel.fromJson(post))));
+                            },
+                          );
                         }),
                   );
                 },
