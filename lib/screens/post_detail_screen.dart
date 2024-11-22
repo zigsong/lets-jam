@@ -43,7 +43,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                PostDetailFilters(post: widget.post)
+                PostDetailFilters(post: widget.post),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(widget.post.description),
+                )
               ],
             ),
           ),
