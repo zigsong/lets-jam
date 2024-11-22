@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/models/age_enum.dart';
+import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
+import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/widgets/tag.dart';
 
 class PostDetailScreen extends StatefulWidget {
   const PostDetailScreen({super.key, required this.post});
@@ -35,10 +39,106 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                const PostDetailAuthorInfo()
+                const PostDetailAuthorInfo(),
+                const SizedBox(
+                  height: 20,
+                ),
+                PostDetailFilters(post: widget.post)
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class PostDetailFilters extends StatelessWidget {
+  const PostDetailFilters({super.key, required this.post});
+
+  final PostModel post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      decoration: BoxDecoration(
+          color: const Color(0xffF3F3F3),
+          borderRadius: BorderRadius.circular(10)),
+      child: Column(
+        children: [
+          _filterDataList(
+              '레벨', post.levels.map((level) => levelMap[level]!).toList()),
+          _filterDataList('세션',
+              post.sessions.map((session) => sessionMap[session]!).toList()),
+          _filterDataList(
+              '연령대', post.ages?.map((age) => ageMap[age]!).toList()),
+          _filterDataList('지역', post.regions),
+          Row(
+            children: [
+              const SizedBox(
+                width: 48,
+                child: Text(
+                  '연락처',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ),
+              GestureDetector(
+                child: Row(
+                  children: [
+                    Text(
+                      post.contact,
+                      style:
+                          const TextStyle(decoration: TextDecoration.underline),
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    const Icon(
+                      Icons.content_copy,
+                      size: 14,
+                      color: Colors.grey,
+                    )
+                  ],
+                ),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("연락처가 복사되었습니다")),
+                  );
+                },
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _filterDataList(String label, List<String>? tags) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 48,
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ),
+          if (tags != null)
+            Row(
+                children: tags
+                    .map(
+                      (tag) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Tag(
+                          text: tag,
+                          size: TagSizeEnum.small,
+                        ),
+                      ),
+                    )
+                    .toList())
         ],
       ),
     );
