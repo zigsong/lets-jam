@@ -52,7 +52,6 @@ class _UploadScreenState extends State<UploadScreen> {
       final String userId = user?['id'];
 
       await Supabase.instance.client.from('posts').insert({
-        /** TODO: user mapping 방법 확인 */
         'user_id': userId,
         'title': _findSessionUploadData.title,
         'levels': _findSessionUploadData.levels.map((el) => el.name).toList(),

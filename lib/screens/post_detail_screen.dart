@@ -1,9 +1,13 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/models/user_model.dart';
 import 'package:lets_jam/widgets/tag.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PostDetailScreen extends StatefulWidget {
   const PostDetailScreen({super.key, required this.post});
@@ -15,6 +19,32 @@ class PostDetailScreen extends StatefulWidget {
 }
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
+  UserModel? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserById();
+  }
+
+  Future<void> _fetchUserById() async {
+    final supabase = Supabase.instance.client;
+
+    try {
+      final response = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', widget.post.userId)
+          .single();
+
+      setState(() {
+        _user = UserModel.fromJson(response);
+      });
+    } catch (error) {
+      print('포스팅 유저 가져오기 에러 : $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +69,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                const PostDetailAuthorInfo(),
+                if (_user != null) PostDetailAuthorInfo(user: _user!),
                 const SizedBox(
                   height: 20,
                 ),
@@ -153,9 +183,9 @@ class PostDetailFilters extends StatelessWidget {
 }
 
 class PostDetailAuthorInfo extends StatelessWidget {
-  const PostDetailAuthorInfo({
-    super.key,
-  });
+  const PostDetailAuthorInfo({super.key, required this.user});
+
+  final UserModel user;
 
   @override
   Widget build(BuildContext context) {
@@ -180,17 +210,20 @@ class PostDetailAuthorInfo extends StatelessWidget {
                 const SizedBox(
                   width: 12,
                 ),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '김소연',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                      user.nickname,
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w600),
                     ),
                     Text(
-                      '기타/ASDF',
-                      style: TextStyle(fontSize: 14, color: Color(0xff838589)),
+                      user.sessions
+                          .map((session) => sessionMap[session])
+                          .join(','),
+                      style: const TextStyle(
+                          fontSize: 14, color: Color(0xff838589)),
                     )
                   ],
                 ),
