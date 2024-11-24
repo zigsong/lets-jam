@@ -48,40 +48,57 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          Container(
-            width: double.infinity,
-            height: 248,
-            decoration: const BoxDecoration(color: Colors.grey),
-            child: const Center(child: Text('이미지')),
+          Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 248,
+                decoration: const BoxDecoration(color: Colors.grey),
+                child: const Center(child: Text('이미지')),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.post.title,
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    if (_user != null) PostDetailAuthorInfo(user: _user!),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    PostDetailFilters(post: widget.post),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text(widget.post.description),
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.post.title,
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                if (_user != null) PostDetailAuthorInfo(user: _user!),
-                const SizedBox(
-                  height: 20,
-                ),
-                PostDetailFilters(post: widget.post),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(widget.post.description),
-                )
-              ],
+          Positioned(
+            top: MediaQuery.of(context).padding.top,
+            left: 8,
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // 뒤로 가기
+              },
             ),
           ),
         ],
