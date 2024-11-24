@@ -1,11 +1,10 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
+import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -52,12 +51,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         children: [
           Column(
             children: [
-              Container(
-                width: double.infinity,
-                height: 248,
-                decoration: const BoxDecoration(color: Colors.grey),
-                child: const Center(child: Text('이미지')),
-              ),
+              const ImageSlider(),
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -94,7 +88,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             child: IconButton(
               icon: const Icon(
                 Icons.arrow_back_ios,
-                color: Colors.white,
               ),
               onPressed: () {
                 Navigator.of(context).pop(); // 뒤로 가기
