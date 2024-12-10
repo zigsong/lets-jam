@@ -17,7 +17,6 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  final _posts = Supabase.instance.client.from('posts').select('*');
   final PageController _pageViewController = PageController();
 
   int _selectedPage = 0;
@@ -32,6 +31,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
       duration: const Duration(milliseconds: 100),
       curve: Curves.easeInOut,
     );
+  }
+
+  Future<List<Map<String, dynamic>>> fetchPosts() async {
+    final posts = await Supabase.instance.client.from('posts').select('*');
+
+    return posts;
   }
 
   @override
@@ -93,27 +98,40 @@ class _ExploreScreenState extends State<ExploreScreen> {
           color: Color(0xffD9D9D9),
         ),
         Expanded(
-          child: PageView(
-            controller: _pageViewController,
-            physics: const NeverScrollableScrollPhysics(), // 기본 슬라이드 동작을 막음
-            children: [
-              FutureBuilder(
-                future: _posts,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final posts = snapshot.data!;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    child: ListView.separated(
-                        itemCount: posts.length,
+          child: FutureBuilder(
+            future: fetchPosts(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final posts = snapshot.data!;
+              final findBandPosts = posts
+                  .where((post) =>
+                      PostModel.fromJson(post).postType ==
+                      PostTypeEnum.findBand)
+                  .toList();
+              final findSessionPosts = posts
+                  .where((post) =>
+                      PostModel.fromJson(post).postType ==
+                      PostTypeEnum.findSession)
+                  .toList();
+
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: PageView(
+                  controller: _pageViewController,
+                  physics:
+                      const NeverScrollableScrollPhysics(), // 기본 슬라이드 동작을 막음
+                  children: [
+                    ListView.separated(
+                        itemCount: findSessionPosts.length,
                         separatorBuilder: (context, index) => const SizedBox(
                               height: 8,
                             ),
                         itemBuilder: (context, index) {
-                          final post = posts[index];
+                          final post = findSessionPosts[index];
                           return GestureDetector(
                             child:
                                 PostThumbnail(post: PostModel.fromJson(post)),
@@ -124,22 +142,27 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             },
                           );
                         }),
-                  );
-                },
-              ),
-              // Padding(
-              //   padding:
-              //       const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-              //   child: ListView.separated(
-              //       itemCount: 10,
-              //       separatorBuilder: (context, index) => const SizedBox(
-              //             height: 12,
-              //           ),
-              //       itemBuilder: (context, index) {
-              //         return const PostThumbnail(title: '멤버찾기');
-              //       }),
-              // )
-            ],
+                    ListView.separated(
+                        itemCount: findBandPosts.length,
+                        separatorBuilder: (context, index) => const SizedBox(
+                              height: 8,
+                            ),
+                        itemBuilder: (context, index) {
+                          final post = findBandPosts[index];
+                          return GestureDetector(
+                            child:
+                                PostThumbnail(post: PostModel.fromJson(post)),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PostDetailScreen(
+                                      post: PostModel.fromJson(post))));
+                            },
+                          );
+                        })
+                  ],
+                ),
+              );
+            },
           ),
         )
       ],
