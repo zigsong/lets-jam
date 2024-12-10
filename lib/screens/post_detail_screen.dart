@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
@@ -6,6 +7,7 @@ import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/tag.dart';
+import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PostDetailScreen extends StatefulWidget {
@@ -99,6 +101,94 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               },
             ),
           ),
+          Positioned(
+            bottom: 40,
+            left: 24,
+            right: 24,
+            child: widget.post.postType == PostTypeEnum.findSession
+                ? Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: const Color(0xffBFFFAF),
+                            foregroundColor: const Color(0xff1c1c1c),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 56,
+                                height: 56,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xffD9D9D9),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    /** TODO: 밴드 프로필로 연결 */
+                                    '원 투 ASDF',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    'since 2022',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 1,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: const Color(0xff1c1c1c),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              SvgPicture.asset('assets/icons/mail.svg'),
+                              const Text(
+                                '문의',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : WideButton(
+                    text: '세션에게 연락하기',
+                    onPressed: () {},
+                  ),
+          )
         ],
       ),
     );
