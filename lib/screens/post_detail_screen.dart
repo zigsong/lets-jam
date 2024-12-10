@@ -67,9 +67,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     ),
                     if (_user != null) PostDetailAuthorInfo(user: _user!),
                     const SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
-                    PostDetailFilters(post: widget.post),
+                    if (widget.post.postType == PostTypeEnum.findBand)
+                      WantedSession(post: widget.post),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    PostDetailInfo(post: widget.post),
                     const SizedBox(
                       height: 20,
                     ),
@@ -100,8 +105,61 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 }
 
-class PostDetailFilters extends StatelessWidget {
-  const PostDetailFilters({super.key, required this.post});
+class WantedSession extends StatelessWidget {
+  const WantedSession({
+    super.key,
+    required this.post,
+  });
+
+  final PostModel post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        decoration: BoxDecoration(
+            color: const Color(0xff6A6A6A),
+            borderRadius: BorderRadius.circular(10)),
+        child: Row(
+          children: [
+            const Text(
+              '밴드에서',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12),
+            ),
+            const SizedBox(width: 4),
+            Row(
+              children: post.sessions
+                  .map((session) => sessionMap[session]!)
+                  .toList()
+                  .map(
+                    (tag) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Tag(
+                        text: tag,
+                        size: TagSizeEnum.small,
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(width: 4),
+            const Text(
+              '을(를) 담당하고 싶어요',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12),
+            )
+          ],
+        ));
+  }
+}
+
+class PostDetailInfo extends StatelessWidget {
+  const PostDetailInfo({super.key, required this.post});
 
   final PostModel post;
 
@@ -116,8 +174,9 @@ class PostDetailFilters extends StatelessWidget {
         children: [
           _filterDataList(
               '레벨', post.levels.map((level) => levelMap[level]!).toList()),
-          _filterDataList('세션',
-              post.sessions.map((session) => sessionMap[session]!).toList()),
+          if (post.postType == PostTypeEnum.findSession)
+            _filterDataList('세션',
+                post.sessions.map((session) => sessionMap[session]!).toList()),
           _filterDataList(
               '연령대', post.ages?.map((age) => ageMap[age]!).toList()),
           _filterDataList('지역', post.regions),
