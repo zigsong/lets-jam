@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/screens/home_screen.dart';
 import 'package:lets_jam/screens/signup_screen/signup_screen.dart';
+import 'package:lets_jam/screens/welcome_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -52,12 +53,17 @@ class LoginScreen extends StatelessWidget {
                      * 신규 가입 사용자라면 SignupScreen으로
                      */
                     if (event == AuthChangeEvent.signedIn) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => jamUser.isEmpty
-                              ? SignupScreen(user: user)
-                              : const HomeScreen(
-                                  fromIndex: 0,
-                                )));
+                      /** NOTE: mounted 아닌 상태도 있나? */
+                      if (context.mounted) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => jamUser.isEmpty
+                                    ? WelcomeScreen(user: user)
+                                    : const HomeScreen(
+                                        fromIndex: 0,
+                                      )));
+                      }
                     }
                   });
                 } on PlatformException catch (err) {
