@@ -32,7 +32,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           children: [
             const Text(
               '회원가입 완료',
-              style: TextStyle(fontSize: 14, color: Color(0xffFC5C2B)),
+              style: TextStyle(color: Color(0xffFC5C2B)),
             ),
             const SizedBox(
               height: 20,
@@ -55,16 +55,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
             const Text(
               '환영합니다!',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(
               height: 20,
             ),
             const Text(
               '프로필을 입력하고\nJAM에서 즐겁게 합주 해 볼까요?',
-              style: TextStyle(
-                fontSize: 14,
-              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(

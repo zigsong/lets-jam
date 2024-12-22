@@ -231,7 +231,6 @@ class _BottomAppBarItemState extends State<BottomAppBarItem> {
             const SizedBox(height: 4),
             Text(
               widget.label,
-              style: const TextStyle(fontSize: 12),
             ),
           ],
         ),

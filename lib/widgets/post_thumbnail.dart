@@ -48,14 +48,14 @@ class PostThumbnail extends StatelessWidget {
                                   .map((session) => sessionMap[session])
                                   .toList())),
                           const SizedBox(
-                            width: 2,
+                            width: 4,
                           ),
                           if (post.regions != null)
                             Tag(
                                 size: TagSizeEnum.small,
                                 text: formatList(post.regions!)),
                           const SizedBox(
-                            width: 2,
+                            width: 4,
                           ),
                           Tag(
                               size: TagSizeEnum.small,
@@ -63,14 +63,15 @@ class PostThumbnail extends StatelessWidget {
                                   .map((level) => levelMap[level])
                                   .toList())),
                           const SizedBox(
-                            width: 2,
+                            width: 4,
                           ),
-                          if (post.ages != null)
-                            Tag(
-                                size: TagSizeEnum.small,
-                                text: formatList(post.ages!
-                                    .map((age) => ageMap[age])
-                                    .toList())),
+                          /** MARK: 나이까지 넣으면 넘친다 ㅠㅠ */
+                          // if (post.ages != null)
+                          //   Tag(
+                          //       size: TagSizeEnum.small,
+                          //       text: formatList(post.ages!
+                          //           .map((age) => ageMap[age])
+                          //           .toList())),
                         ],
                       )),
                   const SizedBox(
@@ -78,7 +79,7 @@ class PostThumbnail extends StatelessWidget {
                   ),
                   Text(
                     getRelativeTime(post.createdAt),
-                    style: const TextStyle(fontSize: 10, color: Colors.grey),
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
               ),

@@ -73,8 +73,8 @@ class PostBottomSheetSelect extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
                 color: const Color(0xff9C9C9C),
@@ -95,8 +95,7 @@ class PostBottomSheetSelect extends StatelessWidget {
                   ),
                   Text(
                     desc,
-                    style:
-                        const TextStyle(fontSize: 12, color: Color(0xff878787)),
+                    style: const TextStyle(color: Color(0xff878787)),
                   )
                 ],
               ),

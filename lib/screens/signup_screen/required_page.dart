@@ -101,7 +101,6 @@ class _RequiredPageState extends State<RequiredPage> {
                 ),
                 const Text(
                   '회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트',
-                  style: TextStyle(fontSize: 12),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
@@ -157,7 +156,7 @@ class _RequiredPageState extends State<RequiredPage> {
                     if (valiators[SignupRequiredEnum.sessions] == false)
                       const Text(
                         '세션을 선택해주세요',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
+                        style: TextStyle(color: Colors.red),
                       )
                   ],
                 ),
@@ -375,7 +374,6 @@ class _LevelSelectorState extends State<LevelSelector> {
                         .map((level) => RadioListTile(
                               title: Text(
                                 sessionLevelText[widget.session]?[level] ?? '',
-                                style: const TextStyle(fontSize: 14),
                               ),
                               value: level,
                               groupValue: _level,

@@ -37,7 +37,6 @@ class TextInput extends StatelessWidget {
               keyboardType: keyboardType,
               minLines: keyboardType == TextInputType.multiline ? 5 : 1,
               maxLines: keyboardType == TextInputType.multiline ? null : 1,
-              style: const TextStyle(fontSize: 14),
               decoration: InputDecoration(
                   hintText: placeholder,
                   focusedBorder: OutlineInputBorder(

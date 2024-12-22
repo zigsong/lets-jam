@@ -27,6 +27,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // NOTE: 디바이스의 설정과 무관하게 폰트 사이즈를 고정시킴
+      builder: (context, child) {
+        final MediaQueryData data = MediaQuery.of(context);
+        return MediaQuery(
+          data: data.copyWith(textScaler: const TextScaler.linear(1.0)),
+          child: child!,
+        );
+      },
       theme: ThemeData(useMaterial3: true, fontFamily: 'Pretendard'),
       home: const HomeScreen(),
     );

@@ -46,7 +46,7 @@ class _MyInfoScreenState extends State<MyInfoScreen> {
                             widget.user.nickname,
                             style: textStyle.copyWith(
                                 height: 1,
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold),
                           ),
                           // Text(

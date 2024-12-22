@@ -22,7 +22,7 @@ class CustomForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
             child: Text(subTitle!,
-                style: const TextStyle(color: Color(0xff8F9098), fontSize: 10)),
+                style: const TextStyle(color: Color(0xff8F9098), fontSize: 12)),
           ),
         if (content != null) content!,
       ],

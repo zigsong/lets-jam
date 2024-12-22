@@ -147,7 +147,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                   ),
                                   Text(
                                     'since 2022',
-                                    style: TextStyle(fontSize: 12),
+                                    style: TextStyle(color: Color(0xff4E4E4E)),
                                   ),
                                 ],
                               ),
@@ -175,8 +175,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               SvgPicture.asset('assets/icons/mail.svg'),
                               const Text(
                                 '문의',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12),
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -215,9 +214,9 @@ class WantedSession extends StatelessWidget {
             const Text(
               '밴드에서',
               style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12),
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(width: 4),
             Row(
@@ -239,9 +238,9 @@ class WantedSession extends StatelessWidget {
             const Text(
               '을(를) 담당하고 싶어요',
               style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12),
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
             )
           ],
         ));
@@ -276,7 +275,7 @@ class PostDetailInfo extends StatelessWidget {
                 width: 48,
                 child: Text(
                   '연락처',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               GestureDetector(
@@ -319,7 +318,7 @@ class PostDetailInfo extends StatelessWidget {
             width: 48,
             child: Text(
               label,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           if (tags != null)
@@ -374,15 +373,13 @@ class PostDetailAuthorInfo extends StatelessWidget {
                   children: [
                     Text(
                       user.nickname,
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w600),
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                     Text(
                       user.sessions
                           .map((session) => sessionMap[session])
                           .join(','),
-                      style: const TextStyle(
-                          fontSize: 14, color: Color(0xff838589)),
+                      style: const TextStyle(color: Color(0xff838589)),
                     )
                   ],
                 ),

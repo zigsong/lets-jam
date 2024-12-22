@@ -80,7 +80,7 @@ class _UploadScreenState extends State<UploadScreen> {
       appBar: AppBar(
         title: Text(
           '${postTypeTitle[widget.postType]} 구하기',
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 18),
         ),
         backgroundColor: const Color(0xffF2F2F2),
       ),
