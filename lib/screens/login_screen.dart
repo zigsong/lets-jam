@@ -50,7 +50,7 @@ class LoginScreen extends StatelessWidget {
 
                     /** 
                      * 이미 가입된 사용자면 HomeScreen으로,
-                     * 신규 가입 사용자라면 SignupScreen으로
+                     * 신규 가입 사용자라면 WelcomeScreen으로
                      */
                     if (event == AuthChangeEvent.signedIn) {
                       /** NOTE: mounted 아닌 상태도 있나? */
@@ -60,9 +60,7 @@ class LoginScreen extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => jamUser.isEmpty
                                     ? WelcomeScreen(user: user)
-                                    : const HomeScreen(
-                                        fromIndex: 0,
-                                      )));
+                                    : WelcomeScreen(user: user)));
                       }
                     }
                   });

@@ -72,154 +72,160 @@ class _RequiredPageState extends State<RequiredPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const Text(
-            'JAM 가입하기',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Center(
-              child: ProfileImagePicker(
-            onSelect: (file) {
-              setState(() {
-                widget.signupData.profileImage = file;
-              });
-            },
-            profileImage: widget.signupData.profileImage,
-          )),
-          Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 16,
-                ),
-                const Text(
-                  '회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트',
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: TextInput(
-                    label: '닉네임',
-                    placeholder: '닉네임을 입력하세요',
-                    onChange: (value) {
-                      valiators[SignupRequiredEnum.nickname] = true;
-                      widget.signupData.nickname = value ?? '';
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '닉네임을 입력하세요';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: TextInput(
-                    label: '연락처',
-                    placeholder: '연락처를 입력하세요',
-                    onChange: (value) {
-                      widget.signupData.contact = value ?? '';
-                    },
-                    keyboardType: TextInputType.phone,
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                CustomDropdown<AgeEnum>(
-                  label: '나이',
-                  placeholder: '나이를 선택해 주세요',
-                  currentValue: widget.signupData.age,
-                  options: AgeEnum.values,
-                  optionValues: ageMap,
-                  onSelect: (AgeEnum age) {
-                    setState(() {
-                      widget.signupData.age = age;
-                    });
-                  },
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          '프로필 작성하기',
+          style: TextStyle(fontSize: 18),
+        ),
+        backgroundColor: const Color(0xffF2F2F2),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 20),
+          child: Column(
+            children: [
+              Center(
+                  child: ProfileImagePicker(
+                onSelect: (file) {
+                  setState(() {
+                    widget.signupData.profileImage = file;
+                  });
+                },
+                profileImage: widget.signupData.profileImage,
+              )),
+              Form(
+                key: _formKey,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CustomForm(
-                        label: '세션', subTitle: '다룰 수 있는 세션을 모두 선택해주세요!'),
-                    if (valiators[SignupRequiredEnum.sessions] == false)
-                      const Text(
-                        '세션을 선택해주세요',
-                        style: TextStyle(color: Colors.red),
-                      )
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    const Text(
+                      '회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트 회원가입에 관한 서브 텍스트',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: TextInput(
+                        label: '닉네임',
+                        placeholder: '닉네임을 입력하세요',
+                        onChange: (value) {
+                          valiators[SignupRequiredEnum.nickname] = true;
+                          widget.signupData.nickname = value ?? '';
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '닉네임을 입력하세요';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: TextInput(
+                        label: '연락처',
+                        placeholder: '연락처를 입력하세요',
+                        onChange: (value) {
+                          widget.signupData.contact = value ?? '';
+                        },
+                        keyboardType: TextInputType.phone,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    CustomDropdown<AgeEnum>(
+                      label: '나이',
+                      placeholder: '나이를 선택해 주세요',
+                      currentValue: widget.signupData.age,
+                      options: AgeEnum.values,
+                      optionValues: ageMap,
+                      onSelect: (AgeEnum age) {
+                        setState(() {
+                          widget.signupData.age = age;
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomForm(
+                            label: '세션', subTitle: '다룰 수 있는 세션을 모두 선택해주세요!'),
+                        if (valiators[SignupRequiredEnum.sessions] == false)
+                          const Text(
+                            '세션을 선택해주세요',
+                            style: TextStyle(color: Colors.red),
+                          )
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: SessionSelector(
+                        selectedSessions: widget.signupData.sessions,
+                        onChange: (session) {
+                          setState(() {
+                            if (widget.signupData.sessions.contains(session)) {
+                              widget.signupData.sessions.remove(session);
+                              valiators[SignupRequiredEnum.sessions] = true;
+                            } else {
+                              widget.signupData.sessions.add(session);
+                              valiators[SignupRequiredEnum.sessions] = true;
+                            }
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    ListView(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: widget.signupData.sessions.map((session) {
+                        return Column(
+                          children: [
+                            LevelSelector(
+                              session: session,
+                              onSelect: (level) {
+                                setState(() {
+                                  widget.updateSessionLevel(session, level);
+                                });
+                              },
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                    TextInput(
+                      label: '자기소개',
+                      onChange: (value) {
+                        widget.signupData.bio = value;
+                      },
+                      keyboardType: TextInputType.multiline,
+                      height: 96,
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    WideButton(
+                      text: 'JAM 시작하기',
+                      onPressed: _submit,
+                    ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: SessionSelector(
-                    selectedSessions: widget.signupData.sessions,
-                    onChange: (session) {
-                      setState(() {
-                        if (widget.signupData.sessions.contains(session)) {
-                          widget.signupData.sessions.remove(session);
-                          valiators[SignupRequiredEnum.sessions] = true;
-                        } else {
-                          widget.signupData.sessions.add(session);
-                          valiators[SignupRequiredEnum.sessions] = true;
-                        }
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                ListView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: widget.signupData.sessions.map((session) {
-                    return Column(
-                      children: [
-                        LevelSelector(
-                          session: session,
-                          onSelect: (level) {
-                            setState(() {
-                              widget.updateSessionLevel(session, level);
-                            });
-                          },
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                ),
-                TextInput(
-                  label: '자기소개',
-                  onChange: (value) {
-                    widget.signupData.bio = value;
-                  },
-                  keyboardType: TextInputType.multiline,
-                  height: 96,
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                WideButton(
-                  text: 'JAM 시작하기',
-                  onPressed: _submit,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -248,51 +254,48 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: GestureDetector(
-        child: Align(
-          alignment: Alignment.center,
-          child: Stack(
-            children: [
-              Container(
-                width: 138,
-                height: 138,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                clipBehavior: Clip.antiAlias,
-                child: widget.profileImage != null
-                    ? Image.file(
-                        File(widget.profileImage!.path),
-                        fit: BoxFit.cover,
-                      )
-                    : Image.asset('assets/images/avatar.png'),
-              ),
-              Positioned(
-                right: 0,
-                top: 20,
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                      color: const Color(0xffBFFFAF),
-                      borderRadius: BorderRadius.circular(100)),
-                  child: Center(
-                    child: Image.asset(
-                      'assets/icons/edit.png',
-                      width: 10,
-                      height: 10,
-                    ),
+    return GestureDetector(
+      child: Align(
+        alignment: Alignment.center,
+        child: Stack(
+          children: [
+            Container(
+              width: 138,
+              height: 138,
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(100)),
+              clipBehavior: Clip.antiAlias,
+              child: widget.profileImage != null
+                  ? Image.file(
+                      File(widget.profileImage!.path),
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset('assets/images/avatar.png'),
+            ),
+            Positioned(
+              right: 0,
+              top: 20,
+              child: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                    color: const Color(0xffBFFFAF),
+                    borderRadius: BorderRadius.circular(100)),
+                child: Center(
+                  child: Image.asset(
+                    'assets/icons/edit.png',
+                    width: 10,
+                    height: 10,
                   ),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
-        onTap: () {
-          getImage(ImageSource.gallery);
-        },
       ),
+      onTap: () {
+        getImage(ImageSource.gallery);
+      },
     );
   }
 }

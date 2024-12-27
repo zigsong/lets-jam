@@ -3,10 +3,8 @@ import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
 import 'package:lets_jam/screens/home_screen.dart';
-import 'package:lets_jam/screens/signup_screen/optional_page.dart';
 import 'package:lets_jam/screens/signup_screen/required_page.dart';
 import 'package:lets_jam/utils/helper.dart';
-import 'package:lets_jam/widgets/progress_bar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -81,24 +79,19 @@ class _SignupScreenState extends State<SignupScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 36),
-          child: Column(
-            children: [
-              Expanded(
-                child: RequiredPage(
-                    user: widget.user,
-                    signupData: _signupData,
-                    updateSessionLevel: _updateSessionLevel,
-                    onChangePage: () {
-                      _updateCurrentPageIndex(1);
-                    },
-                    onSubmit: _submit),
-              ),
-            ],
+      body: Column(
+        children: [
+          Expanded(
+            child: RequiredPage(
+                user: widget.user,
+                signupData: _signupData,
+                updateSessionLevel: _updateSessionLevel,
+                onChangePage: () {
+                  _updateCurrentPageIndex(1);
+                },
+                onSubmit: _submit),
           ),
-        ),
+        ],
       ),
     );
   }
