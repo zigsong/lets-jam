@@ -17,9 +17,7 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print('welcome screen mounted');
   }
 
   @override
@@ -83,11 +81,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               child: const Text(
                 "다음에 작성할게요",
                 style: TextStyle(
-                  color: Color(0xffA0A0A0),
-                  decoration: TextDecoration.underline,
-                  decorationColor: Color(0xffA0A0A0), // 밑줄 색상
-                  // decorationThickness: 1, // 밑줄 두께
-                ),
+                    color: Color(0xffA0A0A0),
+                    decoration: TextDecoration.underline,
+                    decorationColor: Color(0xffA0A0A0)),
               ),
             ),
           ],
