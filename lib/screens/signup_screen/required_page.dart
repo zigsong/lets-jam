@@ -3,8 +3,8 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
+import 'package:lets_jam/screens/signup_screen/birth_year_picker.dart';
 import 'package:lets_jam/screens/signup_screen/profile_image_picker.dart';
-import 'package:lets_jam/widgets/custom_dropdown.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:lets_jam/widgets/session_selector.dart';
 import 'package:lets_jam/widgets/text_input.dart';
@@ -134,18 +134,12 @@ class _RequiredPageState extends State<RequiredPage> {
                     const SizedBox(
                       height: 16,
                     ),
-                    CustomDropdown<AgeEnum>(
-                      label: '나이',
-                      placeholder: '나이를 선택해 주세요',
-                      currentValue: widget.signupData.age,
-                      options: AgeEnum.values,
-                      optionValues: ageMap,
-                      onSelect: (AgeEnum age) {
-                        setState(() {
-                          widget.signupData.age = age;
-                        });
-                      },
-                    ),
+                    BirthYearPicker(onSelect: (DateTime birthDate) {
+                      setState(() {
+                        // @zigsong TODO: birthDate -> age 변환 로직
+                        // widget.signupData.age = age;
+                      });
+                    }),
                     const SizedBox(
                       height: 16,
                     ),
