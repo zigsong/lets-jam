@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class PageToggler extends StatelessWidget {
   final VoidCallback onTap;
@@ -17,20 +18,19 @@ class PageToggler extends StatelessWidget {
           children: [
             Container(
               height: 32,
-              width: 160,
+              width: 136,
               decoration: BoxDecoration(
-                  color: const Color(0xffefeff0),
-                  borderRadius: BorderRadius.circular(25)),
+                  color: Colors.white, borderRadius: BorderRadius.circular(25)),
             ),
             AnimatedPositioned(
               duration: const Duration(milliseconds: 100),
-              left: selectedIndex == 0 ? 0 : 76,
+              left: selectedIndex == 0 ? 0 : 64,
               child: Container(
                 alignment: Alignment.center,
                 height: 32,
-                width: 84,
+                width: 72,
                 decoration: BoxDecoration(
-                  color: const Color(0xffffb4b4),
+                  color: ColorSeed.boldOrangeRegular.color,
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
@@ -38,21 +38,23 @@ class PageToggler extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '밴드찾기',
+                  '밴드',
                   style: TextStyle(
                       color: selectedIndex == 0
                           ? Colors.white
-                          : const Color(0xffafb1b6)),
+                          : ColorSeed.boldOrangeStrong.color,
+                      fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(
-                  width: 28,
+                  width: 44,
                 ),
                 Text(
-                  '멤버찾기',
+                  '멤버',
                   style: TextStyle(
                       color: selectedIndex == 1
                           ? Colors.white
-                          : const Color(0xffafb1b6)),
+                          : ColorSeed.boldOrangeStrong.color,
+                      fontWeight: FontWeight.w600),
                 ),
               ],
             )

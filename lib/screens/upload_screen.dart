@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/models/level_enum.dart';
-import 'package:lets_jam/screens/home_screen.dart';
+import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/utils/auth.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:lets_jam/widgets/multiple_image_picker.dart';
@@ -42,7 +42,7 @@ class _UploadScreenState extends State<UploadScreen> {
       _savePostToSupabase();
 
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomeScreen()));
+          MaterialPageRoute(builder: (context) => const DefaultNavigation()));
     }
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lets_jam/screens/home_screen.dart';
+import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/signup_screen/signup_screen.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -74,7 +74,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const HomeScreen(
+                    builder: (context) => const DefaultNavigation(
                           fromIndex: 0,
                         )));
               },

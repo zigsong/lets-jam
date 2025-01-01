@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lets_jam/screens/home_screen.dart';
+import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/signup_screen/signup_screen.dart';
 import 'package:lets_jam/screens/welcome_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -49,7 +49,7 @@ class LoginScreen extends StatelessWidget {
                         .eq('email', user.email!);
 
                     /** 
-                     * 이미 가입된 사용자면 HomeScreen으로,
+                     * 이미 가입된 사용자면 DefaultNavigation으로,
                      * 신규 가입 사용자라면 WelcomeScreen으로
                      */
                     if (event == AuthChangeEvent.signedIn) {

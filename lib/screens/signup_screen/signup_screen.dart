@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
-import 'package:lets_jam/screens/home_screen.dart';
+import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/signup_screen/required_page.dart';
 import 'package:lets_jam/utils/helper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -48,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen>
     _saveUserToSupabase();
 
     Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const HomeScreen(
+        builder: (context) => const DefaultNavigation(
               fromIndex: 2,
             )));
   }

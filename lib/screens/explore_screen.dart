@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/post_detail_screen.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/page_toggler.dart';
 import 'package:lets_jam/widgets/post_thumbnail.dart';
 import 'package:lets_jam/widgets/tag.dart';
@@ -42,41 +43,30 @@ class _ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     var isBandTabSelected = _selectedPage == 0;
-    var isMemberTabSelected = _selectedPage == 1;
-
     var mockFilteredTags = ['태그1', '태그22', '태그333'];
 
-    return Scaffold(
-        body: Column(
+    return Column(
       children: [
-        Stack(
-          children: [
-            PageToggler(
-              onTap: _slidePage,
-              selectedIndex: isBandTabSelected ? 0 : 1,
-            ),
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              child: IconButton(
-                  onPressed: () {},
-                  padding: EdgeInsets.zero, // 패딩 설정
-                  constraints: const BoxConstraints(),
-                  icon: const Icon(Icons.notifications_outlined)),
-            ),
-          ],
-        ),
+        Container(
+            height: 102,
+            decoration: BoxDecoration(color: ColorSeed.boldOrangeMedium.color),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: PageToggler(
+                  selectedIndex: _selectedPage,
+                  onTap: _slidePage,
+                ),
+              ),
+            )),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
               SizedBox(
                   width: 36,
                   child: SvgPicture.asset('assets/icons/filter.svg')),
-              const SizedBox(
-                width: 4,
-              ),
               Expanded(
                 child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -91,11 +81,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             ],
           ),
-        ),
-        const Divider(
-          height: 0,
-          thickness: 2,
-          color: Color(0xffD9D9D9),
         ),
         Expanded(
           child: FutureBuilder(
@@ -118,14 +103,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   .toList();
 
               return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: PageView(
                   controller: _pageViewController,
                   physics:
                       const NeverScrollableScrollPhysics(), // 기본 슬라이드 동작을 막음
                   children: [
                     ListView.separated(
+                        padding: EdgeInsets.zero,
                         itemCount: findSessionPosts.length,
                         separatorBuilder: (context, index) => const SizedBox(
                               height: 8,
@@ -143,6 +128,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           );
                         }),
                     ListView.separated(
+                        padding: EdgeInsets.zero,
                         itemCount: findBandPosts.length,
                         separatorBuilder: (context, index) => const SizedBox(
                               height: 8,
@@ -166,6 +152,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
           ),
         )
       ],
-    ));
+    );
   }
 }

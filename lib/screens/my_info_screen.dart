@@ -3,7 +3,7 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
-import 'package:lets_jam/screens/home_screen.dart';
+import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyInfoScreen extends StatefulWidget {
@@ -155,7 +155,7 @@ class _MyInfoScreenState extends State<MyInfoScreen> {
               onPressed: () async {
                 await supabase.auth.signOut();
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const HomeScreen(
+                    builder: (context) => const DefaultNavigation(
                           fromIndex: 2,
                         )));
               },

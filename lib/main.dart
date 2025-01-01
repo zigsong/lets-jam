@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:lets_jam/screens/home_screen.dart';
+import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
@@ -35,8 +35,17 @@ class MyApp extends StatelessWidget {
           child: child!,
         );
       },
-      theme: ThemeData(useMaterial3: true, fontFamily: 'Pretendard'),
-      home: const HomeScreen(),
+      theme: ThemeData(
+          useMaterial3: true,
+          fontFamily: 'Pretendard',
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: const Color(0xffFC784F))),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const DefaultNavigation(),
+        // '/second': (context) => SecondScreen(),
+        // '/third': (context) => ThirdScreen(),
+      },
     );
   }
 }

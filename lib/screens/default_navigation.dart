@@ -6,15 +6,15 @@ import 'package:lets_jam/screens/explore_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
 import 'package:lets_jam/widgets/post_bottom_sheet.dart';
 
-class HomeScreen extends StatefulWidget {
+class DefaultNavigation extends StatefulWidget {
   final int? fromIndex;
-  const HomeScreen({super.key, this.fromIndex});
+  const DefaultNavigation({super.key, this.fromIndex});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<DefaultNavigation> createState() => _DefaultNavigationState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
+class _DefaultNavigationState extends State<DefaultNavigation>
     with SingleTickerProviderStateMixin {
   AnimationController? _controller;
   Animation<Offset>? _offsetAnimation;
@@ -92,10 +92,6 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        /** @zigsong TODO: appbar height 정하기 */
-        appBar: AppBar(
-          toolbarHeight: 20,
-        ),
         body: Stack(children: [
           Positioned.fill(
               child: Center(child: _widgetOptions.elementAt(_selectedIndex))),
