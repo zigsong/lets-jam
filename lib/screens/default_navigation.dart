@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/screens/explore_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/widgets/bottom_app_bar_item.dart';
 import 'package:lets_jam/widgets/post_bottom_sheet.dart';
 
 class DefaultNavigation extends StatefulWidget {
@@ -146,91 +148,75 @@ class _DefaultNavigationState extends State<DefaultNavigation>
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
               height: 84,
               color: Colors.white,
-              shape: const CircularNotchedRectangle(),
+              /** MARK: 있으나 없으나? */
+              // shape: const CircularNotchedRectangle(),
               notchMargin: 5,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   BottomAppBarItem(
-                      icon: SvgPicture.asset(_selectedIndex == 0
-                          ? 'assets/icons/home_filled.svg'
-                          : 'assets/icons/home_outline.svg'),
+                      isActive: _selectedIndex == 0,
+                      defaultIcon: Image.asset(
+                          'assets/icons/bottom-nav/home_default.png'),
+                      activeIcon: Image.asset(
+                          'assets/icons/bottom-nav/home_active.png'),
                       label: '홈',
                       onPressed: _onHomeButtonTapped),
                   BottomAppBarItem(
-                      icon: SvgPicture.asset(_selectedIndex == 1
-                          ? 'assets/icons/like_filled.svg'
-                          : 'assets/icons/like_outline.svg'),
+                      isActive: _selectedIndex == 1,
+                      defaultIcon: Image.asset(
+                          'assets/icons/bottom-nav/like_default.png'),
+                      activeIcon: Image.asset(
+                          'assets/icons/bottom-nav/like_active.png'),
                       label: '좋아요',
                       onPressed: _onLikeButtonTapped),
+                  // MARK: AppBarItem 4개의 간격을 조정하기 위한 조치
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: BottomAppBarItem(
+                        isActive: _selectedIndex == 2,
+                        defaultIcon: Image.asset(
+                            'assets/icons/bottom-nav/add_default.png'),
+                        activeIcon: Image.asset(
+                            'assets/icons/bottom-nav/add_active.png'),
+                        label: '',
+                        onPressed: _onLikeButtonTapped),
+                  ),
                   BottomAppBarItem(
-                      icon: SvgPicture.asset('assets/icons/band-temp.svg'),
-                      label: '',
-                      onPressed: _onLikeButtonTapped),
-                  BottomAppBarItem(
-                      icon: SvgPicture.asset('assets/icons/band-temp.svg'),
+                      isActive: _selectedIndex == 2,
+                      defaultIcon: Image.asset('assets/icons/bell_default.png'),
+                      activeIcon: Image.asset('assets/icons/bell_active.png'),
                       label: '밴드',
                       onPressed: _onBandButtonTapped),
                   BottomAppBarItem(
-                      icon: SvgPicture.asset(_selectedIndex == 3
-                          ? 'assets/icons/profile_filled.svg'
-                          : 'assets/icons/profile_outline.svg'),
+                      isActive: _selectedIndex == 3,
+                      defaultIcon: Image.asset(
+                          'assets/icons/bottom-nav/profile_default.png'),
+                      activeIcon: Image.asset(
+                          'assets/icons/bottom-nav/profile_active.png'),
                       label: '프로필',
                       onPressed: _onProfileButtonTapped),
                 ],
               ),
             ),
             Positioned(
-                top: -12,
+                top: -32,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      side: const BorderSide(width: 3, color: Colors.white),
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(20),
-                      backgroundColor: const Color(0xffBFFFAF),
+                      backgroundColor: ColorSeed.boldOrangeMedium.color,
                       elevation: 0),
                   onPressed: _toggleBottomSheet,
                   child: Transform.rotate(
                       angle: _isBottomSheetOpen ? 45 * pi / 180 : 0,
-                      child: SvgPicture.asset('assets/icons/add.svg')),
+                      child: SizedBox(
+                          width: 44,
+                          child: Image.asset(
+                              'assets/icons/bottom-nav/add_white.png'))),
                 ))
           ],
         ));
-  }
-}
-
-class BottomAppBarItem extends StatefulWidget {
-  final Widget icon;
-  final String label;
-  final Function() onPressed;
-
-  const BottomAppBarItem(
-      {super.key,
-      required this.icon,
-      required this.label,
-      required this.onPressed});
-
-  @override
-  State<BottomAppBarItem> createState() => _BottomAppBarItemState();
-}
-
-class _BottomAppBarItemState extends State<BottomAppBarItem> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: GestureDetector(
-        onTap: widget.onPressed,
-        child: Column(
-          children: <Widget>[
-            widget.icon,
-            const SizedBox(height: 4),
-            Text(
-              widget.label,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -61,12 +61,15 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             )),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
               SizedBox(
-                  width: 36,
-                  child: SvgPicture.asset('assets/icons/filter.svg')),
+                  width: 30,
+                  child: Image.asset('assets/icons/filter_active.png')),
+              const SizedBox(
+                width: 12,
+              ),
               Expanded(
                 child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,

@@ -3,6 +3,7 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/date_parser.dart';
 import 'package:lets_jam/utils/helper.dart';
 import 'package:lets_jam/widgets/tag.dart';
@@ -18,7 +19,7 @@ class PostThumbnail extends StatelessWidget {
       height: 106,
       decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(width: 1, color: const Color(0xffEFEFF0)),
+          border: Border.all(width: 1, color: ColorSeed.boldOrangeMedium.color),
           borderRadius: BorderRadius.circular(8)),
       clipBehavior: Clip.hardEdge,
       child: Row(
