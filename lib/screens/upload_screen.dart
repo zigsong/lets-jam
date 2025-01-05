@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/find_session_upload_model.dart';
@@ -18,6 +20,8 @@ Map<PostTypeEnum, String> postTypeTitle = {
   PostTypeEnum.findBand: '밴드',
   PostTypeEnum.findSession: '세션',
 };
+
+const SUPABASE_BUCKET_NAME = 'images';
 
 class UploadScreen extends StatefulWidget {
   final PostTypeEnum postType;
@@ -50,8 +54,24 @@ class _UploadScreenState extends State<UploadScreen> {
     try {
       final user = await getUser();
       final String userId = user?['id'];
+      final List<String> imageUrls = [];
 
-      await Supabase.instance.client.from('posts').insert({
+      for (var image in _findSessionUploadData.images) {
+        final path =
+            'post_uploads/${DateTime.now().millisecondsSinceEpoch}-${image.path.split('/').last}';
+
+        final response = await supabase.storage
+            .from(SUPABASE_BUCKET_NAME)
+            .upload(path, File(image.path));
+
+        final filePath = response.replaceFirst('$SUPABASE_BUCKET_NAME/', '');
+
+        final imagePublicUrl =
+            supabase.storage.from(SUPABASE_BUCKET_NAME).getPublicUrl(filePath);
+        imageUrls.add(imagePublicUrl);
+      }
+
+      await supabase.from('posts').insert({
         'user_id': userId,
         'title': _findSessionUploadData.title,
         'levels': _findSessionUploadData.levels.map((el) => el.name).toList(),
@@ -61,7 +81,7 @@ class _UploadScreenState extends State<UploadScreen> {
         'regions': _findSessionUploadData.regions.toList(),
         'contact': _findSessionUploadData.contact,
         'description': _findSessionUploadData.description,
-        'images': _findSessionUploadData.images.map((el) => el.path).toList(),
+        'images': imageUrls,
         // 'band_profile': ...,
         'post_type': widget.postType.name,
       });

@@ -87,13 +87,16 @@ class PostThumbnail extends StatelessWidget {
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(12),
             decoration: const BoxDecoration(
               color: Color(0xffD9D9D9),
             ),
-            width: 98,
-            height: 106,
-            child: const Center(child: Text('이미지')),
+            child: Center(
+                child: post.images != null
+                    ? Image.network(post.images![0],
+                        width: 104, height: 104, fit: BoxFit.cover)
+                    : Image.asset(
+                        'assets/images/jam_temp_filled.png',
+                      )),
           ),
         ],
       ),

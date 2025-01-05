@@ -53,7 +53,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         children: [
           Column(
             children: [
-              const ImageSlider(),
+              ImageSlider(images: widget.post.images),
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(

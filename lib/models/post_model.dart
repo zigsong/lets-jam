@@ -18,7 +18,7 @@ class PostModel {
   List<String>? regions;
   String contact;
   String description;
-  List<XFile>? images;
+  List<String>? images;
   dynamic bandProfile;
 
   PostModel(
@@ -32,22 +32,24 @@ class PostModel {
       required this.contact,
       required this.description,
       this.ages,
-      this.regions});
+      this.regions,
+      this.images});
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
-      id: json['id'],
-      createdAt: DateTime.parse(json['created_at']),
-      userId: json['user_id'],
-      postType: _postTypeFromString(json['post_type']),
-      title: json['title'],
-      levels: _levelsFromJson(json['levels']),
-      sessions: _sesssionsFromJson(json['sessions']),
-      ages: _agesFromJson(json['ages']),
-      regions: (json['regions'] as List<dynamic>).cast<String>(),
-      contact: json['contact'],
-      description: json['description'],
-    );
+        id: json['id'],
+        createdAt: DateTime.parse(json['created_at']),
+        userId: json['user_id'],
+        postType: _postTypeFromString(json['post_type']),
+        title: json['title'],
+        levels: _levelsFromJson(json['levels']),
+        sessions: _sesssionsFromJson(json['sessions']),
+        ages: _agesFromJson(json['ages']),
+        regions: (json['regions'] as List<dynamic>).cast<String>(),
+        contact: json['contact'],
+        description: json['description'],
+        images:
+            json['images'] != null ? List<String>.from(json['images']) : null);
   }
 
   Map<String, dynamic> toJson() {
@@ -140,4 +142,8 @@ class PostModel {
         throw Exception('Invalid age value: $age');
     }
   }
+
+  // static List<AgeEnum> _imagesFromJson(List<dynamic> imagesJson) {
+  //   return imagesJson.map((image) => _ageFromString(image as String)).toList();
+  // }
 }

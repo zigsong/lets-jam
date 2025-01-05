@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class ImageSlider extends StatefulWidget {
-  const ImageSlider({super.key, this.height});
+  const ImageSlider({super.key, this.height, this.images});
 
   final double? height;
+  final List<String>? images;
 
   @override
   State<ImageSlider> createState() => _ImageSliderState();
@@ -17,21 +18,28 @@ class _ImageSliderState extends State<ImageSlider> {
   Widget sliderWidget() {
     return CarouselSlider(
       carouselController: _controller,
-      items: [1, 2, 3].map(
-        (i) {
-          return Builder(
-            builder: (context) {
-              return SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Image.asset(
-                  'assets/images/detail_thumb_temp.png',
-                  fit: BoxFit.fill,
-                ),
-              );
-            },
-          );
-        },
-      ).toList(),
+      items: widget.images != null
+          ? widget.images!.map(
+              (image) {
+                return Builder(
+                  builder: (context) {
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Image.network(
+                        image,
+                        fit: BoxFit.fill,
+                      ),
+                    );
+                  },
+                );
+              },
+            ).toList()
+          : [
+              Image.asset(
+                'assets/images/detail_thumb_temp.png',
+                fit: BoxFit.fill,
+              )
+            ],
       options: CarouselOptions(
         height: widget.height ?? 248,
         viewportFraction: 1.0,
@@ -49,7 +57,10 @@ class _ImageSliderState extends State<ImageSlider> {
       alignment: Alignment.bottomCenter,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [1, 2, 3].asMap().entries.map((entry) {
+        children: List.generate(widget.images!.length, (index) => index + 1)
+            .asMap()
+            .entries
+            .map((entry) {
           return GestureDetector(
             onTap: () => _controller.animateToPage(entry.key),
             child: Container(
@@ -76,7 +87,7 @@ class _ImageSliderState extends State<ImageSlider> {
       child: Stack(
         children: [
           sliderWidget(),
-          sliderIndicator(),
+          if (widget.images != null) sliderIndicator(),
         ],
       ),
     );
