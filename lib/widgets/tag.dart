@@ -23,7 +23,7 @@ class Tag extends StatelessWidget {
           horizontal: size == TagSizeEnum.small ? 8 : 12,
           vertical: size == TagSizeEnum.small ? 2 : 4),
       decoration: BoxDecoration(
-          color: bgColor ?? ColorSeed.boldOrangeMedium.color,
+          color: bgColor ?? ColorSeed.boldOrangeStrong.color,
           borderRadius: BorderRadius.circular(25)),
       child: Center(
         child: Text(

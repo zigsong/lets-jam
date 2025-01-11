@@ -19,7 +19,7 @@ class PostThumbnail extends StatelessWidget {
       height: 106,
       decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(width: 1, color: ColorSeed.boldOrangeMedium.color),
+          border: Border.all(width: 1, color: ColorSeed.boldOrangeStrong.color),
           borderRadius: BorderRadius.circular(8)),
       clipBehavior: Clip.hardEdge,
       child: Row(

@@ -206,7 +206,7 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                   style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(20),
-                      backgroundColor: ColorSeed.boldOrangeMedium.color,
+                      backgroundColor: ColorSeed.boldOrangeStrong.color,
                       elevation: 0),
                   onPressed: _toggleBottomSheet,
                   child: Transform.rotate(

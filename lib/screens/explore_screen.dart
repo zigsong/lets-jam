@@ -49,14 +49,28 @@ class _ExploreScreenState extends State<ExploreScreen> {
       children: [
         Container(
             height: 102,
-            decoration: BoxDecoration(color: ColorSeed.boldOrangeMedium.color),
+            decoration: BoxDecoration(color: ColorSeed.boldOrangeStrong.color),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: PageToggler(
-                  selectedIndex: _selectedPage,
-                  onTap: _slidePage,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                        width: 25,
+                        height: 30,
+                        child: Image.asset('assets/images/logo_sm_white.png')),
+                    PageToggler(
+                      selectedIndex: _selectedPage,
+                      onTap: _slidePage,
+                    ),
+                    SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: Image.asset('assets/icons/bell_white.png')),
+                  ],
                 ),
               ),
             )),
