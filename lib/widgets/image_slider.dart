@@ -27,7 +27,7 @@ class _ImageSliderState extends State<ImageSlider> {
                       width: MediaQuery.of(context).size.width,
                       child: Image.network(
                         image,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                       ),
                     );
                   },
@@ -87,7 +87,8 @@ class _ImageSliderState extends State<ImageSlider> {
       child: Stack(
         children: [
           sliderWidget(),
-          if (widget.images != null) sliderIndicator(),
+          if (widget.images != null && widget.images!.length > 1)
+            sliderIndicator(),
         ],
       ),
     );
