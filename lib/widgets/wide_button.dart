@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class WideButton extends StatelessWidget {
   final String text;
@@ -14,8 +15,8 @@ class WideButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor: const Color(0xffBFFFAF),
-          foregroundColor: const Color(0xff1c1c1c),
+          backgroundColor: ColorSeed.boldOrangeStrong.color,
+          foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

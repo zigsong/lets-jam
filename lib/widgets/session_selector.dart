@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class SessionSelector extends StatefulWidget {
   final List<SessionEnum> selectedSessions;
@@ -28,7 +29,7 @@ class _SessionSelectorState extends State<SessionSelector> {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: widget.selectedSessions.contains(session)
-                            ? const Color(0xffBFFFAF)
+                            ? ColorSeed.boldOrangeStrong.color
                             : const Color(0xffBFBFBF),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -36,10 +37,7 @@ class _SessionSelectorState extends State<SessionSelector> {
                           alignment: Alignment.bottomRight,
                           child: Text(
                             sessionMap[session]!,
-                            style: TextStyle(
-                                color: widget.selectedSessions.contains(session)
-                                    ? Colors.black
-                                    : Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           )),
                     ),
                     onTap: () {

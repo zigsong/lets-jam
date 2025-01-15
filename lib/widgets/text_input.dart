@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class TextInput extends StatelessWidget {
   const TextInput(
@@ -8,7 +9,8 @@ class TextInput extends StatelessWidget {
       this.placeholder,
       this.validator,
       this.keyboardType,
-      this.height});
+      this.height,
+      this.isRequired});
 
   final String? label;
   final String? placeholder;
@@ -16,6 +18,7 @@ class TextInput extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final double? height;
+  final bool? isRequired;
 
   @override
   Widget build(BuildContext context) {
@@ -23,34 +26,41 @@ class TextInput extends StatelessWidget {
       children: [
         if (label != null)
           Positioned(
-              child: Text(
-            label!,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+              child: Row(
+            children: [
+              Text(
+                label!,
+              ),
+              const SizedBox(
+                width: 2,
+              ),
+              Text(isRequired == true ? '*' : '',
+                  style: TextStyle(color: ColorSeed.boldOrangeStrong.color))
+            ],
           )),
         Padding(
           padding: label != null
-              ? const EdgeInsets.only(top: 24)
+              ? const EdgeInsets.only(top: 26)
               : const EdgeInsets.all(0),
           child: SizedBox(
-            height: height ?? 44,
             child: TextFormField(
               keyboardType: keyboardType,
+              style: const TextStyle(fontSize: 13),
               minLines: keyboardType == TextInputType.multiline ? 5 : 1,
               maxLines: keyboardType == TextInputType.multiline ? null : 1,
               decoration: InputDecoration(
                   hintText: placeholder,
                   focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Color(0xffAED3FF), width: 2),
-                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                        color: ColorSeed.meticulousGrayLight.color, width: 1),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Color(0xffAED3FF), width: 2),
-                      borderRadius: BorderRadius.circular(12)),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
-              cursorColor: const Color(0xffAED3FF),
+                      borderSide: BorderSide(
+                          color: ColorSeed.meticulousGrayLight.color, width: 1),
+                      borderRadius: BorderRadius.circular(6)),
+                  contentPadding: const EdgeInsets.all(16)),
+              cursorColor: ColorSeed.meticulousGrayLight.color,
               validator: validator,
               onChanged: onChange,
             ),

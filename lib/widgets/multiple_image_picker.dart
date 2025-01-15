@@ -35,13 +35,12 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
               height: 50,
               decoration: BoxDecoration(
                   border: Border.all(width: 1, color: const Color(0xff8F9098)),
-                  borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(8)),
               alignment: Alignment.center, // SVG를 중앙에 배치
               child: SvgPicture.asset(
                 'assets/icons/plus-sm.svg',
-                width: 15,
-                height: 15,
-                fit: BoxFit.none, // 크기를 그대로 유지
+                width: 20,
+                height: 20,
               )),
           onTap: () {
             getImage(ImageSource.gallery);

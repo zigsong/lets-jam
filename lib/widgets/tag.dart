@@ -8,13 +8,15 @@ class Tag extends StatelessWidget {
   final TagSizeEnum? size;
   final Color? fgColor;
   final Color? bgColor;
+  final BoxBorder? border;
 
   const Tag(
       {super.key,
       required this.text,
       this.size = TagSizeEnum.medium,
       this.fgColor,
-      this.bgColor});
+      this.bgColor,
+      this.border});
 
   bool get isSmall => size == TagSizeEnum.small;
 
@@ -22,9 +24,10 @@ class Tag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-          horizontal: isSmall ? 6 : 12, vertical: isSmall ? 1 : 4),
+          horizontal: isSmall ? 6 : 8, vertical: isSmall ? 1 : 4),
       decoration: BoxDecoration(
           color: bgColor ?? ColorSeed.boldOrangeStrong.color,
+          border: border,
           borderRadius: BorderRadius.circular(20)),
       child: Text(
         text,

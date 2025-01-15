@@ -6,6 +6,7 @@ import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/utils/auth.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:lets_jam/widgets/multiple_image_picker.dart';
 import 'package:lets_jam/widgets/session_selector.dart';
@@ -98,30 +99,39 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme:
+            IconThemeData(color: ColorSeed.boldOrangeStrong.color, size: 20),
+        shape: Border(
+            bottom:
+                BorderSide(color: ColorSeed.boldOrangeStrong.color, width: 1)),
         title: Text(
           '${postTypeTitle[widget.postType]} 구하기',
-          style: const TextStyle(fontSize: 18),
+          style: TextStyle(
+              fontSize: 16,
+              color: ColorSeed.boldOrangeStrong.color,
+              fontWeight: FontWeight.w600),
         ),
-        backgroundColor: const Color(0xffF2F2F2),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+          padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
           child: Form(
             key: _formKey,
             child: Column(
               children: [
                 TextInput(
                     label: '제목',
+                    isRequired: true,
                     onChange: (value) {
                       _findSessionUploadData.title = value ?? '';
                     }),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 CustomForm(
                   label: '레벨',
-                  subTitle: '밴드가 원하는 세션의 레벨을 모두 선택해주세요.',
+                  subTitle: '밴드가 원하는 세션의 연주 레벨을 모두 선택해주세요.',
+                  isRequired: true,
                   content: LevelSelector(
                     selectedLevels: _findSessionUploadData.levels,
                     onChange: (level) {
@@ -134,11 +144,12 @@ class _UploadScreenState extends State<UploadScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 CustomForm(
                   label: '세션',
-                  subTitle: '밴드가 구하는 세션을 모두 선택해주세요.',
+                  subTitle: '밴드가 원하는 멤버의 악기를 모두 선택해주세요.',
+                  isRequired: true,
                   content: SessionSelector(
                     selectedSessions: _findSessionUploadData.sessions,
                     onChange: (session) {
@@ -151,7 +162,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 CustomForm(
                   label: '연령대',
@@ -167,7 +178,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 CustomForm(
                   label: '지역',
@@ -183,30 +194,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
-                ),
-                CustomForm(
-                  label: '연락처',
-                  subTitle: '카톡아이디 또는 오픈카톡프로필 링크',
-                  content: TextInput(onChange: (value) {
-                    _findSessionUploadData.contact = value ?? '';
-                  }),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                CustomForm(
-                  label: '자세한 글',
-                  content: TextInput(
-                    onChange: (value) {
-                      _findSessionUploadData.description = value ?? '';
-                    },
-                    keyboardType: TextInputType.multiline,
-                    height: 96,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 CustomForm(
                   label: '사진',
@@ -225,7 +213,30 @@ class _UploadScreenState extends State<UploadScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
+                ),
+                CustomForm(
+                  label: '연락처',
+                  subTitle: '카톡아이디 또는 오픈 카톡 프로필 링크',
+                  content: TextInput(onChange: (value) {
+                    _findSessionUploadData.contact = value ?? '';
+                  }),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                CustomForm(
+                  label: '자세한 글',
+                  content: TextInput(
+                    onChange: (value) {
+                      _findSessionUploadData.description = value ?? '';
+                    },
+                    keyboardType: TextInputType.multiline,
+                    height: 96,
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 WideButton(
                   text: '게시하기',
@@ -267,11 +278,13 @@ class _LevelSelectorState extends State<LevelSelector> {
               });
             },
             child: Tag(
-                text: entry.value,
-                size: TagSizeEnum.small,
-                bgColor: isSelected
-                    ? const Color(0xffBFFFAF)
-                    : const Color(0xffD5D5D5)),
+              text: entry.value,
+              border: Border.all(
+                color: ColorSeed.meticulousGrayLight.color,
+              ),
+              bgColor: isSelected ? Colors.black : Colors.white,
+              fgColor: isSelected ? Colors.white : Colors.black,
+            ),
           ),
           if (entry != levelMap.entries.last) // 마지막 요소에는 간격 추가하지 않음
             const SizedBox(width: 6), // 항목 사이 간격
@@ -308,11 +321,13 @@ class _AgeSelectorState extends State<AgeSelector> {
               });
             },
             child: Tag(
-                text: entry.value,
-                size: TagSizeEnum.small,
-                bgColor: isSelected
-                    ? const Color(0xffBFFFAF)
-                    : const Color(0xffD5D5D5)),
+              text: entry.value,
+              border: Border.all(
+                color: ColorSeed.meticulousGrayLight.color,
+              ),
+              bgColor: isSelected ? Colors.black : Colors.white,
+              fgColor: isSelected ? Colors.white : Colors.black,
+            ),
           ),
           if (entry != ageMap.entries.last) // 마지막 요소에는 간격 추가하지 않음
             const SizedBox(width: 6), // 항목 사이 간격
@@ -355,9 +370,10 @@ class _RegionSelectorState extends State<RegionSelector> {
                     });
                   },
                   child: Tag(
-                      text: entry.value,
-                      size: TagSizeEnum.small,
-                      bgColor: const Color(0xffBFFFAF)),
+                    text: entry.value,
+                    bgColor: Colors.black,
+                    fgColor: Colors.white,
+                  ),
                 ),
                 if (entry !=
                     widget.selectedRegions
@@ -377,7 +393,8 @@ class _RegionSelectorState extends State<RegionSelector> {
           /** NOTE: borderRadius를 넘는 이슈 때문에 임시로 padding을 사용 */
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-              border: Border.all(width: 2, color: const Color(0xffAED3FF)),
+              border: Border.all(
+                  width: 2, color: ColorSeed.meticulousGrayLight.color),
               borderRadius: BorderRadius.circular(12)),
           child: SingleChildScrollView(
             child: Column(
@@ -386,8 +403,8 @@ class _RegionSelectorState extends State<RegionSelector> {
                   .entries
                   .map((entry) => Material(
                         child: InkWell(
-                          splashColor: const Color(0xffAED3FF),
-                          highlightColor: const Color(0xffAED3FF),
+                          splashColor: ColorSeed.meticulousGrayLight.color,
+                          highlightColor: ColorSeed.meticulousGrayLight.color,
                           child: Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
