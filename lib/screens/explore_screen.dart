@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/post_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/widgets/filter_tag.dart';
 import 'package:lets_jam/widgets/page_toggler.dart';
 import 'package:lets_jam/widgets/post_thumbnail.dart';
 import 'package:lets_jam/widgets/tag.dart';
@@ -75,11 +76,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             )),
         Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(16),
           child: Row(
             children: [
               SizedBox(
-                  width: 30,
+                  width: 20,
                   child: Image.asset('assets/icons/filter_active.png')),
               const SizedBox(
                 width: 12,
@@ -91,7 +92,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       children: List.generate(mockFilteredTags.length, (index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Tag(text: mockFilteredTags[index]),
+                          child: FilterTag(text: mockFilteredTags[index]),
                         );
                       }),
                     )),

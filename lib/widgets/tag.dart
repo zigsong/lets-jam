@@ -16,23 +16,23 @@ class Tag extends StatelessWidget {
       this.fgColor,
       this.bgColor});
 
+  bool get isSmall => size == TagSizeEnum.small;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-          horizontal: size == TagSizeEnum.small ? 8 : 12,
-          vertical: size == TagSizeEnum.small ? 2 : 4),
+          horizontal: isSmall ? 6 : 12, vertical: isSmall ? 1 : 4),
       decoration: BoxDecoration(
           color: bgColor ?? ColorSeed.boldOrangeStrong.color,
-          borderRadius: BorderRadius.circular(25)),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-              fontSize: size == TagSizeEnum.small ? 12 : 14,
-              fontWeight: FontWeight.w500,
-              color: fgColor ?? Colors.white),
-        ),
+          borderRadius: BorderRadius.circular(20)),
+      child: Text(
+        text,
+        style: TextStyle(
+            fontSize: isSmall ? 13 : 14,
+            fontWeight: FontWeight.w500,
+            color: fgColor ?? Colors.white,
+            height: 1.54),
       ),
     );
   }

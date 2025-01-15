@@ -45,6 +45,8 @@ class PostThumbnail extends StatelessWidget {
                         children: [
                           Tag(
                               size: TagSizeEnum.small,
+                              bgColor: ColorSeed.boldOrangeLight.color,
+                              fgColor: ColorSeed.boldOrangeStrong.color,
                               text: formatList(post.sessions
                                   .map((session) => sessionMap[session])
                                   .toList())),
@@ -54,12 +56,16 @@ class PostThumbnail extends StatelessWidget {
                           if (post.regions != null)
                             Tag(
                                 size: TagSizeEnum.small,
+                                bgColor: ColorSeed.boldOrangeLight.color,
+                                fgColor: ColorSeed.boldOrangeStrong.color,
                                 text: formatList(post.regions!)),
                           const SizedBox(
                             width: 4,
                           ),
                           Tag(
                               size: TagSizeEnum.small,
+                              bgColor: ColorSeed.boldOrangeLight.color,
+                              fgColor: ColorSeed.boldOrangeStrong.color,
                               text: formatList(post.levels
                                   .map((level) => levelMap[level])
                                   .toList())),
