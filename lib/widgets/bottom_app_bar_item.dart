@@ -37,7 +37,7 @@ class _BottomAppBarItemState extends State<BottomAppBarItem> {
             Text(
               widget.label,
               style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 10,
                   color: widget.isActive
                       ? ColorSeed.boldOrangeMedium.color
                       : ColorSeed.meticulousGrayMedium.color),

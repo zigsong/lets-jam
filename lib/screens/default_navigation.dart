@@ -201,11 +201,11 @@ class _DefaultNavigationState extends State<DefaultNavigation>
               ),
             ),
             Positioned(
-                top: -32,
+                top: -14,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(10.5),
                       backgroundColor: ColorSeed.boldOrangeStrong.color,
                       elevation: 0),
                   onPressed: _toggleBottomSheet,

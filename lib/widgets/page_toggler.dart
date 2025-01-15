@@ -20,7 +20,10 @@ class PageToggler extends StatelessWidget {
               height: 32,
               width: 136,
               decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(25)),
+                  color: selectedIndex == 0
+                      ? ColorSeed.boldOrangeRegular.color
+                      : ColorSeed.boldOrangeLight.color,
+                  borderRadius: BorderRadius.circular(25)),
             ),
             AnimatedPositioned(
               duration: const Duration(milliseconds: 100),
@@ -30,7 +33,9 @@ class PageToggler extends StatelessWidget {
                 height: 32,
                 width: 72,
                 decoration: BoxDecoration(
-                  color: ColorSeed.boldOrangeRegular.color,
+                  color: selectedIndex == 0
+                      ? Colors.white
+                      : ColorSeed.boldOrangeStrong.color,
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
@@ -40,10 +45,10 @@ class PageToggler extends StatelessWidget {
                 Text(
                   '밴드',
                   style: TextStyle(
-                      color: selectedIndex == 0
-                          ? Colors.white
-                          : ColorSeed.boldOrangeStrong.color,
-                      fontWeight: FontWeight.w600),
+                      color: ColorSeed.boldOrangeStrong.color,
+                      fontWeight: selectedIndex == 0
+                          ? FontWeight.w700
+                          : FontWeight.w400),
                 ),
                 const SizedBox(
                   width: 44,
@@ -51,10 +56,10 @@ class PageToggler extends StatelessWidget {
                 Text(
                   '멤버',
                   style: TextStyle(
-                      color: selectedIndex == 1
-                          ? Colors.white
-                          : ColorSeed.boldOrangeStrong.color,
-                      fontWeight: FontWeight.w600),
+                      color: Colors.white,
+                      fontWeight: selectedIndex == 0
+                          ? FontWeight.w400
+                          : FontWeight.w700),
                 ),
               ],
             )

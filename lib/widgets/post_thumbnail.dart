@@ -34,7 +34,8 @@ class PostThumbnail extends StatelessWidget {
                   Text(
                     post.title,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(
                     height: 4,

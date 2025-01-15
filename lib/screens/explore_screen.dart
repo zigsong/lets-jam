@@ -50,7 +50,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
       children: [
         Container(
             height: 102,
-            decoration: BoxDecoration(color: ColorSeed.boldOrangeStrong.color),
+            decoration: BoxDecoration(
+                color: isBandTabSelected
+                    ? ColorSeed.boldOrangeStrong.color
+                    : Colors.transparent),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -62,7 +65,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     SizedBox(
                         width: 25,
                         height: 30,
-                        child: Image.asset('assets/images/logo_sm_white.png')),
+                        child: isBandTabSelected
+                            ? Image.asset('assets/images/logo_sm_white.png')
+                            : Image.asset('assets/images/logo_sm_orange.png')),
                     PageToggler(
                       selectedIndex: _selectedPage,
                       onTap: _slidePage,
@@ -70,7 +75,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     SizedBox(
                         width: 28,
                         height: 28,
-                        child: Image.asset('assets/icons/bell_white.png')),
+                        child: isBandTabSelected
+                            ? Image.asset('assets/icons/bell_white.png')
+                            : Image.asset('assets/icons/bell_active.png')),
                   ],
                 ),
               ),
