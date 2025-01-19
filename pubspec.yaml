@@ -40,6 +40,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
   image_picker: ^1.1.2
   carousel_slider: ^5.0.0
+  flutter_native_splash: ^2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -88,3 +89,9 @@ flutter:
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/splash_temp.png
+  android: true
+  ios: true
