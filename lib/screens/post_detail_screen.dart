@@ -5,6 +5,7 @@ import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
@@ -95,6 +96,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             child: IconButton(
               icon: const Icon(
                 Icons.arrow_back_ios,
+                color: Colors.white,
               ),
               onPressed: () {
                 Navigator.of(context).pop(); // 뒤로 가기
