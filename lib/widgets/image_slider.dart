@@ -11,45 +11,52 @@ class ImageSlider extends StatefulWidget {
   State<ImageSlider> createState() => _ImageSliderState();
 }
 
+double imageHeight = 267;
+
 class _ImageSliderState extends State<ImageSlider> {
   int _current = 0;
   final CarouselSliderController _controller = CarouselSliderController();
 
   Widget sliderWidget() {
-    return CarouselSlider(
-      carouselController: _controller,
-      items: widget.images != null
-          ? widget.images!.map(
-              (image) {
-                return Builder(
-                  builder: (context) {
-                    return SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Image.network(
-                        image,
-                        fit: BoxFit.cover,
-                      ),
+    return widget.images != null
+        ? widget.images!.length > 1
+            ? CarouselSlider(
+                carouselController: _controller,
+                items: widget.images!.map(
+                  (image) {
+                    return Builder(
+                      builder: (context) {
+                        return Image.network(
+                          image,
+                          width: MediaQuery.of(context).size.width,
+                          fit: BoxFit.cover,
+                        );
+                      },
                     );
                   },
-                );
-              },
-            ).toList()
-          : [
-              Image.asset(
-                'assets/images/detail_thumb_temp.png',
-                fit: BoxFit.fill,
+                ).toList(),
+                options: CarouselOptions(
+                  height: widget.height ?? imageHeight,
+                  viewportFraction: 1.0,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _current = index;
+                    });
+                  },
+                ),
               )
-            ],
-      options: CarouselOptions(
-        height: widget.height ?? 248,
-        viewportFraction: 1.0,
-        onPageChanged: (index, reason) {
-          setState(() {
-            _current = index;
-          });
-        },
-      ),
-    );
+            : Image.network(
+                widget.images![0],
+                width: MediaQuery.of(context).size.width,
+                fit: BoxFit.cover,
+              )
+        : SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Image.asset(
+              'assets/images/post_default_img.png',
+              fit: BoxFit.cover,
+            ),
+          );
   }
 
   Widget sliderIndicator() {
@@ -83,7 +90,7 @@ class _ImageSliderState extends State<ImageSlider> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: widget.height ?? 248,
+      height: widget.height ?? imageHeight,
       child: Stack(
         children: [
           sliderWidget(),
