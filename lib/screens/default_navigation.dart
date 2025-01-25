@@ -144,60 +144,70 @@ class _DefaultNavigationState extends State<DefaultNavigation>
           alignment: Alignment.center,
           clipBehavior: Clip.none,
           children: [
-            BottomAppBar(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-              height: 84,
-              color: Colors.white,
-              /** MARK: 있으나 없으나? */
-              // shape: const CircularNotchedRectangle(),
-              notchMargin: 5,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  BottomAppBarItem(
-                      isActive: _selectedIndex == 0,
-                      defaultIcon: Image.asset(
-                          'assets/icons/bottom-nav/home_default.png'),
-                      activeIcon: Image.asset(
-                          'assets/icons/bottom-nav/home_active.png'),
-                      label: '홈',
-                      onPressed: _onHomeButtonTapped),
-                  BottomAppBarItem(
-                      isActive: _selectedIndex == 1,
-                      defaultIcon: Image.asset(
-                          'assets/icons/bottom-nav/like_default.png'),
-                      activeIcon: Image.asset(
-                          'assets/icons/bottom-nav/like_active.png'),
-                      label: '좋아요',
-                      onPressed: _onLikeButtonTapped),
-                  // MARK: AppBarItem 4개의 간격을 조정하기 위한 조치
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: BottomAppBarItem(
-                        isActive: _selectedIndex == 2,
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                    top: BorderSide(
+                        color: ColorSeed.meticulousGrayLight.color,
+                        width: 1.0)),
+              ),
+              child: BottomAppBar(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                height: 84,
+                color: Colors.white,
+                /** MARK: 있으나 없으나? */
+                // shape: const CircularNotchedRectangle(),
+                notchMargin: 5,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    BottomAppBarItem(
+                        isActive: _selectedIndex == 0,
                         defaultIcon: Image.asset(
-                            'assets/icons/bottom-nav/add_default.png'),
+                            'assets/icons/bottom-nav/home_default.png'),
                         activeIcon: Image.asset(
-                            'assets/icons/bottom-nav/add_active.png'),
-                        label: '',
+                            'assets/icons/bottom-nav/home_active.png'),
+                        label: '홈',
+                        onPressed: _onHomeButtonTapped),
+                    BottomAppBarItem(
+                        isActive: _selectedIndex == 1,
+                        defaultIcon: Image.asset(
+                            'assets/icons/bottom-nav/like_default.png'),
+                        activeIcon: Image.asset(
+                            'assets/icons/bottom-nav/like_active.png'),
+                        label: '좋아요',
                         onPressed: _onLikeButtonTapped),
-                  ),
-                  BottomAppBarItem(
-                      isActive: _selectedIndex == 2,
-                      defaultIcon: Image.asset('assets/icons/bell_default.png'),
-                      activeIcon: Image.asset('assets/icons/bell_active.png'),
-                      label: '밴드',
-                      onPressed: _onBandButtonTapped),
-                  BottomAppBarItem(
-                      isActive: _selectedIndex == 3,
-                      defaultIcon: Image.asset(
-                          'assets/icons/bottom-nav/profile_default.png'),
-                      activeIcon: Image.asset(
-                          'assets/icons/bottom-nav/profile_active.png'),
-                      label: '프로필',
-                      onPressed: _onProfileButtonTapped),
-                ],
+                    // MARK: AppBarItem 4개의 간격을 조정하기 위한 조치
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: BottomAppBarItem(
+                          isActive: _selectedIndex == 2,
+                          defaultIcon: Image.asset(
+                              'assets/icons/bottom-nav/add_default.png'),
+                          activeIcon: Image.asset(
+                              'assets/icons/bottom-nav/add_active.png'),
+                          label: '',
+                          onPressed: _onLikeButtonTapped),
+                    ),
+                    BottomAppBarItem(
+                        isActive: _selectedIndex == 2,
+                        defaultIcon:
+                            Image.asset('assets/icons/bell_default.png'),
+                        activeIcon: Image.asset('assets/icons/bell_active.png'),
+                        label: '밴드',
+                        onPressed: _onBandButtonTapped),
+                    BottomAppBarItem(
+                        isActive: _selectedIndex == 3,
+                        defaultIcon: Image.asset(
+                            'assets/icons/bottom-nav/profile_default.png'),
+                        activeIcon: Image.asset(
+                            'assets/icons/bottom-nav/profile_active.png'),
+                        label: '프로필',
+                        onPressed: _onProfileButtonTapped),
+                  ],
+                ),
               ),
             ),
             Positioned(
