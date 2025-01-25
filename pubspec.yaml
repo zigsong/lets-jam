@@ -92,6 +92,6 @@ flutter:
 
 flutter_native_splash:
   color: "#ffffff"
-  image: assets/images/splash_temp.png
+  image: assets/images/splash_ios.png
   android: true
   ios: true
