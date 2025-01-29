@@ -5,7 +5,6 @@ import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
-import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
@@ -54,40 +53,138 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         children: [
           Column(
             children: [
-              ImageSlider(images: widget.post.images),
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.post.title,
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.w700),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    if (_user != null) PostDetailAuthorInfo(user: _user!),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    if (widget.post.postType == PostTypeEnum.findBand)
-                      WantedSession(post: widget.post),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    PostDetailInfo(post: widget.post),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(widget.post.description),
-                    )
-                  ],
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ImageSlider(images: widget.post.images),
+                      Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.post.title,
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.w700),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            if (_user != null)
+                              PostDetailAuthorInfo(user: _user!),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            if (widget.post.postType == PostTypeEnum.findBand)
+                              WantedSession(post: widget.post),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            PostDetailInfo(post: widget.post),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(widget.post.description),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              Padding(
+                  padding: const EdgeInsets.only(
+                      top: 24, left: 24, right: 24, bottom: 40),
+                  child: widget.post.postType == PostTypeEnum.findSession
+                      ? Row(
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  backgroundColor: const Color(0xffBFFFAF),
+                                  foregroundColor: const Color(0xff1c1c1c),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 56,
+                                      height: 56,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffD9D9D9),
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    const Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          /** TODO: 밴드 프로필로 연결 */
+                                          '원 투 ASDF',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
+                                        ),
+                                        Text(
+                                          'since 2022',
+                                          style: TextStyle(
+                                              color: Color(0xff4E4E4E)),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              flex: 1,
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  backgroundColor: const Color(0xff1c1c1c),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    SvgPicture.asset('assets/icons/mail.svg'),
+                                    const Text(
+                                      '문의',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+                      : WideButton(
+                          text: '세션에게 연락하기',
+                          onPressed: () {},
+                        ))
             ],
           ),
           Positioned(
@@ -103,93 +200,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               },
             ),
           ),
-          Positioned(
-            bottom: 40,
-            left: 24,
-            right: 24,
-            child: widget.post.postType == PostTypeEnum.findSession
-                ? Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: const Color(0xffBFFFAF),
-                            foregroundColor: const Color(0xff1c1c1c),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 56,
-                                height: 56,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xffD9D9D9),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    /** TODO: 밴드 프로필로 연결 */
-                                    '원 투 ASDF',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                  ),
-                                  Text(
-                                    'since 2022',
-                                    style: TextStyle(color: Color(0xff4E4E4E)),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: const Color(0xff1c1c1c),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              SvgPicture.asset('assets/icons/mail.svg'),
-                              const Text(
-                                '문의',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  )
-                : WideButton(
-                    text: '세션에게 연락하기',
-                    onPressed: () {},
-                  ),
-          )
         ],
       ),
     );
@@ -280,29 +290,33 @@ class PostDetailInfo extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              GestureDetector(
-                child: Row(
-                  children: [
-                    Text(
-                      post.contact,
-                      style:
-                          const TextStyle(decoration: TextDecoration.underline),
-                    ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    const Icon(
-                      Icons.content_copy,
-                      size: 14,
-                      color: Colors.grey,
-                    )
-                  ],
+              Flexible(
+                child: GestureDetector(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        post.contact,
+                        softWrap: true,
+                        style: const TextStyle(
+                            decoration: TextDecoration.underline),
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      const Icon(
+                        Icons.content_copy,
+                        size: 14,
+                        color: Colors.grey,
+                      )
+                    ],
+                  ),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("연락처가 복사되었습니다")),
+                    );
+                  },
                 ),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("연락처가 복사되었습니다")),
-                  );
-                },
               )
             ],
           )
