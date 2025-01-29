@@ -121,21 +121,12 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                   onTap: () {
                     // BottomSheet 동작
                   },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xffBFFFAF),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                    ),
-                    child: PostBottomSheet(onClose: () {
-                      _controller!.reverse();
-                      setState(() {
-                        _isBottomSheetOpen = !_isBottomSheetOpen;
-                      });
-                    }),
-                  ),
+                  child: PostBottomSheet(onClose: () {
+                    _controller!.reverse();
+                    setState(() {
+                      _isBottomSheetOpen = !_isBottomSheetOpen;
+                    });
+                  }),
                 ),
               ),
             ),

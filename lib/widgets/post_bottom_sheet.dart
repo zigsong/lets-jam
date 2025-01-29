@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/screens/upload_screen.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class PostBottomSheet extends StatelessWidget {
   final VoidCallback onClose;
@@ -8,28 +9,49 @@ class PostBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      clipBehavior: Clip.antiAlias,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Text('어떤 글을 써볼까요?'),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(color: ColorSeed.boldOrangeMedium.color),
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            child: const Text(
+              '어떤 글을 써볼까요?',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  height: 1.4),
+            ),
           ),
           Column(
             children: [
               PostBottomSheetSelect(
                 postType: PostTypeEnum.findSession,
                 onClose: onClose,
-                title: '세션 구하기',
-                desc:
-                    '세션을 구하기 위해 우리 밴드를 소개해요.\n글은 밴드를 찾고 있는 세션들이 볼 수 있도록 ‘밴드찾기’ 게시판에 올라가요.',
+                title: '멤버 구하기',
+                desc: '같이 합주할 멤버를 구해요.\n작성한 글은 [밴드] 게시판에서 볼 수 있어요.',
+              ),
+              Divider(
+                height: 0.5,
+                thickness: 0.5,
+                color: ColorSeed.boldOrangeMedium.color,
               ),
               PostBottomSheetSelect(
-                postType: PostTypeEnum.findBand,
-                onClose: onClose,
-                title: '밴드 구하기',
-                desc:
-                    '밴드에 들어가기 위해 저(세션)를 소개해요.\n글은 세션을 찾고 있는 밴드들이 볼수 있도록 ‘세션찾기’ 게시판에 올라가요.',
+                  postType: PostTypeEnum.findBand,
+                  onClose: onClose,
+                  title: '밴드 구하기',
+                  desc: '같이 합주할 밴드를 구해요.\n작성한 글은 [멤버] 게시판에서 볼 수 있어요.'),
+              const SizedBox(
+                height: 14,
               )
             ],
           )
@@ -64,46 +86,30 @@ class PostBottomSheetSelect extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        decoration: const BoxDecoration(
-            border: Border(
-          top: BorderSide(width: 0.5, color: Color(0xff9C9C9C)),
-        )),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: const Color(0xff9C9C9C),
-              ),
+            Text(
+              title,
+              style: TextStyle(
+                  fontSize: 16, color: ColorSeed.organizedBlackMedium.color),
             ),
             const SizedBox(
-              width: 16,
+              width: 22,
             ),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    desc,
-                    style: const TextStyle(color: Color(0xff878787)),
-                  )
-                ],
+              child: Text(
+                desc,
+                style: TextStyle(
+                    color: ColorSeed.organizedBlackLight.color, fontSize: 12),
               ),
             ),
-            const SizedBox(
-              width: 16,
+            Icon(
+              Icons.keyboard_arrow_right,
+              size: 20,
+              color: ColorSeed.organizedBlackLight.color,
             ),
-            const Icon(Icons.keyboard_arrow_right, color: Color(0xff8F9098)),
           ],
         ),
       ),
