@@ -5,6 +5,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 Future<void> main() async {
+  /** splash screen 시간 */
+  await Future.delayed(const Duration(milliseconds: 1000));
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
