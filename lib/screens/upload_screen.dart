@@ -147,8 +147,8 @@ class _UploadScreenState extends State<UploadScreen> {
                   height: 30,
                 ),
                 CustomForm(
-                  label: '세션',
-                  subTitle: '밴드가 원하는 멤버의 악기를 모두 선택해주세요.',
+                  label: '세션(제한없음)',
+                  subTitle: '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
                   isRequired: true,
                   content: SessionSelector(
                     selectedSessions: _findSessionUploadData.sessions,
@@ -181,7 +181,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   height: 30,
                 ),
                 CustomForm(
-                  label: '지역',
+                  label: '지역(최대3개)',
                   content: RegionSelector(
                     selectedRegions: _findSessionUploadData.regions,
                     onChange: (region) {
@@ -198,7 +198,7 @@ class _UploadScreenState extends State<UploadScreen> {
                 ),
                 CustomForm(
                   label: '사진',
-                  subTitle: '밴드를 소개할 수 있는 사진을 올려주세요!(최대 5장)',
+                  subTitle: '밴드를 소개할 수 있는 사진을 올려주세요! (최대 5장)',
                   content: MultipleImagePicker(
                     onSelect: (file) {
                       setState(() {
@@ -217,7 +217,7 @@ class _UploadScreenState extends State<UploadScreen> {
                 ),
                 CustomForm(
                   label: '연락처',
-                  subTitle: '카톡아이디 또는 오픈 카톡 프로필 링크',
+                  subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
                   content: TextInput(onChange: (value) {
                     _findSessionUploadData.contact = value ?? '';
                   }),

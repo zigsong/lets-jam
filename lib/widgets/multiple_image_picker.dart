@@ -37,8 +37,8 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
                   border: Border.all(width: 1, color: const Color(0xff8F9098)),
                   borderRadius: BorderRadius.circular(8)),
               alignment: Alignment.center, // SVG를 중앙에 배치
-              child: SvgPicture.asset(
-                'assets/icons/plus-sm.svg',
+              child: Image.asset(
+                'assets/icons/upload_camera.png',
                 width: 20,
                 height: 20,
               )),
