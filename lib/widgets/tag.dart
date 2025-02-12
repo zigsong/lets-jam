@@ -10,13 +10,14 @@ class Tag extends StatelessWidget {
   final Color? bgColor;
   final BoxBorder? border;
 
-  const Tag(
-      {super.key,
-      required this.text,
-      this.size = TagSizeEnum.medium,
-      this.fgColor,
-      this.bgColor,
-      this.border});
+  const Tag({
+    super.key,
+    required this.text,
+    this.size = TagSizeEnum.medium,
+    this.fgColor,
+    this.bgColor,
+    this.border,
+  });
 
   bool get isSmall => size == TagSizeEnum.small;
 
@@ -24,7 +25,7 @@ class Tag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-          horizontal: isSmall ? 6 : 8, vertical: isSmall ? 1 : 4),
+          horizontal: isSmall ? 6 : 8, vertical: isSmall ? 2 : 6),
       decoration: BoxDecoration(
           color: bgColor ?? ColorSeed.boldOrangeStrong.color,
           border: border,
@@ -35,7 +36,7 @@ class Tag extends StatelessWidget {
             fontSize: isSmall ? 13 : 14,
             fontWeight: FontWeight.w500,
             color: fgColor ?? Colors.white,
-            height: 1.54),
+            height: 1),
       ),
     );
   }

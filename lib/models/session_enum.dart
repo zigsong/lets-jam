@@ -1,3 +1,4 @@
+/// TODO: 보컬(남/여), 기타(퍼스트/세컨) 구분하는지 확인
 enum SessionEnum {
   vocal,
   drum,

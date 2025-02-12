@@ -286,8 +286,7 @@ class _LevelSelectorState extends State<LevelSelector> {
               fgColor: isSelected ? Colors.white : Colors.black,
             ),
           ),
-          if (entry != levelMap.entries.last) // 마지막 요소에는 간격 추가하지 않음
-            const SizedBox(width: 6), // 항목 사이 간격
+          if (entry != levelMap.entries.last) const SizedBox(width: 6),
         ],
       );
     }).toList());
