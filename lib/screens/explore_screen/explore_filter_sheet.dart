@@ -12,15 +12,21 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 400,
       decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
-      child: const Column(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(15),
+            bottomRight: Radius.circular(15),
+          )),
+      child: const Wrap(
         children: [
-          Text('세션'),
-          Text('레벨'),
-          Text('지역'),
+          Column(
+            children: [
+              Text('세션'),
+              Text('레벨'),
+              Text('지역'),
+            ],
+          )
         ],
       ),
     );

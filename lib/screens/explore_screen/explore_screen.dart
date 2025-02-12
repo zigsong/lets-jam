@@ -15,10 +15,30 @@ class ExploreScreen extends StatefulWidget {
   State<ExploreScreen> createState() => _ExploreScreenState();
 }
 
-class _ExploreScreenState extends State<ExploreScreen> {
+class _ExploreScreenState extends State<ExploreScreen>
+    with SingleTickerProviderStateMixin {
   final PageController _pageViewController = PageController();
   int _selectedPage = 0;
+
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
   bool _isFilterSheetOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.fastLinearToSlowEaseIn,
+    );
+  }
 
   void _slidePage() {
     setState(() {
@@ -33,10 +53,21 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   void _toggleExploreFilter() {
-    print('_toggleExploreFilter');
+    if (_animation.status != AnimationStatus.completed) {
+      _controller.forward();
+    } else {
+      _controller.animateBack(0, duration: const Duration(milliseconds: 300));
+    }
+
     setState(() {
       _isFilterSheetOpen = !_isFilterSheetOpen;
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -106,7 +137,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     ),
                   ),
                 ),
-              if (_isFilterSheetOpen) const ExploreFilterSheet(),
+              if (_isFilterSheetOpen)
+                SizeTransition(
+                    sizeFactor: _animation,
+                    axis: Axis.vertical,
+                    child: const ExploreFilterSheet()),
             ]),
           )
         ],
