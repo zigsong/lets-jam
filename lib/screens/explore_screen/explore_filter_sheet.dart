@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/screens/explore_screen/region_filter.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/tag.dart';
+import 'package:lets_jam/widgets/wide_button.dart';
 
 class ExploreFilterSheet extends StatefulWidget {
   const ExploreFilterSheet({super.key});
@@ -104,10 +106,48 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('지역', style: labelStyle),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      const RegionFilter(),
                     ],
                   )),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                child: Row(children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 11, horizontal: 25.5),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Row(
+                        children: [
+                          Text(
+                            '초기화',
+                            style: TextStyle(
+                                color: ColorSeed.boldOrangeRegular.color,
+                                fontSize: 13,
+                                height: 1.38),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          Image.asset(
+                            width: 18,
+                            height: 18,
+                            'assets/icons/filter_reset.png',
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(child: WideButton(text: '필터 적용', onPressed: () {}))
+                ]),
+              )
             ],
           )
         ],
