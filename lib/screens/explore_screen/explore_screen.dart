@@ -6,6 +6,8 @@ import 'package:lets_jam/screens/explore_screen/explore_posts.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/page_toggler.dart';
 
+enum FilterEnum { session, level, region }
+
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({
     super.key,
@@ -24,6 +26,11 @@ class _ExploreScreenState extends State<ExploreScreen>
   late Animation<double> _animation;
 
   bool _isFilterSheetOpen = false;
+  Map<FilterEnum, List<String>> _filterValues = {
+    FilterEnum.session: [],
+    FilterEnum.level: [],
+    FilterEnum.region: [],
+  };
 
   @override
   void initState() {
@@ -61,6 +68,17 @@ class _ExploreScreenState extends State<ExploreScreen>
 
     setState(() {
       _isFilterSheetOpen = !_isFilterSheetOpen;
+    });
+  }
+
+  void _setFilterValue(FilterEnum key, List<String> value) {
+    setState(() {
+      final updatedFilter = Map<FilterEnum, List<String>>.from(_filterValues);
+      updatedFilter[key] = List.from(value);
+
+      setState(() {
+        _filterValues = updatedFilter;
+      });
     });
   }
 
@@ -141,7 +159,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                 SizeTransition(
                     sizeFactor: _animation,
                     axis: Axis.vertical,
-                    child: const ExploreFilterSheet()),
+                    child: ExploreFilterSheet(
+                      filterValues: _filterValues,
+                      setFilterValue: _setFilterValue,
+                    )),
             ]),
           )
         ],

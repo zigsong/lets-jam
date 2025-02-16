@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/explore_screen/region_filter.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 
 class ExploreFilterSheet extends StatefulWidget {
-  const ExploreFilterSheet({super.key});
+  const ExploreFilterSheet(
+      {super.key, required this.filterValues, required this.setFilterValue});
+
+  final Map<FilterEnum, List<String>> filterValues;
+  final void Function(FilterEnum key, List<String> value) setFilterValue;
 
   @override
   State<ExploreFilterSheet> createState() => _ExploreFilterSheetState();
@@ -44,15 +49,36 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       ),
                       Row(
                         children: SessionEnum.values.map((session) {
+                          final sessions =
+                              widget.filterValues[FilterEnum.session] ?? [];
+
                           return Row(
                             children: [
-                              Tag(
-                                text: sessionMap[session] ?? '',
-                                border: Border.all(
-                                  color: ColorSeed.meticulousGrayLight.color,
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (sessions.contains(session.name)) {
+                                      sessions.remove(session.name);
+                                    } else {
+                                      sessions.add(session.name);
+                                    }
+
+                                    widget.setFilterValue(FilterEnum.session,
+                                        List.from(sessions));
+                                  });
+                                },
+                                child: Tag(
+                                  text: sessionMap[session] ?? '',
+                                  border: Border.all(
+                                    color: ColorSeed.meticulousGrayLight.color,
+                                  ),
+                                  bgColor: sessions.contains(session.name)
+                                      ? ColorSeed.organizedBlackMedium.color
+                                      : Colors.white,
+                                  fgColor: sessions.contains(session.name)
+                                      ? Colors.white
+                                      : ColorSeed.organizedBlackMedium.color,
                                 ),
-                                bgColor: Colors.white,
-                                fgColor: Colors.black,
                               ),
                               if (session != SessionEnum.values.last)
                                 const SizedBox(width: 8),
@@ -79,15 +105,36 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       ),
                       Row(
                         children: LevelEnum.values.map((level) {
+                          final levels =
+                              widget.filterValues[FilterEnum.level] ?? [];
+
                           return Row(
                             children: [
-                              Tag(
-                                text: levelMap[level] ?? '',
-                                border: Border.all(
-                                  color: ColorSeed.meticulousGrayLight.color,
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (levels.contains(level.name)) {
+                                      levels.remove(level.name);
+                                    } else {
+                                      levels.add(level.name);
+                                    }
+
+                                    widget.setFilterValue(
+                                        FilterEnum.level, List.from(levels));
+                                  });
+                                },
+                                child: Tag(
+                                  text: levelMap[level] ?? '',
+                                  border: Border.all(
+                                    color: ColorSeed.meticulousGrayLight.color,
+                                  ),
+                                  bgColor: levels.contains(level.name)
+                                      ? ColorSeed.organizedBlackMedium.color
+                                      : Colors.white,
+                                  fgColor: levels.contains(level.name)
+                                      ? Colors.white
+                                      : ColorSeed.organizedBlackMedium.color,
                                 ),
-                                bgColor: Colors.white,
-                                fgColor: Colors.black,
                               ),
                               if (level != LevelEnum.values.last)
                                 const SizedBox(width: 8),
@@ -112,7 +159,25 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       const SizedBox(
                         height: 8,
                       ),
-                      const RegionFilter(),
+                      RegionFilter(
+                        selectedRegionIds:
+                            widget.filterValues[FilterEnum.region] ?? [],
+                        toggleRegion: (regionId) {
+                          final regions =
+                              widget.filterValues[FilterEnum.region] ?? [];
+
+                          setState(() {
+                            if (regions.contains(regionId)) {
+                              regions.remove(regionId);
+                            } else {
+                              regions.add(regionId);
+                            }
+
+                            widget.setFilterValue(
+                                FilterEnum.region, List.from(regions));
+                          });
+                        },
+                      ),
                     ],
                   )),
               Padding(

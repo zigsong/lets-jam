@@ -5,7 +5,11 @@ import 'package:lets_jam/widgets/tag.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegionFilter extends StatefulWidget {
-  const RegionFilter({super.key});
+  const RegionFilter(
+      {super.key, required this.selectedRegionIds, required this.toggleRegion});
+
+  final List<String> selectedRegionIds;
+  final void Function(String region) toggleRegion;
 
   @override
   State<RegionFilter> createState() => _RegionFilterState();
@@ -13,10 +17,8 @@ class RegionFilter extends StatefulWidget {
 
 class _RegionFilterState extends State<RegionFilter> {
   final supabase = Supabase.instance.client;
-  Future<Map<String, List<String>>>? _regions;
+  Future<Map<String, List<Map<String, String>>>>? _regionsData;
   String? _selectedCategory;
-  final List<String> _selectedSubCategories = [];
-  final List<String> _selectedRegionIds = [];
 
   @override
   void initState() {
@@ -29,7 +31,7 @@ class _RegionFilterState extends State<RegionFilter> {
 
     if (data.isNotEmpty) {
       setState(() {
-        _regions = Future.value(groupByCategory(data));
+        _regionsData = Future.value(groupByCategory(data));
         _selectedCategory = groupByCategory(data).keys.first;
       });
     }
@@ -38,7 +40,7 @@ class _RegionFilterState extends State<RegionFilter> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _regions,
+        future: _regionsData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -115,13 +117,28 @@ class _RegionFilterState extends State<RegionFilter> {
                         spacing: 8,
                         runSpacing: 8,
                         children: (regions[_selectedCategory] ?? [])
-                            .map((subcategory) => Tag(
-                                  text: subcategory,
-                                  border: Border.all(
-                                    color: ColorSeed.meticulousGrayLight.color,
-                                  ),
-                                  bgColor: Colors.white,
-                                  fgColor: Colors.black,
+                            .map((subcategory) => GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      widget.toggleRegion(
+                                          subcategory['regionId'] ?? '');
+                                    });
+                                  },
+                                  child: Tag(
+                                      text: subcategory['subcategory'] ?? '',
+                                      border: Border.all(
+                                        color:
+                                            ColorSeed.meticulousGrayLight.color,
+                                      ),
+                                      bgColor: widget.selectedRegionIds
+                                              .contains(subcategory['regionId'])
+                                          ? ColorSeed.organizedBlackMedium.color
+                                          : Colors.white,
+                                      fgColor: widget.selectedRegionIds
+                                              .contains(subcategory['regionId'])
+                                          ? Colors.white
+                                          : ColorSeed
+                                              .organizedBlackMedium.color),
                                 ))
                             .toList()),
                   ),
