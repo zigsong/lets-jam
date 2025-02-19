@@ -18,7 +18,6 @@ class ProfileImagePicker extends StatefulWidget {
 
 class _ProfileImagePickerState extends State<ProfileImagePicker> {
   final ImagePicker _picker = ImagePicker();
-  XFile? _selectedFile;
 
   _showImagePickerOptions(BuildContext context) {
     return showCupertinoModalPopup(
@@ -37,9 +36,9 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
                       final XFile? file =
                           await _picker.pickImage(source: ImageSource.gallery);
                       Navigator.pop(context);
-                      setState(() {
-                        _selectedFile = file;
-                      });
+                      if (file != null) {
+                        widget.onSelect(file);
+                      }
                     },
                   ),
                   CupertinoActionSheetAction(
@@ -52,9 +51,9 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
                       final XFile? file =
                           await _picker.pickImage(source: ImageSource.camera);
                       Navigator.pop(context);
-                      setState(() {
-                        _selectedFile = file;
-                      });
+                      if (file != null) {
+                        widget.onSelect(file);
+                      }
                     },
                   ),
                 ],
@@ -98,24 +97,15 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
                       File(widget.profileImage!.path),
                       fit: BoxFit.cover,
                     )
-                  : Image.asset('assets/images/avatar.png'),
+                  : Image.asset('assets/images/profile_avatar.png'),
             ),
             Positioned(
               right: 0,
-              top: 20,
-              child: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                    color: const Color(0xffBFFFAF),
-                    borderRadius: BorderRadius.circular(100)),
-                child: Center(
-                  child: Image.asset(
-                    'assets/icons/edit.png',
-                    width: 10,
-                    height: 10,
-                  ),
-                ),
+              top: 14,
+              child: Image.asset(
+                'assets/icons/profile_image_edit.png',
+                width: 32,
+                height: 32,
               ),
             )
           ],

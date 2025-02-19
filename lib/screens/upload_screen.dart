@@ -109,7 +109,7 @@ class _UploadScreenState extends State<UploadScreen> {
           style: TextStyle(
               fontSize: 16,
               color: ColorSeed.boldOrangeStrong.color,
-              fontWeight: FontWeight.w600),
+              fontWeight: FontWeight.w500),
         ),
       ),
       body: SingleChildScrollView(

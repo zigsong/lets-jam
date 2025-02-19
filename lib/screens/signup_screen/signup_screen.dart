@@ -3,7 +3,7 @@ import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
-import 'package:lets_jam/screens/signup_screen/required_page.dart';
+import 'package:lets_jam/screens/signup_screen/post_profile_page.dart';
 import 'package:lets_jam/utils/helper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -82,7 +82,7 @@ class _SignupScreenState extends State<SignupScreen>
       body: Column(
         children: [
           Expanded(
-            child: RequiredPage(
+            child: PostProfilePage(
                 user: widget.user,
                 signupData: _signupData,
                 updateSessionLevel: _updateSessionLevel,

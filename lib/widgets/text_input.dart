@@ -30,6 +30,8 @@ class TextInput extends StatelessWidget {
             children: [
               Text(
                 label!,
+                style: TextStyle(
+                    fontSize: 13, color: ColorSeed.organizedBlackMedium.color),
               ),
               const SizedBox(
                 width: 2,
