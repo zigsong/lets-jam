@@ -5,7 +5,7 @@ import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/date_parser.dart';
 import 'package:lets_jam/utils/helper.dart';
-import 'package:lets_jam/widgets/tag.dart';
+import 'package:lets_jam/widgets/post_badge.dart';
 
 class PostThumbnail extends StatelessWidget {
   final PostModel post;
@@ -43,8 +43,7 @@ class PostThumbnail extends StatelessWidget {
                       height: 28,
                       child: Row(
                         children: [
-                          Tag(
-                              color: TagColorEnum.orange,
+                          PostBadge(
                               text: formatList(post.sessions
                                   .map((session) => sessionMap[session])
                                   .toList())),
@@ -52,14 +51,11 @@ class PostThumbnail extends StatelessWidget {
                             width: 4,
                           ),
                           if (post.regions != null)
-                            Tag(
-                                color: TagColorEnum.orange,
-                                text: formatList(post.regions!)),
+                            PostBadge(text: formatList(post.regions!)),
                           const SizedBox(
                             width: 4,
                           ),
-                          Tag(
-                              color: TagColorEnum.orange,
+                          PostBadge(
                               text: formatList(post.levels
                                   .map((level) => levelMap[level])
                                   .toList())),
