@@ -47,44 +47,40 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       const SizedBox(
                         height: 8,
                       ),
-                      Row(
-                        children: SessionEnum.values.map((session) {
-                          final sessions =
-                              widget.filterValues[FilterEnum.session] ?? [];
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: SessionEnum.values.map((session) {
+                            final sessions =
+                                widget.filterValues[FilterEnum.session] ?? [];
 
-                          return Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    if (sessions.contains(session.name)) {
-                                      sessions.remove(session.name);
-                                    } else {
-                                      sessions.add(session.name);
-                                    }
+                            return Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (sessions.contains(session.name)) {
+                                        sessions.remove(session.name);
+                                      } else {
+                                        sessions.add(session.name);
+                                      }
 
-                                    widget.setFilterValue(FilterEnum.session,
-                                        List.from(sessions));
-                                  });
-                                },
-                                child: Tag(
-                                  text: sessionMap[session] ?? '',
-                                  border: Border.all(
-                                    color: ColorSeed.meticulousGrayLight.color,
+                                      widget.setFilterValue(FilterEnum.session,
+                                          List.from(sessions));
+                                    });
+                                  },
+                                  child: Tag(
+                                    text: sessionMap[session] ?? '',
+                                    color: TagColorEnum.black,
+                                    selected: sessions.contains(session.name),
                                   ),
-                                  bgColor: sessions.contains(session.name)
-                                      ? ColorSeed.organizedBlackMedium.color
-                                      : Colors.white,
-                                  fgColor: sessions.contains(session.name)
-                                      ? Colors.white
-                                      : ColorSeed.organizedBlackMedium.color,
                                 ),
-                              ),
-                              if (session != SessionEnum.values.last)
-                                const SizedBox(width: 8),
-                            ],
-                          );
-                        }).toList(),
+                                if (session != SessionEnum.values.last)
+                                  const SizedBox(width: 8),
+                              ],
+                            );
+                          }).toList(),
+                        ),
                       )
                     ],
                   )),
@@ -103,44 +99,40 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       const SizedBox(
                         height: 8,
                       ),
-                      Row(
-                        children: LevelEnum.values.map((level) {
-                          final levels =
-                              widget.filterValues[FilterEnum.level] ?? [];
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: LevelEnum.values.map((level) {
+                            final levels =
+                                widget.filterValues[FilterEnum.level] ?? [];
 
-                          return Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    if (levels.contains(level.name)) {
-                                      levels.remove(level.name);
-                                    } else {
-                                      levels.add(level.name);
-                                    }
+                            return Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (levels.contains(level.name)) {
+                                        levels.remove(level.name);
+                                      } else {
+                                        levels.add(level.name);
+                                      }
 
-                                    widget.setFilterValue(
-                                        FilterEnum.level, List.from(levels));
-                                  });
-                                },
-                                child: Tag(
-                                  text: levelMap[level] ?? '',
-                                  border: Border.all(
-                                    color: ColorSeed.meticulousGrayLight.color,
+                                      widget.setFilterValue(
+                                          FilterEnum.level, List.from(levels));
+                                    });
+                                  },
+                                  child: Tag(
+                                    text: levelMap[level] ?? '',
+                                    color: TagColorEnum.black,
+                                    selected: levels.contains(level.name),
                                   ),
-                                  bgColor: levels.contains(level.name)
-                                      ? ColorSeed.organizedBlackMedium.color
-                                      : Colors.white,
-                                  fgColor: levels.contains(level.name)
-                                      ? Colors.white
-                                      : ColorSeed.organizedBlackMedium.color,
                                 ),
-                              ),
-                              if (level != LevelEnum.values.last)
-                                const SizedBox(width: 8),
-                            ],
-                          );
-                        }).toList(),
+                                if (level != LevelEnum.values.last)
+                                  const SizedBox(width: 8),
+                              ],
+                            );
+                          }).toList(),
+                        ),
                       )
                     ],
                   )),

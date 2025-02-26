@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
@@ -45,9 +44,7 @@ class PostThumbnail extends StatelessWidget {
                       child: Row(
                         children: [
                           Tag(
-                              size: TagSizeEnum.small,
-                              bgColor: ColorSeed.boldOrangeLight.color,
-                              fgColor: ColorSeed.boldOrangeStrong.color,
+                              color: TagColorEnum.orange,
                               text: formatList(post.sessions
                                   .map((session) => sessionMap[session])
                                   .toList())),
@@ -56,30 +53,19 @@ class PostThumbnail extends StatelessWidget {
                           ),
                           if (post.regions != null)
                             Tag(
-                                size: TagSizeEnum.small,
-                                bgColor: ColorSeed.boldOrangeLight.color,
-                                fgColor: ColorSeed.boldOrangeStrong.color,
+                                color: TagColorEnum.orange,
                                 text: formatList(post.regions!)),
                           const SizedBox(
                             width: 4,
                           ),
                           Tag(
-                              size: TagSizeEnum.small,
-                              bgColor: ColorSeed.boldOrangeLight.color,
-                              fgColor: ColorSeed.boldOrangeStrong.color,
+                              color: TagColorEnum.orange,
                               text: formatList(post.levels
                                   .map((level) => levelMap[level])
                                   .toList())),
                           const SizedBox(
                             width: 4,
                           ),
-                          /** MARK: 나이까지 넣으면 넘친다 ㅠㅠ */
-                          // if (post.ages != null)
-                          //   Tag(
-                          //       size: TagSizeEnum.small,
-                          //       text: formatList(post.ages!
-                          //           .map((age) => ageMap[age])
-                          //           .toList())),
                         ],
                       )),
                   const SizedBox(

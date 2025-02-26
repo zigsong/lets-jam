@@ -240,7 +240,8 @@ class WantedSession extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: Tag(
                         text: tag,
-                        size: TagSizeEnum.small,
+                        color: TagColorEnum.orange,
+                        selected: true,
                       ),
                     ),
                   )
@@ -345,7 +346,8 @@ class PostDetailInfo extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Tag(
                           text: tag,
-                          size: TagSizeEnum.small,
+                          color: TagColorEnum.black,
+                          selected: true,
                         ),
                       ),
                     )

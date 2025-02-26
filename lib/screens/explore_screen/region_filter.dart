@@ -125,20 +125,11 @@ class _RegionFilterState extends State<RegionFilter> {
                                     });
                                   },
                                   child: Tag(
-                                      text: subcategory['subcategory'] ?? '',
-                                      border: Border.all(
-                                        color:
-                                            ColorSeed.meticulousGrayLight.color,
-                                      ),
-                                      bgColor: widget.selectedRegionIds
-                                              .contains(subcategory['regionId'])
-                                          ? ColorSeed.organizedBlackMedium.color
-                                          : Colors.white,
-                                      fgColor: widget.selectedRegionIds
-                                              .contains(subcategory['regionId'])
-                                          ? Colors.white
-                                          : ColorSeed
-                                              .organizedBlackMedium.color),
+                                    text: subcategory['subcategory'] ?? '',
+                                    color: TagColorEnum.black,
+                                    selected: widget.selectedRegionIds
+                                        .contains(subcategory['regionId']),
+                                  ),
                                 ))
                             .toList()),
                   ),

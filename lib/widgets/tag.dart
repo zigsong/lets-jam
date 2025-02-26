@@ -3,40 +3,63 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 
 enum TagSizeEnum { small, medium }
 
+enum TagColorEnum { orange, black }
+
 class Tag extends StatelessWidget {
   final String text;
-  final TagSizeEnum? size;
-  final Color? fgColor;
-  final Color? bgColor;
-  final BoxBorder? border;
+  final TagColorEnum color;
+  final TagSizeEnum size;
+  final bool selected;
 
-  const Tag({
-    super.key,
-    required this.text,
-    this.size = TagSizeEnum.medium,
-    this.fgColor,
-    this.bgColor,
-    this.border,
-  });
-
-  bool get isSmall => size == TagSizeEnum.small;
+  const Tag(
+      {super.key,
+      required this.text,
+      required this.color,
+      this.size = TagSizeEnum.medium,
+      this.selected = false});
 
   @override
   Widget build(BuildContext context) {
+    if (color == TagColorEnum.orange) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.5),
+        decoration: BoxDecoration(
+            color: selected == true ? ColorSeed.boldOrangeMedium.color : null,
+            border: selected == true
+                ? null
+                : Border.all(color: ColorSeed.boldOrangeMedium.color, width: 2),
+            borderRadius: BorderRadius.circular(20)),
+        child: Text(
+          text,
+          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              height: 1,
+              color: selected == true
+                  ? Colors.white
+                  : ColorSeed.boldOrangeMedium.color),
+        ),
+      );
+    }
+
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: isSmall ? 6 : 8, vertical: isSmall ? 2 : 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
-          color: bgColor ?? ColorSeed.boldOrangeStrong.color,
-          border: border,
+          color: selected == true ? ColorSeed.organizedBlackMedium.color : null,
+          border: selected == true
+              ? null
+              : Border.all(
+                  color: ColorSeed.meticulousGrayMedium.color, width: 1),
           borderRadius: BorderRadius.circular(20)),
       child: Text(
         text,
         style: TextStyle(
-            fontSize: isSmall ? 13 : 14,
+            fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: fgColor ?? Colors.white,
-            height: 1),
+            height: 1,
+            color: selected == true
+                ? Colors.white
+                : ColorSeed.organizedBlackMedium.color),
       ),
     );
   }

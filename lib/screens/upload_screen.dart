@@ -279,11 +279,8 @@ class _LevelSelectorState extends State<LevelSelector> {
             },
             child: Tag(
               text: entry.value,
-              border: Border.all(
-                color: ColorSeed.meticulousGrayLight.color,
-              ),
-              bgColor: isSelected ? Colors.black : Colors.white,
-              fgColor: isSelected ? Colors.white : Colors.black,
+              color: TagColorEnum.black,
+              selected: isSelected,
             ),
           ),
           if (entry != levelMap.entries.last) const SizedBox(width: 6),
@@ -321,11 +318,8 @@ class _AgeSelectorState extends State<AgeSelector> {
             },
             child: Tag(
               text: entry.value,
-              border: Border.all(
-                color: ColorSeed.meticulousGrayLight.color,
-              ),
-              bgColor: isSelected ? Colors.black : Colors.white,
-              fgColor: isSelected ? Colors.white : Colors.black,
+              color: TagColorEnum.black,
+              selected: isSelected,
             ),
           ),
           if (entry != ageMap.entries.last) // 마지막 요소에는 간격 추가하지 않음
@@ -370,8 +364,8 @@ class _RegionSelectorState extends State<RegionSelector> {
                   },
                   child: Tag(
                     text: entry.value,
-                    bgColor: Colors.black,
-                    fgColor: Colors.white,
+                    color: TagColorEnum.black,
+                    // TODO: selected?
                   ),
                 ),
                 if (entry !=
