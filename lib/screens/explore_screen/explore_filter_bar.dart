@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_jam/widgets/filter_tag.dart';
+import 'package:lets_jam/widgets/tag.dart';
 
 class ExploreFilterBar extends StatefulWidget {
   const ExploreFilterBar({
@@ -42,7 +42,13 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                       children: List.generate(mockFilteredTags.length, (index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: FilterTag(text: mockFilteredTags[index]),
+                          child: Tag(
+                            color: TagColorEnum.orange,
+                            text: mockFilteredTags[index],
+                            withXIcon: true,
+                            // selected: ,
+                            // onToggle: ,
+                          ),
                         );
                       }),
                     )),

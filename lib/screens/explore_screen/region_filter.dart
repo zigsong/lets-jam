@@ -68,70 +68,75 @@ class _RegionFilterState extends State<RegionFilter> {
             children: [
               TableRow(
                 children: [
-                  Column(
-                    children: [
-                      ...regions.keys.map((category) => Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedCategory = category;
-                                  });
-                                },
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: _selectedCategory == category
-                                          ? ColorSeed.organizedBlackMedium.color
-                                          : Colors.white),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                  child: Center(
-                                    child: Text(
-                                      category,
-                                      style: TextStyle(
-                                          color: _selectedCategory == category
-                                              ? Colors.white
-                                              : ColorSeed
-                                                  .organizedBlackMedium.color),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ...regions.keys.map((category) => Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _selectedCategory = category;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: _selectedCategory == category
+                                            ? ColorSeed
+                                                .organizedBlackMedium.color
+                                            : Colors.white),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    child: Center(
+                                      child: Text(
+                                        category,
+                                        style: TextStyle(
+                                            color: _selectedCategory == category
+                                                ? Colors.white
+                                                : ColorSeed.organizedBlackMedium
+                                                    .color),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Divider(
-                                height: 0.5,
-                                color: ColorSeed.meticulousGrayMedium.color,
-                              ),
-                            ],
-                          )),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        child: const Text(""),
-                      ),
-                    ],
+                                Divider(
+                                  height: 0.5,
+                                  color: ColorSeed.meticulousGrayMedium.color,
+                                ),
+                              ],
+                            )),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          child: const Text(""),
+                        ),
+                      ],
+                    ),
                   ),
                   Container(
+                    height: 276,
                     padding: const EdgeInsets.all(16),
-                    alignment: Alignment.center,
-                    child: Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: (regions[_selectedCategory] ?? [])
-                            .map((subcategory) => GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      widget.toggleRegion(
-                                          subcategory['regionId'] ?? '');
-                                    });
-                                  },
-                                  child: Tag(
-                                    text: subcategory['subcategory'] ?? '',
-                                    color: TagColorEnum.black,
-                                    selected: widget.selectedRegionIds
-                                        .contains(subcategory['regionId']),
-                                  ),
-                                ))
-                            .toList()),
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: (regions[_selectedCategory] ?? [])
+                              .map((subcategory) => GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        widget.toggleRegion(
+                                            subcategory['regionId'] ?? '');
+                                      });
+                                    },
+                                    child: Tag(
+                                      text: subcategory['subcategory'] ?? '',
+                                      color: TagColorEnum.black,
+                                      selected: widget.selectedRegionIds
+                                          .contains(subcategory['regionId']),
+                                    ),
+                                  ))
+                              .toList()),
+                    ),
                   ),
                 ],
               ),

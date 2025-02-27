@@ -9,25 +9,78 @@ class Tag extends StatelessWidget {
   final String text;
   final TagColorEnum color;
   final TagSizeEnum size;
-  final bool selected;
+  final bool withXIcon;
+  final bool? selected;
+  final void Function()? onToggle;
 
-  const Tag(
-      {super.key,
-      required this.text,
-      required this.color,
-      this.size = TagSizeEnum.medium,
-      this.selected = false});
+  const Tag({
+    super.key,
+    required this.text,
+    required this.color,
+    this.size = TagSizeEnum.medium,
+    this.withXIcon = false,
+    this.selected = false,
+    this.onToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (color == TagColorEnum.orange) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.5),
+      return GestureDetector(
+        onTap: onToggle,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+              horizontal: selected == true ? 16 : 12,
+              vertical: selected == true ? 8.5 : 4.5),
+          decoration: BoxDecoration(
+              color: selected == true ? ColorSeed.boldOrangeMedium.color : null,
+              border: selected == true
+                  ? null
+                  : Border.all(
+                      color: ColorSeed.boldOrangeMedium.color, width: 2),
+              borderRadius: BorderRadius.circular(20)),
+          child: Row(
+            children: [
+              Text(
+                text,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    height: 1,
+                    color: selected == true
+                        ? Colors.white
+                        : ColorSeed.boldOrangeMedium.color),
+              ),
+              if (withXIcon == true)
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Icon(
+                      Icons.close,
+                      size: 16,
+                      color: ColorSeed.boldOrangeRegular.color,
+                    )
+                  ],
+                )
+            ],
+          ),
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: onToggle,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
-            color: selected == true ? ColorSeed.boldOrangeMedium.color : null,
+            color:
+                selected == true ? ColorSeed.organizedBlackMedium.color : null,
             border: selected == true
                 ? null
-                : Border.all(color: ColorSeed.boldOrangeMedium.color, width: 2),
+                : Border.all(
+                    color: ColorSeed.meticulousGrayMedium.color, width: 1),
             borderRadius: BorderRadius.circular(20)),
         child: Text(
           text,
@@ -37,29 +90,8 @@ class Tag extends StatelessWidget {
               height: 1,
               color: selected == true
                   ? Colors.white
-                  : ColorSeed.boldOrangeMedium.color),
+                  : ColorSeed.organizedBlackMedium.color),
         ),
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      decoration: BoxDecoration(
-          color: selected == true ? ColorSeed.organizedBlackMedium.color : null,
-          border: selected == true
-              ? null
-              : Border.all(
-                  color: ColorSeed.meticulousGrayMedium.color, width: 1),
-          borderRadius: BorderRadius.circular(20)),
-      child: Text(
-        text,
-        style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            height: 1,
-            color: selected == true
-                ? Colors.white
-                : ColorSeed.organizedBlackMedium.color),
       ),
     );
   }

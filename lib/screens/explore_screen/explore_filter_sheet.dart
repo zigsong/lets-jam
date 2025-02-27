@@ -56,8 +56,11 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
 
                             return Row(
                               children: [
-                                GestureDetector(
-                                  onTap: () {
+                                Tag(
+                                  text: sessionMap[session] ?? '',
+                                  color: TagColorEnum.black,
+                                  selected: sessions.contains(session.name),
+                                  onToggle: () {
                                     setState(() {
                                       if (sessions.contains(session.name)) {
                                         sessions.remove(session.name);
@@ -69,11 +72,6 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                                           List.from(sessions));
                                     });
                                   },
-                                  child: Tag(
-                                    text: sessionMap[session] ?? '',
-                                    color: TagColorEnum.black,
-                                    selected: sessions.contains(session.name),
-                                  ),
                                 ),
                                 if (session != SessionEnum.values.last)
                                   const SizedBox(width: 8),
@@ -108,8 +106,11 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
 
                             return Row(
                               children: [
-                                GestureDetector(
-                                  onTap: () {
+                                Tag(
+                                  text: levelMap[level] ?? '',
+                                  color: TagColorEnum.black,
+                                  selected: levels.contains(level.name),
+                                  onToggle: () {
                                     setState(() {
                                       if (levels.contains(level.name)) {
                                         levels.remove(level.name);
@@ -121,11 +122,6 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                                           FilterEnum.level, List.from(levels));
                                     });
                                   },
-                                  child: Tag(
-                                    text: levelMap[level] ?? '',
-                                    color: TagColorEnum.black,
-                                    selected: levels.contains(level.name),
-                                  ),
                                 ),
                                 if (level != LevelEnum.values.last)
                                   const SizedBox(width: 8),
@@ -173,14 +169,20 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                     ],
                   )),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                padding: const EdgeInsets.only(
+                    top: 5, right: 16, bottom: 10, left: 16),
                 child: Row(children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 11, horizontal: 25.5),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        setState(() {
+                          for (var key in widget.filterValues.keys) {
+                            widget.setFilterValue(key, []);
+                          }
+                        });
+                      },
                       child: Row(
                         children: [
                           Text(
