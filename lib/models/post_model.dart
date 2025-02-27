@@ -106,12 +106,16 @@ class PostModel {
 
   static SessionEnum _sessionFromString(String session) {
     switch (session) {
-      case 'vocal':
-        return SessionEnum.vocal;
+      case 'vocalM':
+        return SessionEnum.vocalM;
+      case 'vocalF':
+        return SessionEnum.vocalF;
       case 'drum':
         return SessionEnum.drum;
-      case 'guitar':
-        return SessionEnum.guitar;
+      case 'guitarFirst':
+        return SessionEnum.guitarFirst;
+      case 'guitarSecond':
+        return SessionEnum.guitarSecond;
       case 'bass':
         return SessionEnum.bass;
       case 'keyboard':
