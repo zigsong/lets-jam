@@ -1,4 +1,3 @@
-import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
@@ -86,14 +85,14 @@ class PostModel {
 
   static LevelEnum _levelFromString(String level) {
     switch (level) {
-      case 'newbie':
-        return LevelEnum.newbie;
-      case 'beginner':
-        return LevelEnum.beginner;
-      case 'intermediate':
-        return LevelEnum.intermediate;
-      case 'advanced':
-        return LevelEnum.advanced;
+      case 'lv1':
+        return LevelEnum.lv1;
+      case 'lv2':
+        return LevelEnum.lv2;
+      case 'lv3':
+        return LevelEnum.lv3;
+      case 'lv4':
+        return LevelEnum.lv4;
       default:
         throw Exception('Invalid level value: $level');
     }
