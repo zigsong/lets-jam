@@ -60,7 +60,9 @@ class Tag extends StatelessWidget {
                     Icon(
                       Icons.close,
                       size: 16,
-                      color: ColorSeed.boldOrangeRegular.color,
+                      color: selected == true
+                          ? Colors.white
+                          : ColorSeed.boldOrangeRegular.color,
                     )
                   ],
                 )

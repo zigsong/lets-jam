@@ -9,7 +9,9 @@ import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 
 class ExploreFilterSheet extends StatefulWidget {
-  const ExploreFilterSheet({super.key});
+  const ExploreFilterSheet({super.key, required this.closeFilterSheet});
+
+  final void Function() closeFilterSheet;
 
   @override
   State<ExploreFilterSheet> createState() => _ExploreFilterSheetState();
@@ -18,14 +20,6 @@ class ExploreFilterSheet extends StatefulWidget {
 class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
   final ExploreFilterController exploreFilterController =
       Get.put(ExploreFilterController());
-
-  late Map<FilterEnum, List<String>> tempValues;
-
-  @override
-  void initState() {
-    super.initState();
-    tempValues = exploreFilterController.filterValues;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,33 +51,28 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: SessionEnum.values.map((session) {
-                            final sessions =
-                                tempValues[FilterEnum.session] ?? [];
+                        child: Obx(() => Row(
+                              children: SessionEnum.values.map((session) {
+                                final sessions =
+                                    exploreFilterController.sessions;
 
-                            return Row(
-                              children: [
-                                Tag(
-                                  text: sessionMap[session] ?? '',
-                                  color: TagColorEnum.black,
-                                  selected: sessions.contains(session.name),
-                                  onToggle: () {
-                                    setState(() {
-                                      if (sessions.contains(session.name)) {
-                                        sessions.remove(session.name);
-                                      } else {
-                                        sessions.add(session.name);
-                                      }
-                                    });
-                                  },
-                                ),
-                                if (session != SessionEnum.values.last)
-                                  const SizedBox(width: 8),
-                              ],
-                            );
-                          }).toList(),
-                        ),
+                                return Row(
+                                  children: [
+                                    Tag(
+                                      text: sessionMap[session] ?? '',
+                                      color: TagColorEnum.black,
+                                      selected: sessions.contains(session),
+                                      onToggle: () {
+                                        exploreFilterController
+                                            .toggleSession(session);
+                                      },
+                                    ),
+                                    if (session != SessionEnum.values.last)
+                                      const SizedBox(width: 8),
+                                  ],
+                                );
+                              }).toList(),
+                            )),
                       )
                     ],
                   )),
@@ -104,32 +93,27 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: LevelEnum.values.map((level) {
-                            final levels = tempValues[FilterEnum.level] ?? [];
+                        child: Obx(() => Row(
+                              children: LevelEnum.values.map((level) {
+                                final levels = exploreFilterController.levels;
 
-                            return Row(
-                              children: [
-                                Tag(
-                                  text: levelMap[level] ?? '',
-                                  color: TagColorEnum.black,
-                                  selected: levels.contains(level.name),
-                                  onToggle: () {
-                                    setState(() {
-                                      if (levels.contains(level.name)) {
-                                        levels.remove(level.name);
-                                      } else {
-                                        levels.add(level.name);
-                                      }
-                                    });
-                                  },
-                                ),
-                                if (level != LevelEnum.values.last)
-                                  const SizedBox(width: 8),
-                              ],
-                            );
-                          }).toList(),
-                        ),
+                                return Row(
+                                  children: [
+                                    Tag(
+                                      text: levelMap[level] ?? '',
+                                      color: TagColorEnum.black,
+                                      selected: levels.contains(level),
+                                      onToggle: () {
+                                        exploreFilterController
+                                            .toggleLevel(level);
+                                      },
+                                    ),
+                                    if (level != LevelEnum.values.last)
+                                      const SizedBox(width: 8),
+                                  ],
+                                );
+                              }).toList(),
+                            )),
                       )
                     ],
                   )),
@@ -148,20 +132,11 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       const SizedBox(
                         height: 8,
                       ),
+                      /** TODO: fix - 초기화시 지역 필터가 초기화 안되는... */
                       RegionFilter(
-                        selectedRegionIds: exploreFilterController
-                                .filterValues[FilterEnum.region] ??
-                            [],
+                        selectedRegionIds: exploreFilterController.regions,
                         toggleRegion: (regionId) {
-                          setState(() {
-                            final regions = tempValues[FilterEnum.region] ?? [];
-
-                            if (regions.contains(regionId)) {
-                              regions.remove(regionId);
-                            } else {
-                              regions.add(regionId);
-                            }
-                          });
+                          exploreFilterController.toggleRegion(regionId);
                         },
                       ),
                     ],
@@ -175,11 +150,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                         vertical: 11, horizontal: 25.5),
                     child: GestureDetector(
                       onTap: () {
-                        setState(() {
-                          for (var key in tempValues.keys) {
-                            tempValues[key] = [];
-                          }
-                        });
+                        exploreFilterController.reset();
                       },
                       child: Row(
                         children: [
@@ -206,10 +177,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       child: WideButton(
                           text: '필터 적용',
                           onPressed: () {
-                            for (var key in tempValues.keys) {
-                              exploreFilterController.setFilterValue(
-                                  key, tempValues[key] ?? []);
-                            }
+                            widget.closeFilterSheet();
                           }))
                 ]),
               )

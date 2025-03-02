@@ -123,6 +123,7 @@ class _ExploreScreenState extends State<ExploreScreen>
               )),
           // 포스팅 필터 및 선택된 태그
           ExploreFilterBar(
+            selectedPage: _selectedPage,
             isFilterSheetOpen: _isFilterSheetOpen,
             onToggleFilter: _toggleExploreFilter,
           ),
@@ -146,7 +147,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                 SizeTransition(
                     sizeFactor: _animation,
                     axis: Axis.vertical,
-                    child: const ExploreFilterSheet()),
+                    child: ExploreFilterSheet(
+                      closeFilterSheet: _toggleExploreFilter,
+                    )),
             ]),
           )
         ],

@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/explore_filter_controller.dart';
+import 'package:lets_jam/models/level_enum.dart';
+import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/widgets/tag.dart';
 
 class ExploreFilterBar extends StatefulWidget {
   const ExploreFilterBar({
     super.key,
+    required this.selectedPage,
     required this.isFilterSheetOpen,
     required this.onToggleFilter,
   });
 
+  final int selectedPage;
   final bool isFilterSheetOpen;
   final void Function() onToggleFilter;
 
@@ -18,7 +24,9 @@ class ExploreFilterBar extends StatefulWidget {
 class _ExploreFilterBarState extends State<ExploreFilterBar> {
   @override
   Widget build(BuildContext context) {
-    var mockFilteredTags = ['태그1', '태그22', '태그333'];
+    print('현재 페이지: ${widget.selectedPage}');
+    final ExploreFilterController exploreFilterController =
+        Get.put(ExploreFilterController());
 
     return Stack(
       children: [
@@ -38,20 +46,67 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
               Expanded(
                 child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: List.generate(mockFilteredTags.length, (index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Tag(
-                            color: TagColorEnum.orange,
-                            text: mockFilteredTags[index],
-                            withXIcon: true,
-                            // selected: ,
-                            // onToggle: ,
-                          ),
-                        );
-                      }),
-                    )),
+                    child: Obx(() {
+                      List<SessionEnum> sessionFilters =
+                          exploreFilterController.sessions;
+                      List<LevelEnum> levelFilters =
+                          exploreFilterController.levels;
+                      List<String> regionFilters =
+                          exploreFilterController.regions;
+
+                      bool isFilterApplied = sessionFilters.isNotEmpty ||
+                          levelFilters.isNotEmpty ||
+                          regionFilters.isNotEmpty;
+
+                      return Row(
+                          children: isFilterApplied
+                              ? [
+                                  ...sessionFilters.map((session) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4),
+                                        child: Tag(
+                                            color: TagColorEnum.orange,
+                                            text: sessionMap[session]!,
+                                            withXIcon: true,
+                                            selected: widget.selectedPage == 1,
+                                            onToggle: () {
+                                              exploreFilterController
+                                                  .toggleSession(session);
+                                            }),
+                                      )),
+                                  ...levelFilters.map((level) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4),
+                                        child: Tag(
+                                            color: TagColorEnum.orange,
+                                            text: levelMap[level]!,
+                                            withXIcon: true,
+                                            selected: widget.selectedPage == 1,
+                                            onToggle: () {
+                                              exploreFilterController
+                                                  .toggleLevel(level);
+                                            }),
+                                      )),
+                                  ...regionFilters.map((regionId) => Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4),
+                                        child: Tag(
+                                          color: TagColorEnum.orange,
+                                          text: regionId,
+                                          withXIcon: true,
+                                          selected: widget.selectedPage == 1,
+                                          onToggle: () {
+                                            exploreFilterController
+                                                .toggleRegion(regionId);
+                                          },
+                                        ),
+                                      ))
+                                ]
+                              : [
+                                  const Tag(
+                                      text: '필터 전체', color: TagColorEnum.orange)
+                                ]);
+                    })),
               ),
             ],
           ),
