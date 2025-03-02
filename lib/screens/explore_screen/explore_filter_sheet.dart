@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/explore_filter_controller.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
-import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/explore_screen/region_filter.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 
 class ExploreFilterSheet extends StatefulWidget {
-  const ExploreFilterSheet(
-      {super.key, required this.filterValues, required this.setFilterValue});
-
-  final Map<FilterEnum, List<String>> filterValues;
-  final void Function(FilterEnum key, List<String> value) setFilterValue;
+  const ExploreFilterSheet({super.key});
 
   @override
   State<ExploreFilterSheet> createState() => _ExploreFilterSheetState();
 }
 
 class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
+  final ExploreFilterController exploreFilterController =
+      Get.put(ExploreFilterController());
+
+  late Map<FilterEnum, List<String>> tempValues;
+
+  @override
+  void initState() {
+    super.initState();
+    tempValues = exploreFilterController.filterValues;
+  }
+
   @override
   Widget build(BuildContext context) {
     TextStyle labelStyle =
@@ -52,7 +60,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                         child: Row(
                           children: SessionEnum.values.map((session) {
                             final sessions =
-                                widget.filterValues[FilterEnum.session] ?? [];
+                                tempValues[FilterEnum.session] ?? [];
 
                             return Row(
                               children: [
@@ -67,9 +75,6 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                                       } else {
                                         sessions.add(session.name);
                                       }
-
-                                      widget.setFilterValue(FilterEnum.session,
-                                          List.from(sessions));
                                     });
                                   },
                                 ),
@@ -101,8 +106,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: LevelEnum.values.map((level) {
-                            final levels =
-                                widget.filterValues[FilterEnum.level] ?? [];
+                            final levels = tempValues[FilterEnum.level] ?? [];
 
                             return Row(
                               children: [
@@ -117,9 +121,6 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                                       } else {
                                         levels.add(level.name);
                                       }
-
-                                      widget.setFilterValue(
-                                          FilterEnum.level, List.from(levels));
                                     });
                                   },
                                 ),
@@ -148,21 +149,18 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                         height: 8,
                       ),
                       RegionFilter(
-                        selectedRegionIds:
-                            widget.filterValues[FilterEnum.region] ?? [],
+                        selectedRegionIds: exploreFilterController
+                                .filterValues[FilterEnum.region] ??
+                            [],
                         toggleRegion: (regionId) {
-                          final regions =
-                              widget.filterValues[FilterEnum.region] ?? [];
-
                           setState(() {
+                            final regions = tempValues[FilterEnum.region] ?? [];
+
                             if (regions.contains(regionId)) {
                               regions.remove(regionId);
                             } else {
                               regions.add(regionId);
                             }
-
-                            widget.setFilterValue(
-                                FilterEnum.region, List.from(regions));
                           });
                         },
                       ),
@@ -178,8 +176,8 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          for (var key in widget.filterValues.keys) {
-                            widget.setFilterValue(key, []);
+                          for (var key in tempValues.keys) {
+                            tempValues[key] = [];
                           }
                         });
                       },
@@ -204,7 +202,15 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       ),
                     ),
                   ),
-                  Expanded(child: WideButton(text: '필터 적용', onPressed: () {}))
+                  Expanded(
+                      child: WideButton(
+                          text: '필터 적용',
+                          onPressed: () {
+                            for (var key in tempValues.keys) {
+                              exploreFilterController.setFilterValue(
+                                  key, tempValues[key] ?? []);
+                            }
+                          }))
                 ]),
               )
             ],

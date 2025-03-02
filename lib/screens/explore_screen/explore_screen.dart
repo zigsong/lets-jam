@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/explore_filter_controller.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_bar.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_sheet.dart';
 import 'package:lets_jam/screens/explore_screen/explore_posts.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/page_toggler.dart';
-
-enum FilterEnum { session, level, region }
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({
@@ -22,15 +22,13 @@ class _ExploreScreenState extends State<ExploreScreen>
   final PageController _pageViewController = PageController();
   int _selectedPage = 0;
 
+  final ExploreFilterController exploreFilterController =
+      Get.put(ExploreFilterController());
+
   late AnimationController _controller;
   late Animation<double> _animation;
 
   bool _isFilterSheetOpen = false;
-  Map<FilterEnum, List<String>> _filterValues = {
-    FilterEnum.session: [],
-    FilterEnum.level: [],
-    FilterEnum.region: [],
-  };
 
   @override
   void initState() {
@@ -68,17 +66,6 @@ class _ExploreScreenState extends State<ExploreScreen>
 
     setState(() {
       _isFilterSheetOpen = !_isFilterSheetOpen;
-    });
-  }
-
-  void _setFilterValue(FilterEnum key, List<String> value) {
-    setState(() {
-      final updatedFilter = Map<FilterEnum, List<String>>.from(_filterValues);
-      updatedFilter[key] = List.from(value);
-
-      setState(() {
-        _filterValues = updatedFilter;
-      });
     });
   }
 
@@ -159,10 +146,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                 SizeTransition(
                     sizeFactor: _animation,
                     axis: Axis.vertical,
-                    child: ExploreFilterSheet(
-                      filterValues: _filterValues,
-                      setFilterValue: _setFilterValue,
-                    )),
+                    child: const ExploreFilterSheet()),
             ]),
           )
         ],
