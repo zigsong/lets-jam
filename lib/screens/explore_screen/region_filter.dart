@@ -114,7 +114,7 @@ class _RegionFilterState extends State<RegionFilter> {
                     ),
                   ),
                   Container(
-                    height: 276,
+                    height: 176,
                     padding: const EdgeInsets.all(16),
                     child: SingleChildScrollView(
                       child: Wrap(

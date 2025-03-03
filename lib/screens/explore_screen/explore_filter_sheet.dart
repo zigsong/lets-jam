@@ -42,37 +42,38 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
               Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
                       Text('세션', style: labelStyle),
                       const SizedBox(
-                        height: 8,
+                        width: 8,
                       ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Obx(() => Row(
-                              children: SessionEnum.values.map((session) {
-                                final sessions =
-                                    exploreFilterController.sessions;
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Obx(() => Row(
+                                children: SessionEnum.values.map((session) {
+                                  final sessions =
+                                      exploreFilterController.sessions;
 
-                                return Row(
-                                  children: [
-                                    Tag(
-                                      text: sessionMap[session] ?? '',
-                                      color: TagColorEnum.black,
-                                      selected: sessions.contains(session),
-                                      onToggle: () {
-                                        exploreFilterController
-                                            .toggleSession(session);
-                                      },
-                                    ),
-                                    if (session != SessionEnum.values.last)
-                                      const SizedBox(width: 8),
-                                  ],
-                                );
-                              }).toList(),
-                            )),
+                                  return Row(
+                                    children: [
+                                      Tag(
+                                        text: sessionMap[session] ?? '',
+                                        color: TagColorEnum.black,
+                                        selected: sessions.contains(session),
+                                        onToggle: () {
+                                          exploreFilterController
+                                              .toggleSession(session);
+                                        },
+                                      ),
+                                      if (session != SessionEnum.values.last)
+                                        const SizedBox(width: 8),
+                                    ],
+                                  );
+                                }).toList(),
+                              )),
+                        ),
                       )
                     ],
                   )),
@@ -84,12 +85,11 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
               Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
                       Text('레벨', style: labelStyle),
                       const SizedBox(
-                        height: 8,
+                        width: 8,
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,

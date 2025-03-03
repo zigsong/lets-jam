@@ -82,7 +82,7 @@ class Tag extends StatelessWidget {
             border: selected == true
                 ? null
                 : Border.all(
-                    color: ColorSeed.meticulousGrayMedium.color, width: 1),
+                    color: ColorSeed.meticulousGrayLight.color, width: 1),
             borderRadius: BorderRadius.circular(20)),
         child: Text(
           text,
