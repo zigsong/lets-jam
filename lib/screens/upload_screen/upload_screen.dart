@@ -5,6 +5,7 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
+import 'package:lets_jam/screens/upload_screen/region_selector.dart';
 import 'package:lets_jam/utils/auth.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
@@ -99,6 +100,13 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        /** 
+         * extendBodyBehindAppBar 대신 사용
+         * - 스크롤 시에도 App Bar 뒤쪽에 색상 생기지 않도록
+         * */
+        forceMaterialTransparency: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         iconTheme:
             IconThemeData(color: ColorSeed.boldOrangeStrong.color, size: 20),
         shape: Border(
@@ -327,95 +335,5 @@ class _AgeSelectorState extends State<AgeSelector> {
         ],
       );
     }).toList());
-  }
-}
-
-class RegionSelector extends StatefulWidget {
-  final List<String> selectedRegions;
-  final Function(String region) onChange;
-
-  const RegionSelector(
-      {super.key, required this.selectedRegions, required this.onChange});
-
-  @override
-  State<RegionSelector> createState() => _RegionSelectorState();
-}
-
-class _RegionSelectorState extends State<RegionSelector> {
-  /// MARK: 얘 어따 두지?
-  final List<String> regions = ['서울', '인천', '경기', '충청', '대전', '광주', '부산', '제주'];
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-              children: widget.selectedRegions.asMap().entries.map((entry) {
-            return Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      widget.onChange(entry.value);
-                    });
-                  },
-                  child: Tag(
-                    text: entry.value,
-                    color: TagColorEnum.black,
-                    // TODO: selected?
-                  ),
-                ),
-                if (entry !=
-                    widget.selectedRegions
-                        .asMap()
-                        .entries
-                        .last) // 마지막 요소에는 간격 추가하지 않음
-                  const SizedBox(width: 6), // 항목 사이 간격
-              ],
-            );
-          }).toList()),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        Container(
-          height: 192,
-          /** NOTE: borderRadius를 넘는 이슈 때문에 임시로 padding을 사용 */
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-              border: Border.all(
-                  width: 2, color: ColorSeed.meticulousGrayLight.color),
-              borderRadius: BorderRadius.circular(12)),
-          child: SingleChildScrollView(
-            child: Column(
-              children: regions
-                  .asMap()
-                  .entries
-                  .map((entry) => Material(
-                        child: InkWell(
-                          splashColor: ColorSeed.meticulousGrayLight.color,
-                          highlightColor: ColorSeed.meticulousGrayLight.color,
-                          child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              width: double.infinity,
-                              height: 48,
-                              child: Text(entry.value)),
-                          onTap: () {
-                            setState(() {
-                              widget.onChange(entry.value);
-                            });
-                          },
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }

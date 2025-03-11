@@ -1,6 +1,8 @@
 // items는 List<Map<String, String>> 타입
-Map<String, List<Map<String, String>>> groupByCategory(dynamic items) {
-  Map<String, List<Map<String, String>>> groupedRegions = {};
+typedef RegionMap = Map<String, List<Map<String, String>>>;
+
+RegionMap groupByCategory(dynamic items) {
+  RegionMap groupedRegions = {};
 
   for (var item in items) {
     String category = item['category'] ?? '';
