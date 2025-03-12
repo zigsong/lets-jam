@@ -75,7 +75,9 @@ class Tag extends StatelessWidget {
     return GestureDetector(
       onTap: onToggle,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        padding: EdgeInsets.symmetric(
+            horizontal: selected == true ? 16 : 14,
+            vertical: selected == true ? 6 : 4),
         decoration: BoxDecoration(
             color:
                 selected == true ? ColorSeed.organizedBlackMedium.color : null,

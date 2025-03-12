@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
+
+class DropdownItem {
+  final String id;
+  final String text;
+
+  DropdownItem({required this.id, required this.text});
+}
 
 class CustomDropdown<T> extends StatefulWidget {
-  const CustomDropdown(
-      {super.key,
-      required this.label,
-      this.placeholder,
-      required this.currentValue,
-      required this.options,
-      required this.optionValues,
-      required this.onSelect});
+  const CustomDropdown({
+    super.key,
+    required this.currentValue,
+    required this.options,
+    required this.onSelect,
+    this.label,
+    this.placeholder,
+  });
 
-  final String label;
+  final String? label;
   final String? placeholder;
-  final T? currentValue;
-  final List<T> options;
-  final Map<T, String> optionValues;
-  final Function(T value) onSelect;
+  final DropdownItem? currentValue;
+  final List<DropdownItem> options;
+  final Function(DropdownItem value) onSelect;
 
   @override
   State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
@@ -28,62 +35,81 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
   void _showDropdown() {
     final targetContext = _targetKey.currentContext;
-    final renderBox = targetContext!.findRenderObject() as RenderBox;
+    if (targetContext == null) {
+      debugPrint("Target context is null. Widget might not be built yet.");
+      return;
+    }
+
+    final renderBox = targetContext.findRenderObject() as RenderBox;
     final overlay = Overlay.of(context);
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        width: renderBox.size.width,
-        child: CompositedTransformFollower(
-          link: _layerLink,
-          showWhenUnlinked: false,
-          offset: const Offset(0, 24),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(width: 2, color: const Color(0xffAED3FF)),
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: widget.options
-                  .asMap()
-                  .entries
-                  .map((entry) => Material(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+      builder: (context) => Stack(children: [
+        // MARK: 투명한 GestureDetector 추가 → 바깥쪽 클릭 감지
+        Positioned.fill(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: _hideDropdown,
+          ),
+        ),
+        Positioned(
+          width: renderBox.size.width,
+          child: CompositedTransformFollower(
+            link: _layerLink,
+            showWhenUnlinked: false,
+            // offset: const Offset(0, 36),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  border:
+                      Border.all(color: ColorSeed.meticulousGrayLight.color),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: widget.options.asMap().entries.map((entry) {
+                    final isEnd = entry.key == 0 ||
+                        entry.key == widget.options.length - 1;
+
+                    return Material(
+                      child: InkWell(
+                        /** TODO: Radius 적용이 안되는것 같다 ㅠㅠ */
+                        borderRadius: BorderRadius.only(
+                          bottomLeft:
+                              isEnd ? const Radius.circular(6) : Radius.zero,
+                          bottomRight:
+                              isEnd ? const Radius.circular(6) : Radius.zero,
                         ),
-                        child: InkWell(
-                          splashColor: const Color(0xffAED3FF),
-                          highlightColor: const Color(0xffAED3FF),
+                        highlightColor: ColorSeed.boldOrangeLight.color,
+                        child: Ink(
+                          color: Colors.white,
                           child: Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
                               width: double.infinity,
-                              height: 44,
-                              decoration: BoxDecoration(
-                                  border: entry.key > 0
-                                      ? const Border(
-                                          top: BorderSide(
-                                              width: 2,
-                                              color: Color(0xffAED3FF)),
-                                        )
-                                      : null,
-                                  borderRadius: entry.key == 0
-                                      ? BorderRadius.circular(12)
-                                      : null),
-                              child: Text(widget.optionValues[entry.value]!)),
-                          onTap: () {
-                            widget.onSelect(entry.value);
-                            _hideDropdown();
-                          },
+                              height: 36,
+                              child: Text(
+                                widget.options[entry.key].text,
+                                style:
+                                    const TextStyle(fontSize: 13, height: 1.38),
+                              )),
                         ),
-                      ))
-                  .toList(),
+                        onTap: () {
+                          widget.onSelect(entry.value);
+                          _hideDropdown();
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ),
         ),
-      ),
+      ]),
     );
     overlay.insert(_overlayEntry!);
   }
@@ -95,51 +121,45 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
-    String displayValue;
-    if (widget.currentValue is Enum) {
-      displayValue = widget.optionValues[(widget.currentValue as Enum)]!;
-    } else if (widget.currentValue is String) {
-      displayValue = widget.currentValue as String; // 그대로 사용
-    } else {
-      displayValue = widget.placeholder ?? '';
-    }
+    String displayValue = widget.currentValue?.text ?? widget.placeholder ?? '';
 
     return Stack(
       children: [
-        Positioned(
-            child: Text(
-          widget.label,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        )),
+        if (widget.label != null)
+          Positioned(
+              child: Text(
+            widget.label!,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          )),
         GestureDetector(
+          key: _targetKey,
           onTap: _showDropdown,
           child: CompositedTransformTarget(
             link: _layerLink,
-            child: Padding(
-                padding: const EdgeInsets.only(top: 24),
-                key: _targetKey,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  width: double.infinity,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    border:
-                        Border.all(width: 2, color: const Color(0xffAED3FF)),
-                    borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              width: double.infinity,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: ColorSeed.meticulousGrayLight.color),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    displayValue,
+                    style: const TextStyle(fontSize: 13, height: 1.38),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(displayValue),
-                      Image.asset(
-                        'assets/icons/arrow_down.png',
-                        width: 12,
-                        height: 12,
-                      ),
-                    ],
+                  Image.asset(
+                    'assets/icons/arrow_down.png',
+                    width: 12,
+                    height: 12,
                   ),
-                )),
+                ],
+              ),
+            ),
           ),
         ),
       ],

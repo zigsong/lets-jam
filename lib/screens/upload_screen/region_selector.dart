@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/screens/explore_screen/region_helper.dart';
+import 'package:lets_jam/widgets/custom_dropdown.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -55,6 +56,8 @@ class _RegionSelectorState extends State<RegionSelector> {
       children: [
         Row(
           children: widget.selectedRegions.asMap().entries.map((entry) {
+            bool isSelected = widget.selectedRegions.contains(entry.value);
+
             return Row(
               children: [
                 GestureDetector(
@@ -66,6 +69,8 @@ class _RegionSelectorState extends State<RegionSelector> {
                   child: Tag(
                     text: entry.value,
                     color: TagColorEnum.black,
+                    size: TagSizeEnum.small,
+                    selected: isSelected,
                   ),
                 ),
                 if (entry != widget.selectedRegions.asMap().entries.last)
@@ -73,9 +78,6 @@ class _RegionSelectorState extends State<RegionSelector> {
               ],
             );
           }).toList(),
-        ),
-        const SizedBox(
-          height: 8,
         ),
         FutureBuilder(
           future: _regionsData,
@@ -98,74 +100,48 @@ class _RegionSelectorState extends State<RegionSelector> {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                CustomDropdown(
-                  value: _selectedCategory,
-                  items: regions.keys
-                      .map((el) => RegionItem(id: el, text: el))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedCategory = value!;
-                      _selectedRegion = null;
-                    });
-                  },
-                ),
-                if (regions[_selectedCategory] != null)
-                  CustomDropdown(
-                    value: _selectedRegion!,
-                    items: regions[_selectedCategory]!
-                        .map((el) => RegionItem(
-                            id: el['subcategory']!, text: el['subcategory']!))
+                Expanded(
+                  child: CustomDropdown(
+                    currentValue: DropdownItem(
+                        id: _selectedCategory, text: _selectedCategory),
+                    options: regions.keys
+                        .map((el) => DropdownItem(id: el, text: el))
                         .toList(),
-                    onChanged: (value) {
+                    onSelect: (value) {
                       setState(() {
-                        _selectedRegion = value!;
+                        _selectedCategory = value.text;
+                        _selectedRegion = null;
                       });
-                      widget.onChange(value!);
                     },
                   ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                if (regions[_selectedCategory] != null)
+                  Expanded(
+                    child: CustomDropdown(
+                      currentValue: DropdownItem(
+                        id: _selectedRegion!,
+                        text: _selectedRegion!,
+                      ),
+                      options: regions[_selectedCategory]!
+                          .map((el) => DropdownItem(
+                              id: el['subcategory']!, text: el['subcategory']!))
+                          .toList(),
+                      onSelect: (value) {
+                        setState(() {
+                          _selectedRegion = value.text;
+                        });
+                        widget.onChange(value.id);
+                      },
+                    ),
+                  )
               ],
             );
           },
         ),
       ],
-    );
-  }
-}
-
-class CustomDropdown extends StatelessWidget {
-  final String value;
-  final List<RegionItem> items;
-  final ValueChanged<String?> onChanged;
-
-  const CustomDropdown({
-    super.key,
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          items: items.map((item) {
-            return DropdownMenuItem(
-              value: item.id,
-              child: Text(item.text),
-            );
-          }).toList(),
-          onChanged: onChanged,
-        ),
-      ),
     );
   }
 }
