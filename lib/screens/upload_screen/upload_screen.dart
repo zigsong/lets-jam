@@ -1,17 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/find_session_upload_model.dart';
-import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
+import 'package:lets_jam/screens/upload_screen/age_selector.dart';
+import 'package:lets_jam/screens/upload_screen/level_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
 import 'package:lets_jam/utils/auth.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:lets_jam/widgets/multiple_image_picker.dart';
 import 'package:lets_jam/widgets/session_selector.dart';
-import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -143,9 +142,17 @@ class _UploadScreenState extends State<UploadScreen> {
                   content: LevelSelector(
                     selectedLevels: _findSessionUploadData.levels,
                     onChange: (level) {
+                      if (level == null) {
+                        setState(() {
+                          _findSessionUploadData.levels = [];
+                        });
+                        return;
+                      }
                       if (_findSessionUploadData.levels.contains(level)) {
+                        debugPrint('해제: $level');
                         _findSessionUploadData.levels.remove(level);
                       } else {
+                        debugPrint('선택: $level');
                         _findSessionUploadData.levels.add(level);
                       }
                     },
@@ -177,6 +184,13 @@ class _UploadScreenState extends State<UploadScreen> {
                   content: AgeSelector(
                     selectedAges: _findSessionUploadData.ages,
                     onChange: (age) {
+                      if (age == null) {
+                        setState(() {
+                          _findSessionUploadData.ages = [];
+                        });
+                        return;
+                      }
+
                       if (_findSessionUploadData.ages.contains(age)) {
                         _findSessionUploadData.ages.remove(age);
                       } else {
@@ -256,84 +270,5 @@ class _UploadScreenState extends State<UploadScreen> {
         ),
       ),
     );
-  }
-}
-
-class LevelSelector extends StatefulWidget {
-  final List<LevelEnum> selectedLevels;
-  final Function(LevelEnum level) onChange;
-
-  const LevelSelector(
-      {super.key, required this.selectedLevels, required this.onChange});
-
-  @override
-  State<LevelSelector> createState() => _LevelSelectorState();
-}
-
-class _LevelSelectorState extends State<LevelSelector> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-        children: levelMap.entries.map((entry) {
-      bool isSelected = widget.selectedLevels.contains(entry.key);
-
-      return Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                widget.onChange(entry.key);
-              });
-            },
-            child: Tag(
-              text: entry.value,
-              color: TagColorEnum.black,
-              selected: isSelected,
-            ),
-          ),
-          if (entry != levelMap.entries.last) const SizedBox(width: 6),
-        ],
-      );
-    }).toList());
-  }
-}
-
-class AgeSelector extends StatefulWidget {
-  final List<AgeEnum> selectedAges;
-  final Function(AgeEnum age) onChange;
-
-  const AgeSelector(
-      {super.key, required this.selectedAges, required this.onChange});
-
-  @override
-  State<AgeSelector> createState() => _AgeSelectorState();
-}
-
-class _AgeSelectorState extends State<AgeSelector> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-        children: ageMap.entries.map((entry) {
-      bool isSelected = widget.selectedAges.contains(entry.key);
-
-      return Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                widget.onChange(entry.key);
-              });
-            },
-            child: Tag(
-              text: entry.value,
-              color: TagColorEnum.black,
-              selected: isSelected,
-            ),
-          ),
-          if (entry != ageMap.entries.last) // 마지막 요소에는 간격 추가하지 않음
-            const SizedBox(width: 6), // 항목 사이 간격
-        ],
-      );
-    }).toList());
   }
 }
