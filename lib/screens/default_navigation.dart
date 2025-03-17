@@ -156,17 +156,17 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                     BottomAppBarItem(
                         isActive: _selectedIndex == 0,
                         defaultIcon: Image.asset(
-                            'assets/icons/bottom-nav/home_default.png'),
+                            'assets/icons/bottom_nav/home_default.png'),
                         activeIcon: Image.asset(
-                            'assets/icons/bottom-nav/home_active.png'),
+                            'assets/icons/bottom_nav/home_active.png'),
                         label: '홈',
                         onPressed: _onHomeButtonTapped),
                     BottomAppBarItem(
                         isActive: _selectedIndex == 1,
                         defaultIcon: Image.asset(
-                            'assets/icons/bottom-nav/like_default.png'),
+                            'assets/icons/bottom_nav/like_default.png'),
                         activeIcon: Image.asset(
-                            'assets/icons/bottom-nav/like_active.png'),
+                            'assets/icons/bottom_nav/like_active.png'),
                         label: '좋아요',
                         onPressed: _onLikeButtonTapped),
                     // MARK: AppBarItem 4개의 간격을 조정하기 위한 조치
@@ -175,9 +175,9 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                       child: BottomAppBarItem(
                           isActive: _selectedIndex == 2,
                           defaultIcon: Image.asset(
-                              'assets/icons/bottom-nav/add_default.png'),
+                              'assets/icons/bottom_nav/add_default.png'),
                           activeIcon: Image.asset(
-                              'assets/icons/bottom-nav/add_active.png'),
+                              'assets/icons/bottom_nav/add_active.png'),
                           label: '',
                           onPressed: _onLikeButtonTapped),
                     ),
@@ -191,9 +191,9 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                     BottomAppBarItem(
                         isActive: _selectedIndex == 3,
                         defaultIcon: Image.asset(
-                            'assets/icons/bottom-nav/profile_default.png'),
+                            'assets/icons/bottom_nav/profile_default.png'),
                         activeIcon: Image.asset(
-                            'assets/icons/bottom-nav/profile_active.png'),
+                            'assets/icons/bottom_nav/profile_active.png'),
                         label: '프로필',
                         onPressed: _onProfileButtonTapped),
                   ],
@@ -214,7 +214,7 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                       child: SizedBox(
                           width: 44,
                           child: Image.asset(
-                              'assets/icons/bottom-nav/add_white.png'))),
+                              'assets/icons/bottom_nav/add_white.png'))),
                 ))
           ],
         ));

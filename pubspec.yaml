@@ -68,8 +68,9 @@ flutter:
   assets:
     - .env
     - assets/images/
+    - assets/images/session_selector/
     - assets/icons/
-    - assets/icons/bottom-nav/
+    - assets/icons/bottom_nav/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

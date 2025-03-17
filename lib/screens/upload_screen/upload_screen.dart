@@ -162,7 +162,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   height: 30,
                 ),
                 CustomForm(
-                  label: '세션(제한없음)',
+                  label: '세션',
                   subTitle: '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
                   isRequired: true,
                   content: SessionSelector(
@@ -240,9 +240,11 @@ class _UploadScreenState extends State<UploadScreen> {
                 CustomForm(
                   label: '연락처',
                   subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
-                  content: TextInput(onChange: (value) {
-                    _findSessionUploadData.contact = value ?? '';
-                  }),
+                  content: TextInput(
+                    onChange: (value) {
+                      _findSessionUploadData.contact = value ?? '';
+                    },
+                  ),
                 ),
                 const SizedBox(
                   height: 30,

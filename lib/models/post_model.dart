@@ -112,16 +112,12 @@ class PostModel {
         return SessionEnum.vocalF;
       case 'drum':
         return SessionEnum.drum;
-      case 'guitarFirst':
-        return SessionEnum.guitarFirst;
-      case 'guitarSecond':
-        return SessionEnum.guitarSecond;
+      case 'guitar':
+        return SessionEnum.guitar;
       case 'bass':
         return SessionEnum.bass;
       case 'keyboard':
         return SessionEnum.keyboard;
-      case 'etc':
-        return SessionEnum.etc;
       default:
         throw Exception('Invalid session value: $session');
     }
