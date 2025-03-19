@@ -9,28 +9,43 @@ class ExploreFilterController extends GetxController {
   var levels = <LevelEnum>[].obs;
   var regions = <String>[].obs;
 
+  // 태그 선택 시 임시 필터
+  var tempSessions = <SessionEnum>[].obs;
+  var tempLevels = <LevelEnum>[].obs;
+  var tempRegions = <String>[].obs;
+
   void toggleSession(SessionEnum session) {
-    if (sessions.contains(session)) {
+    if (tempSessions.contains(session)) {
+      tempSessions.remove(session);
       sessions.remove(session);
     } else {
-      sessions.add(session);
+      tempSessions.add(session);
     }
   }
 
   void toggleLevel(LevelEnum level) {
-    if (levels.contains(level)) {
+    if (tempLevels.contains(level)) {
+      tempLevels.remove(level);
       levels.remove(level);
     } else {
-      levels.add(level);
+      tempLevels.add(level);
     }
   }
 
   void toggleRegion(String regionId) {
-    if (regions.contains(regionId)) {
+    if (tempRegions.contains(regionId)) {
+      tempRegions.remove(regionId);
       regions.remove(regionId);
     } else {
-      regions.add(regionId);
+      tempRegions.add(regionId);
     }
+  }
+
+  // 필터 적용 (버튼 클릭 시 호출)
+  void applyFilters() {
+    sessions.assignAll(tempSessions);
+    levels.assignAll(tempLevels);
+    regions.assignAll(tempRegions);
   }
 
   void reset() {

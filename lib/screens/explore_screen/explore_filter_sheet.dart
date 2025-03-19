@@ -9,9 +9,9 @@ import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 
 class ExploreFilterSheet extends StatefulWidget {
-  const ExploreFilterSheet({super.key, required this.closeFilterSheet});
+  const ExploreFilterSheet({super.key, required this.applyFilter});
 
-  final void Function() closeFilterSheet;
+  final void Function() applyFilter;
 
   @override
   State<ExploreFilterSheet> createState() => _ExploreFilterSheetState();
@@ -54,7 +54,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                           child: Obx(() => Row(
                                 children: SessionEnum.values.map((session) {
                                   final sessions =
-                                      exploreFilterController.sessions;
+                                      exploreFilterController.tempSessions;
 
                                   return Row(
                                     children: [
@@ -95,7 +95,8 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                         scrollDirection: Axis.horizontal,
                         child: Obx(() => Row(
                               children: LevelEnum.values.map((level) {
-                                final levels = exploreFilterController.levels;
+                                final levels =
+                                    exploreFilterController.tempLevels;
 
                                 return Row(
                                   children: [
@@ -134,7 +135,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       ),
                       /** TODO: fix - 초기화시 지역 필터가 초기화 안되는... */
                       RegionFilter(
-                        selectedRegionIds: exploreFilterController.regions,
+                        selectedRegionIds: exploreFilterController.tempRegions,
                         toggleRegion: (regionId) {
                           exploreFilterController.toggleRegion(regionId);
                         },
@@ -177,7 +178,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       child: WideButton(
                           text: '필터 적용',
                           onPressed: () {
-                            widget.closeFilterSheet();
+                            widget.applyFilter();
                           }))
                 ]),
               )

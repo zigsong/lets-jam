@@ -24,7 +24,6 @@ class ExploreFilterBar extends StatefulWidget {
 class _ExploreFilterBarState extends State<ExploreFilterBar> {
   @override
   Widget build(BuildContext context) {
-    print('현재 페이지: ${widget.selectedPage}');
     final ExploreFilterController exploreFilterController =
         Get.put(ExploreFilterController());
 
@@ -48,11 +47,11 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                     scrollDirection: Axis.horizontal,
                     child: Obx(() {
                       List<SessionEnum> sessionFilters =
-                          exploreFilterController.sessions;
+                          exploreFilterController.tempSessions;
                       List<LevelEnum> levelFilters =
-                          exploreFilterController.levels;
+                          exploreFilterController.tempLevels;
                       List<String> regionFilters =
-                          exploreFilterController.regions;
+                          exploreFilterController.tempRegions;
 
                       bool isFilterApplied = sessionFilters.isNotEmpty ||
                           levelFilters.isNotEmpty ||

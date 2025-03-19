@@ -69,6 +69,15 @@ class _ExploreScreenState extends State<ExploreScreen>
     });
   }
 
+  void _applyFilter() {
+    exploreFilterController.applyFilters();
+
+    _controller.animateBack(0, duration: const Duration(milliseconds: 300));
+    setState(() {
+      _isFilterSheetOpen = false;
+    });
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -130,7 +139,9 @@ class _ExploreScreenState extends State<ExploreScreen>
           // 포스팅 목록
           Expanded(
             child: Stack(children: [
-              ExplorePosts(pageController: _pageViewController),
+              ExplorePosts(
+                pageController: _pageViewController,
+              ),
               // dimmed 배경
               if (_isFilterSheetOpen)
                 GestureDetector(
@@ -148,7 +159,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                     sizeFactor: _animation,
                     axis: Axis.vertical,
                     child: ExploreFilterSheet(
-                      closeFilterSheet: _toggleExploreFilter,
+                      applyFilter: _applyFilter,
                     )),
             ]),
           )
