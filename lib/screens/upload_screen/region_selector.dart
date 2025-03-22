@@ -54,30 +54,30 @@ class _RegionSelectorState extends State<RegionSelector> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
           children: widget.selectedRegions.asMap().entries.map((entry) {
             bool isSelected = widget.selectedRegions.contains(entry.value);
 
-            return Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      widget.onChange(entry.value);
-                    });
-                  },
-                  child: Tag(
-                    text: entry.value,
-                    color: TagColorEnum.black,
-                    size: TagSizeEnum.small,
-                    selected: isSelected,
-                  ),
-                ),
-                if (entry != widget.selectedRegions.asMap().entries.last)
-                  const SizedBox(width: 6),
-              ],
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  widget.onChange(entry.value);
+                });
+              },
+              child: Tag(
+                text: entry.value,
+                color: TagColorEnum.black,
+                size: TagSizeEnum.small,
+                selected: isSelected,
+                withXIcon: true,
+              ),
             );
           }).toList(),
+        ),
+        const SizedBox(
+          height: 8,
         ),
         FutureBuilder(
           future: _regionsData,

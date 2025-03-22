@@ -86,15 +86,35 @@ class Tag extends StatelessWidget {
                 : Border.all(
                     color: ColorSeed.meticulousGrayLight.color, width: 1),
             borderRadius: BorderRadius.circular(20)),
-        child: Text(
-          text,
-          style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              height: 1,
-              color: selected == true
-                  ? Colors.white
-                  : ColorSeed.organizedBlackMedium.color),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  height: 1,
+                  color: selected == true
+                      ? Colors.white
+                      : ColorSeed.organizedBlackMedium.color),
+            ),
+            if (withXIcon == true)
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Icon(
+                    Icons.close,
+                    size: 16,
+                    color: selected == true
+                        ? Colors.white
+                        : ColorSeed.boldOrangeRegular.color,
+                  )
+                ],
+              )
+          ],
         ),
       ),
     );

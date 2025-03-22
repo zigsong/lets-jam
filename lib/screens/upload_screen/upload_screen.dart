@@ -210,6 +210,8 @@ class _UploadScreenState extends State<UploadScreen> {
                       if (_findSessionUploadData.regions.contains(region)) {
                         _findSessionUploadData.regions.remove(region);
                       } else {
+                        /** TODO: 3개 이상 선택 시도 시 알럿 */
+                        if (_findSessionUploadData.regions.length >= 3) return;
                         _findSessionUploadData.regions.add(region);
                       }
                     },
