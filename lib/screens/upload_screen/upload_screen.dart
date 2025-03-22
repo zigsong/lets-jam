@@ -15,11 +15,11 @@ import 'package:lets_jam/widgets/text_input.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-enum PostTypeEnum { findBand, findSession }
+enum PostTypeEnum { findBand, findMember }
 
 Map<PostTypeEnum, String> postTypeTitle = {
   PostTypeEnum.findBand: '밴드',
-  PostTypeEnum.findSession: '세션',
+  PostTypeEnum.findMember: '멤버',
 };
 
 const SUPABASE_BUCKET_NAME = 'images';

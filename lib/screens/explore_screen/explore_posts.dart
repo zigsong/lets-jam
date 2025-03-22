@@ -61,7 +61,7 @@ class _ExplorePostsState extends State<ExplorePosts> {
             .where((post) => post.postType == PostTypeEnum.findBand)
             .toList();
         final findSessionPosts = posts
-            .where((post) => post.postType == PostTypeEnum.findSession)
+            .where((post) => post.postType == PostTypeEnum.findMember)
             .toList();
 
         return Padding(

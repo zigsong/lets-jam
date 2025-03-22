@@ -2,7 +2,7 @@ import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 
-enum PostTypeEnum { findBand, findSession }
+enum PostTypeEnum { findBand, findMember }
 
 class PostModel {
   String id;
@@ -70,8 +70,8 @@ class PostModel {
     switch (postType) {
       case 'findBand':
         return PostTypeEnum.findBand;
-      case 'findSession':
-        return PostTypeEnum.findSession;
+      case 'findMember':
+        return PostTypeEnum.findMember;
       default:
         throw Exception('Invalid postType value: $postType');
     }

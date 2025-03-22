@@ -100,7 +100,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               Padding(
                   padding: const EdgeInsets.only(
                       top: 24, left: 24, right: 24, bottom: 40),
-                  child: widget.post.postType == PostTypeEnum.findSession
+                  child: widget.post.postType == PostTypeEnum.findMember
                       ? Row(
                           children: [
                             Expanded(
@@ -276,7 +276,7 @@ class PostDetailInfo extends StatelessWidget {
         children: [
           _filterDataList(
               '레벨', post.levels.map((level) => levelMap[level]!).toList()),
-          if (post.postType == PostTypeEnum.findSession)
+          if (post.postType == PostTypeEnum.findMember)
             _filterDataList('세션',
                 post.sessions.map((session) => sessionMap[session]!).toList()),
           _filterDataList(

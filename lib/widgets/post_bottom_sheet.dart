@@ -35,7 +35,7 @@ class PostBottomSheet extends StatelessWidget {
           Column(
             children: [
               PostBottomSheetSelect(
-                postType: PostTypeEnum.findSession,
+                postType: PostTypeEnum.findMember,
                 onClose: onClose,
                 title: '멤버 구하기',
                 desc: '같이 합주할 멤버를 구해요.\n작성한 글은 [밴드] 게시판에서 볼 수 있어요.',
