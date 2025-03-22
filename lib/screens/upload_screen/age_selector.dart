@@ -19,6 +19,19 @@ class _AgeSelectorState extends State<AgeSelector> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              widget.onChange(null);
+            });
+          },
+          child: Tag(
+            text: '전체',
+            color: TagColorEnum.black,
+            selected: widget.selectedAges.isEmpty,
+          ),
+        ),
+        const SizedBox(width: 6),
         ...ageMap.entries.map((entry) {
           bool isSelected = widget.selectedAges.contains(entry.key);
 
@@ -41,18 +54,6 @@ class _AgeSelectorState extends State<AgeSelector> {
             ],
           );
         }),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              widget.onChange(null);
-            });
-          },
-          child: Tag(
-            text: '전체',
-            color: TagColorEnum.black,
-            selected: widget.selectedAges.isEmpty,
-          ),
-        ),
       ]),
     );
   }

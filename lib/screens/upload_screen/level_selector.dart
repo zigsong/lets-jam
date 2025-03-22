@@ -19,6 +19,19 @@ class _LevelSelectorState extends State<LevelSelector> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              widget.onChange(null);
+            });
+          },
+          child: Tag(
+            text: '전체',
+            color: TagColorEnum.black,
+            selected: widget.selectedLevels.isEmpty,
+          ),
+        ),
+        const SizedBox(width: 6),
         ...levelMap.entries.map((entry) {
           bool isSelected = widget.selectedLevels.contains(entry.key);
 
@@ -40,18 +53,6 @@ class _LevelSelectorState extends State<LevelSelector> {
             ],
           );
         }),
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              widget.onChange(null);
-            });
-          },
-          child: Tag(
-            text: '전체',
-            color: TagColorEnum.black,
-            selected: widget.selectedLevels.isEmpty,
-          ),
-        ),
       ]),
     );
   }
