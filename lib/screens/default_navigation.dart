@@ -183,9 +183,10 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                     ),
                     BottomAppBarItem(
                         isActive: _selectedIndex == 2,
-                        defaultIcon:
-                            Image.asset('assets/icons/bell_default.png'),
-                        activeIcon: Image.asset('assets/icons/bell_active.png'),
+                        defaultIcon: Image.asset(
+                            'assets/icons/bottom_nav/band_default.png'),
+                        activeIcon: Image.asset(
+                            'assets/icons/bottom_nav/band_active.png'),
                         label: '밴드',
                         onPressed: _onBandButtonTapped),
                     BottomAppBarItem(
