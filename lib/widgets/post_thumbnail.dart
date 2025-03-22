@@ -50,15 +50,16 @@ class PostThumbnail extends StatelessWidget {
                           const SizedBox(
                             width: 4,
                           ),
-                          if (post.regions != null)
+                          if (post.regions != null && post.regions!.isNotEmpty)
                             PostBadge(text: formatList(post.regions!)),
                           const SizedBox(
                             width: 4,
                           ),
-                          PostBadge(
-                              text: formatList(post.levels
-                                  .map((level) => levelMap[level])
-                                  .toList())),
+                          if (post.levels.isNotEmpty)
+                            PostBadge(
+                                text: formatList(post.levels
+                                    .map((level) => levelMap[level])
+                                    .toList())),
                           const SizedBox(
                             width: 4,
                           ),
