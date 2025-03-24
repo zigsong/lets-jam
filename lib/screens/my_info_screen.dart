@@ -130,13 +130,6 @@ class _MyInfoScreenState extends State<MyInfoScreen> {
                           content: ageMap[widget.user.age]!,
                         ),
                         RowData(
-                            label: '세션',
-                            content: widget.user.sessionLevel.entries
-                                .map((MapEntry sessionLevel) =>
-                                    '${sessionMap[sessionLevel.key]}: ${levelMap[sessionLevel.value]}')
-                                .toList()
-                                .join('/ ')),
-                        RowData(
                           label: '연락처',
                           content: widget.user.contact,
                         ),

@@ -20,15 +20,15 @@ class PostDetailScreen extends StatefulWidget {
 }
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
-  UserModel? _user;
+  late Future<UserModel> _user;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserById();
+    _user = _fetchUserById();
   }
 
-  Future<void> _fetchUserById() async {
+  Future<UserModel> _fetchUserById() async {
     final supabase = Supabase.instance.client;
 
     try {
@@ -38,11 +38,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           .eq('id', widget.post.userId)
           .single();
 
-      setState(() {
-        _user = UserModel.fromJson(response);
-      });
+      return UserModel.fromJson(response);
     } catch (error) {
       print('포스팅 유저 가져오기 에러 : $error');
+      throw Error;
     }
   }
 
@@ -66,13 +65,28 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             Text(
                               widget.post.title,
                               style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w700),
+                                  fontSize: 20,
+                                  height: 26 / 20,
+                                  fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(
                               height: 20,
                             ),
-                            if (_user != null)
-                              PostDetailAuthorInfo(user: _user!),
+                            FutureBuilder(
+                              future: _user,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                } else if (snapshot.hasError ||
+                                    !snapshot.hasData) {
+                                  return const Text('작성자 정보를 불러올 수 없습니다');
+                                } else {
+                                  return PostDetailAuthorInfo(
+                                      user: snapshot.data!);
+                                }
+                              },
+                            ),
                             const SizedBox(
                               height: 10,
                             ),

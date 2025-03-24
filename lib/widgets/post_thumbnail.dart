@@ -81,7 +81,7 @@ class PostThumbnail extends StatelessWidget {
               color: Color(0xffD9D9D9),
             ),
             child: Center(
-                child: post.images != null
+                child: (post.images?.length ?? 0) > 0
                     ? Image.network(post.images![0],
                         width: 104, height: 104, fit: BoxFit.cover)
                     : Image.asset(

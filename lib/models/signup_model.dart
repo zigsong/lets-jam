@@ -10,7 +10,6 @@ class SignupModel {
   String nickname;
   XFile? profileImage;
   List<SessionEnum> sessions;
-  Map<SessionEnum, LevelEnum> sessionLevel;
   AgeEnum? age;
 
   /// Optional Fields
@@ -21,6 +20,5 @@ class SignupModel {
   SignupModel.init()
       : nickname = '',
         sessions = [],
-        images = [],
-        sessionLevel = {};
+        images = [];
 }

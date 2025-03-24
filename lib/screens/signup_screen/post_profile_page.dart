@@ -16,8 +16,6 @@ class PostProfilePage extends StatefulWidget {
   final Function() onChangePage;
   final SignupModel signupData;
 
-  /// TODO: 상태관리로 수정하기
-  final Function(SessionEnum key, LevelEnum value) updateSessionLevel;
   final Function() onSubmit;
 
   const PostProfilePage(
@@ -25,7 +23,6 @@ class PostProfilePage extends StatefulWidget {
       required this.user,
       required this.onChangePage,
       required this.signupData,
-      required this.updateSessionLevel,
       required this.onSubmit});
 
   @override
@@ -180,28 +177,6 @@ class _PostProfilePageState extends State<PostProfilePage> {
                     const SizedBox(
                       height: 16,
                     ),
-                    // ListView(
-                    //   padding: EdgeInsets.zero,
-                    //   shrinkWrap: true,
-                    //   physics: const NeverScrollableScrollPhysics(),
-                    //   children: widget.signupData.sessions.map((session) {
-                    //     return Column(
-                    //       children: [
-                    //         LevelSelector(
-                    //           session: session,
-                    //           onSelect: (level) {
-                    //             setState(() {
-                    //               widget.updateSessionLevel(session, level);
-                    //             });
-                    //           },
-                    //         ),
-                    //         const SizedBox(
-                    //           height: 20,
-                    //         ),
-                    //       ],
-                    //     );
-                    //   }).toList(),
-                    // ),
                     TextInput(
                       label: '자기소개',
                       onChange: (value) {

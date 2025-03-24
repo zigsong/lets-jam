@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lets_jam/models/level_enum.dart';
-import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/signup_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/signup_screen/post_profile_page.dart';
-import 'package:lets_jam/utils/helper.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -38,12 +35,6 @@ class _SignupScreenState extends State<SignupScreen>
     _tabController.dispose();
   }
 
-  void _updateSessionLevel(SessionEnum key, LevelEnum value) {
-    setState(() {
-      _signupData.sessionLevel[key] = value;
-    });
-  }
-
   void _submit() {
     _saveUserToSupabase();
 
@@ -59,8 +50,6 @@ class _SignupScreenState extends State<SignupScreen>
         'email': widget.user.email,
         'nickname': _signupData.nickname,
         'sessions': _signupData.sessions.map((el) => el.name).toList(),
-        'session_level': _signupData.sessionLevel.map(
-            (key, value) => MapEntry(enumToString(key), enumToString(value))),
         'age': _signupData.age?.name,
         'contact': _signupData.contact,
         'profile_image': _signupData.profileImage?.path,
@@ -85,7 +74,6 @@ class _SignupScreenState extends State<SignupScreen>
             child: PostProfilePage(
                 user: widget.user,
                 signupData: _signupData,
-                updateSessionLevel: _updateSessionLevel,
                 onChangePage: () {
                   _updateCurrentPageIndex(1);
                 },
