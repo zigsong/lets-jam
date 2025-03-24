@@ -17,9 +17,9 @@ class WideButton extends StatelessWidget {
           elevation: 0,
           backgroundColor: ColorSeed.boldOrangeStrong.color,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
         child: Text(
