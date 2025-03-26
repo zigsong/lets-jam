@@ -40,6 +40,7 @@ class Tag extends StatelessWidget {
                       color: ColorSeed.boldOrangeMedium.color, width: 2),
               borderRadius: BorderRadius.circular(20)),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 text,

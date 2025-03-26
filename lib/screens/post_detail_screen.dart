@@ -156,43 +156,36 @@ class WantedSession extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+        width: MediaQuery.of(context).size.width,
+        alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         decoration: BoxDecoration(
-            color: const Color(0xff6A6A6A),
+            border: Border.all(color: ColorSeed.boldOrangeRegular.color),
             borderRadius: BorderRadius.circular(10)),
-        child: Row(
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          runSpacing: 8,
           children: [
             const Text(
               '밴드에서',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
             ),
             const SizedBox(width: 4),
-            Row(
-              children: post.sessions
-                  .map((session) => sessionMap[session]!)
-                  .toList()
-                  .map(
-                    (tag) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Tag(
-                        text: tag,
-                        color: TagColorEnum.orange,
-                        selected: true,
-                      ),
+            ...post.sessions
+                .map((session) => sessionMap[session]!)
+                .toList()
+                .map(
+                  (tag) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Tag(
+                      text: tag,
+                      color: TagColorEnum.orange,
+                      selected: true,
                     ),
-                  )
-                  .toList(),
-            ),
+                  ),
+                ),
             const SizedBox(width: 4),
             const Text(
               '을(를) 담당하고 싶어요',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
             )
           ],
         ));
