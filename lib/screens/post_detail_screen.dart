@@ -8,6 +8,7 @@ import 'package:lets_jam/models/user_model.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/tag.dart';
+import 'package:lets_jam/widgets/util_button.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -21,12 +22,12 @@ class PostDetailScreen extends StatefulWidget {
 }
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
-  late Future<UserModel> _user;
+  late Future<UserModel> _author;
 
   @override
   void initState() {
     super.initState();
-    _user = _fetchUserById();
+    _author = _fetchUserById();
   }
 
   Future<UserModel> _fetchUserById() async {
@@ -74,7 +75,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               height: 20,
                             ),
                             FutureBuilder(
-                              future: _user,
+                              future: _author,
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
@@ -139,6 +140,18 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               },
             ),
           ),
+          Positioned(
+              top: MediaQuery.of(context).padding.top,
+              right: 20,
+              child: Row(
+                children: [
+                  UtilButton(text: '수정', onPressed: () {}),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  UtilButton(text: '삭제', onPressed: () {}),
+                ],
+              )),
         ],
       ),
     );
