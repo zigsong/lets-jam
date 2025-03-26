@@ -11,6 +11,7 @@ class UserModel {
   late AgeEnum age;
 
   /// Optional Fields
+  /// @zigsong TODO: optional로 바꾸기
   late String contact;
   late List<XFile> images = [];
   late XFile profileImage;

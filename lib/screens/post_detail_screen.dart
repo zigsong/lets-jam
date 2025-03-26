@@ -325,9 +325,17 @@ class PostDetailAuthorInfo extends StatelessWidget {
                 Container(
                   width: 40,
                   height: 40,
+                  clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(100)),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: user.profileImage != null
+                      ? Image.network(
+                          user.profileImage.path,
+                          width: MediaQuery.of(context).size.width,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset('assets/images/profile_avatar.png'),
                 ),
                 const SizedBox(
                   width: 12,
