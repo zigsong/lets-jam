@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/age_enum.dart';
-import 'package:lets_jam/models/level_enum.dart';
-import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyInfoScreen extends StatefulWidget {
   final UserModel user;
@@ -16,7 +15,7 @@ class MyInfoScreen extends StatefulWidget {
 }
 
 class _MyInfoScreenState extends State<MyInfoScreen> {
-  final supabase = Supabase.instance.client;
+  final SessionController sessionController = Get.find<SessionController>();
 
   TextStyle textStyle = const TextStyle(color: Colors.white);
 
@@ -146,7 +145,8 @@ class _MyInfoScreenState extends State<MyInfoScreen> {
           ),
           ElevatedButton(
               onPressed: () async {
-                await supabase.auth.signOut();
+                await sessionController.signOut();
+
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (context) => const DefaultNavigation(
                           fromIndex: 2,
