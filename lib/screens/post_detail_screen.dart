@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
@@ -22,7 +24,9 @@ class PostDetailScreen extends StatefulWidget {
 }
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
+  final SessionController sessionController = Get.find<SessionController>();
   late Future<UserModel> _author;
+  bool? isMyPost;
 
   @override
   void initState() {
@@ -40,7 +44,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           .eq('id', widget.post.userId)
           .single();
 
-      return UserModel.fromJson(response);
+      final author = UserModel.fromJson(response);
+
+      setState(() {
+        isMyPost = author == sessionController.user.value;
+      });
+
+      return author;
     } catch (error) {
       print('포스팅 유저 가져오기 에러 : $error');
       throw Error;
@@ -140,18 +150,19 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               },
             ),
           ),
-          Positioned(
-              top: MediaQuery.of(context).padding.top,
-              right: 20,
-              child: Row(
-                children: [
-                  UtilButton(text: '수정', onPressed: () {}),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  UtilButton(text: '삭제', onPressed: () {}),
-                ],
-              )),
+          if (isMyPost == true)
+            Positioned(
+                top: MediaQuery.of(context).padding.top,
+                right: 20,
+                child: Row(
+                  children: [
+                    UtilButton(text: '수정', onPressed: () {}),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    UtilButton(text: '삭제', onPressed: () {}),
+                  ],
+                ))
         ],
       ),
     );

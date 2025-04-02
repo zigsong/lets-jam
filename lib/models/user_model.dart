@@ -33,4 +33,12 @@ class UserModel {
             .map((image) => XFile(image as String))
             .toList(),
         bio = json['bio'];
+
+  @override
+  bool operator ==(Object other) {
+    return other is UserModel && other.id == id && other.email == email;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ email.hashCode;
 }
