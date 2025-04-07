@@ -9,6 +9,7 @@ import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
+import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/util_button.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
@@ -156,7 +157,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 right: 20,
                 child: Row(
                   children: [
-                    UtilButton(text: '수정', onPressed: () {}),
+                    UtilButton(
+                        text: '수정',
+                        onPressed: () {
+                          showModal(context);
+                        }),
                     const SizedBox(
                       width: 8,
                     ),
