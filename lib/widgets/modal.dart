@@ -2,7 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class Modal extends StatelessWidget {
-  const Modal({super.key});
+  const Modal(
+      {super.key,
+      this.title,
+      required this.desc,
+      this.cancelText,
+      this.confirmText,
+      required this.onConfirm,
+      this.onCancel});
+
+  final String? title;
+  final String desc;
+  final String? cancelText;
+  final String? confirmText;
+
+  final VoidCallback onConfirm;
+  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -16,24 +31,27 @@ class Modal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              '제목',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '이것은 모달의 본문입니다.\n여기에 원하는 내용을 작성할 수 있어요.',
-            ),
+            if (title != null)
+              Column(children: [
+                Text(
+                  title!,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 16),
+              ]),
+            Text(desc),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
                   child: Text(
-                    '취소',
+                    cancelText ?? '취소',
                     style: TextStyle(color: ColorSeed.boldOrangeRegular.color),
                   ),
                   onPressed: () {
+                    onCancel?.call();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -50,8 +68,9 @@ class Modal extends StatelessWidget {
                           horizontal: 20, vertical: 12),
                       textStyle: const TextStyle(
                           fontWeight: FontWeight.w500, inherit: false)),
-                  child: const Text('확인'),
+                  child: Text(confirmText ?? '확인'),
                   onPressed: () {
+                    onConfirm();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -64,16 +83,32 @@ class Modal extends StatelessWidget {
   }
 }
 
-void showModal(BuildContext context) {
+void showModal({
+  required BuildContext context,
+  String? title,
+  required String desc,
+  String? cancelText,
+  String? confirmText,
+  required VoidCallback onConfirm,
+  VoidCallback? onCancel,
+}) {
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
+    /** @zigsong TODO: 얘도 바꿀까? */
     barrierLabel: "Modal",
     barrierColor: Colors.black.withOpacity(0.5),
     transitionDuration: const Duration(milliseconds: 300),
     pageBuilder: (_, __, ___) {
-      return const Center(
-        child: Modal(),
+      return Center(
+        child: Modal(
+          title: title,
+          desc: desc,
+          cancelText: cancelText,
+          confirmText: confirmText,
+          onConfirm: onConfirm,
+          onCancel: onCancel,
+        ),
       );
     },
     transitionBuilder: (_, anim, __, child) {

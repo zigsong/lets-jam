@@ -157,15 +157,21 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 right: 20,
                 child: Row(
                   children: [
-                    UtilButton(
-                        text: '수정',
-                        onPressed: () {
-                          showModal(context);
-                        }),
+                    UtilButton(text: '수정', onPressed: () {}),
                     const SizedBox(
                       width: 8,
                     ),
-                    UtilButton(text: '삭제', onPressed: () {}),
+                    UtilButton(
+                        text: '삭제',
+                        onPressed: () {
+                          showModal(
+                            context: context,
+                            title: '게시글 삭제',
+                            desc: '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
+                            confirmText: '삭제',
+                            onConfirm: () {},
+                          );
+                        }),
                   ],
                 ))
         ],
