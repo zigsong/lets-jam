@@ -8,6 +8,7 @@ import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/tag.dart';
@@ -25,8 +26,11 @@ class PostDetailScreen extends StatefulWidget {
 }
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
+  final supabase = Supabase.instance.client;
+
   final SessionController sessionController = Get.find<SessionController>();
   late Future<UserModel> _author;
+
   bool? isMyPost;
 
   @override
@@ -36,8 +40,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Future<UserModel> _fetchUserById() async {
-    final supabase = Supabase.instance.client;
-
     try {
       final response = await supabase
           .from('users')
@@ -54,6 +56,23 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       return author;
     } catch (error) {
       print('포스팅 유저 가져오기 에러 : $error');
+      throw Error;
+    }
+  }
+
+  Future<void> _deletePost(String id) async {
+    try {
+      await supabase.from('posts').delete().eq('id', id);
+
+      ScaffoldMessenger.of(context).showSnackBar(customSnackbar("게시글이 삭제되었어요"));
+      /** TODO: 삭제 후 바로 반영이 안되네! */
+      Navigator.of(context).pop();
+    } catch (error) {
+      print('게시글 삭제 에러 : $error');
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(customSnackbar('게시글 삭제에 실패했어요'));
+
       throw Error;
     }
   }
@@ -169,7 +188,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             title: '게시글 삭제',
                             desc: '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
                             confirmText: '삭제',
-                            onConfirm: () {},
+                            onConfirm: () {
+                              _deletePost(widget.post.id);
+                            },
                           );
                         }),
                   ],
