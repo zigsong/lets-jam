@@ -19,8 +19,16 @@ class ExplorePosts extends StatefulWidget {
 }
 
 class _ExplorePostsState extends State<ExplorePosts> {
+  late Future<List<PostModel>> _posts;
+
   final ExploreFilterController exploreFilterController =
       Get.put(ExploreFilterController());
+
+  @override
+  void initState() {
+    super.initState();
+    _posts = fetchPosts();
+  }
 
   Future<List<PostModel>> fetchPosts() async {
     final response = await Supabase.instance.client.from('posts').select('*');
@@ -47,10 +55,16 @@ class _ExplorePostsState extends State<ExplorePosts> {
     }).toList();
   }
 
+  void _refresh() {
+    setState(() {
+      _posts = fetchPosts();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: fetchPosts(),
+      future: _posts,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
@@ -83,10 +97,16 @@ class _ExplorePostsState extends State<ExplorePosts> {
                       final post = filteredPosts[index];
                       return GestureDetector(
                         child: PostThumbnail(post: post),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  PostDetailScreen(post: post)));
+                        onTap: () async {
+                          final deleted = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PostDetailScreen(post: post)));
+
+                          if (deleted == true) {
+                            _refresh();
+                          }
                         },
                       );
                     });
@@ -104,10 +124,16 @@ class _ExplorePostsState extends State<ExplorePosts> {
                       final post = filteredPosts[index];
                       return GestureDetector(
                         child: PostThumbnail(post: post),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  PostDetailScreen(post: post)));
+                        onTap: () async {
+                          final deleted = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PostDetailScreen(post: post)));
+
+                          if (deleted == true) {
+                            _refresh();
+                          }
                         },
                       );
                     });

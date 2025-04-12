@@ -65,8 +65,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       await supabase.from('posts').delete().eq('id', id);
 
       ScaffoldMessenger.of(context).showSnackBar(customSnackbar("게시글이 삭제되었어요"));
-      /** TODO: 삭제 후 바로 반영이 안되네! */
-      Navigator.of(context).pop();
+      Navigator.pop(context, true);
     } catch (error) {
       print('게시글 삭제 에러 : $error');
 
