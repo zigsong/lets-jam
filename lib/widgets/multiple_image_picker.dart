@@ -1,12 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MultipleImagePicker extends StatefulWidget {
   final Function(XFile file) onSelect;
-  final List<XFile> images;
+  final List<String> images;
 
   const MultipleImagePicker(
       {super.key, required this.onSelect, required this.images});
@@ -22,6 +21,14 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
       widget.onSelect(XFile(pickedFile.path));
+    }
+  }
+
+  Widget buildImageFromString(String path) {
+    if (path.startsWith('http')) {
+      return Image.network(path, fit: BoxFit.cover);
+    } else {
+      return Image.file(File(path), fit: BoxFit.cover);
     }
   }
 
@@ -59,10 +66,7 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12)),
                       clipBehavior: Clip.antiAlias,
-                      child: Image.file(
-                        File(image.path),
-                        fit: BoxFit.cover,
-                      ),
+                      child: buildImageFromString(image),
                     ),
                   ))
               .toList(),

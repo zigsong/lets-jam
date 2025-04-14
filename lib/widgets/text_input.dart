@@ -6,6 +6,7 @@ class TextInput extends StatelessWidget {
       {super.key,
       required this.onChange,
       this.label,
+      this.initialValue,
       this.placeholder,
       this.validator,
       this.keyboardType,
@@ -13,6 +14,7 @@ class TextInput extends StatelessWidget {
       this.isRequired});
 
   final String? label;
+  final String? initialValue;
   final String? placeholder;
   final void Function(String?) onChange;
   final String? Function(String?)? validator;
@@ -46,6 +48,7 @@ class TextInput extends StatelessWidget {
               : const EdgeInsets.all(0),
           child: SizedBox(
             child: TextFormField(
+              initialValue: initialValue,
               keyboardType: keyboardType,
               style: const TextStyle(fontSize: 13),
               minLines: keyboardType == TextInputType.multiline ? 5 : 1,

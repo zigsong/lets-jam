@@ -7,6 +7,7 @@ import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
+import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
@@ -17,9 +18,11 @@ import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PostDetailScreen extends StatefulWidget {
-  const PostDetailScreen({super.key, required this.post});
+  const PostDetailScreen(
+      {super.key, required this.postId, required this.userId});
 
-  final PostModel post;
+  final String postId;
+  final String userId;
 
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -27,6 +30,7 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   final supabase = Supabase.instance.client;
+  late Future<PostModel> _post;
 
   final SessionController sessionController = Get.find<SessionController>();
   late Future<UserModel> _author;
@@ -37,6 +41,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   void initState() {
     super.initState();
     _author = _fetchUserById();
+    _post = _fetchPost();
   }
 
   Future<UserModel> _fetchUserById() async {
@@ -44,7 +49,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       final response = await supabase
           .from('users')
           .select('*')
-          .eq('id', widget.post.userId)
+          .eq('id', widget.userId)
           .single();
 
       final author = UserModel.fromJson(response);
@@ -56,6 +61,23 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       return author;
     } catch (error) {
       print('포스팅 유저 가져오기 에러 : $error');
+      throw Error;
+    }
+  }
+
+  Future<PostModel> _fetchPost() async {
+    try {
+      final response = await supabase
+          .from('posts')
+          .select('*')
+          .eq('id', widget.postId)
+          .single();
+
+      final post = PostModel.fromJson(response);
+
+      return post;
+    } catch (error) {
+      print('포스팅 가져오기 에러 : $error');
       throw Error;
     }
   }
@@ -76,127 +98,164 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     }
   }
 
+  void _refresh() {
+    setState(() {
+      _post = _fetchPost();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ImageSlider(images: widget.post.images),
-                      Padding(
-                        padding: const EdgeInsets.all(24),
+    return FutureBuilder(
+        future: _post,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return const Center(child: Text('Error fetching post'));
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: Text('Post not found.'));
+          }
+
+          final post = snapshot.data!;
+
+          return Scaffold(
+            body: Stack(
+              children: [
+                Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              widget.post.title,
-                              style: const TextStyle(
-                                  fontSize: 20,
-                                  height: 26 / 20,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            FutureBuilder(
-                              future: _author,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError ||
-                                    !snapshot.hasData) {
-                                  return const Text('작성자 정보를 불러올 수 없습니다');
-                                } else {
-                                  return PostDetailAuthorInfo(
-                                      user: snapshot.data!);
-                                }
-                              },
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            if (widget.post.postType == PostTypeEnum.findBand)
-                              WantedSession(post: widget.post),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            PostDetailInfo(post: widget.post),
-                            const SizedBox(
-                              height: 20,
-                            ),
+                            ImageSlider(images: post.images),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: Text(widget.post.description),
-                            )
+                              padding: const EdgeInsets.all(24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    post.title,
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        height: 26 / 20,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  FutureBuilder(
+                                    future: _author,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const CircularProgressIndicator();
+                                      } else if (snapshot.hasError ||
+                                          !snapshot.hasData) {
+                                        return const Text('작성자 정보를 불러올 수 없습니다');
+                                      } else {
+                                        return PostDetailAuthorInfo(
+                                            user: snapshot.data!);
+                                      }
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  if (post.postType == PostTypeEnum.findBand)
+                                    WantedSession(post: post),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  PostDetailInfo(post: post),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    child: Text(post.description),
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    ],
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.only(
+                            top: 24, left: 24, right: 24, bottom: 40),
+                        child: post.postType == PostTypeEnum.findMember
+                            ? WideButton(
+                                text: '문의하기',
+                                onPressed: () {},
+                              )
+                            : WideButton(
+                                text: '세션에게 연락하기',
+                                onPressed: () {},
+                              ))
+                  ],
+                ),
+                Positioned(
+                  top: MediaQuery.of(context).padding.top,
+                  left: 8,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // 뒤로 가기
+                    },
                   ),
                 ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(
-                      top: 24, left: 24, right: 24, bottom: 40),
-                  child: widget.post.postType == PostTypeEnum.findMember
-                      ? WideButton(
-                          text: '문의하기',
-                          onPressed: () {},
-                        )
-                      : WideButton(
-                          text: '세션에게 연락하기',
-                          onPressed: () {},
-                        ))
-            ],
-          ),
-          Positioned(
-            top: MediaQuery.of(context).padding.top,
-            left: 8,
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(); // 뒤로 가기
-              },
+                if (isMyPost == true)
+                  Positioned(
+                      top: MediaQuery.of(context).padding.top,
+                      right: 20,
+                      child: Row(
+                        children: [
+                          UtilButton(
+                              text: '수정',
+                              onPressed: () async {
+                                final edited = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditPostScreen(post: post),
+                                  ),
+                                );
+
+                                if (edited == true) {
+                                  /** @zigsong TODO: 화면 다시 fetch하기 수정 */
+                                  _refresh();
+                                }
+                              }),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          UtilButton(
+                              text: '삭제',
+                              onPressed: () {
+                                showModal(
+                                  context: context,
+                                  title: '게시글 삭제',
+                                  desc: '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
+                                  confirmText: '삭제',
+                                  onConfirm: () {
+                                    _deletePost(post.id);
+                                  },
+                                );
+                              }),
+                        ],
+                      ))
+              ],
             ),
-          ),
-          if (isMyPost == true)
-            Positioned(
-                top: MediaQuery.of(context).padding.top,
-                right: 20,
-                child: Row(
-                  children: [
-                    UtilButton(text: '수정', onPressed: () {}),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    UtilButton(
-                        text: '삭제',
-                        onPressed: () {
-                          showModal(
-                            context: context,
-                            title: '게시글 삭제',
-                            desc: '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
-                            confirmText: '삭제',
-                            onConfirm: () {
-                              _deletePost(widget.post.id);
-                            },
-                          );
-                        }),
-                  ],
-                ))
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 

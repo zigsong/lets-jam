@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/models/post_model.dart';
-import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/upload_screen/age_selector.dart';
 import 'package:lets_jam/screens/upload_screen/level_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
@@ -17,28 +16,28 @@ import 'package:lets_jam/widgets/text_input.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-Map<PostTypeEnum, String> postTypeTitle = {
-  PostTypeEnum.findBand: '밴드',
-  PostTypeEnum.findMember: '멤버',
-};
-
 const SUPABASE_BUCKET_NAME = 'images';
 
-class UploadScreen extends StatefulWidget {
-  final PostTypeEnum postType;
-  const UploadScreen({super.key, required this.postType});
+class EditPostScreen extends StatefulWidget {
+  final PostModel post;
+  const EditPostScreen({super.key, required this.post});
 
   @override
-  State<UploadScreen> createState() => _UploadScreenState();
+  State<EditPostScreen> createState() => _EditPostScreenState();
 }
 
-class _UploadScreenState extends State<UploadScreen> {
+class _EditPostScreenState extends State<EditPostScreen> {
   final _formKey = GlobalKey<FormState>();
   // Map<UploadRequiredEnum, bool> valiators = {};
   final supabase = Supabase.instance.client;
 
-  final FindSessionUploadModel _findSessionUploadData =
-      FindSessionUploadModel.init();
+  late final FindSessionUploadModel _findSessionEditData;
+
+  @override
+  void initState() {
+    super.initState();
+    _findSessionEditData = FindSessionUploadModel.fromPost(widget.post);
+  }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
@@ -46,8 +45,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
       _savePostToSupabase();
 
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const DefaultNavigation()));
+      Navigator.pop(context, true);
     }
   }
 
@@ -57,40 +55,43 @@ class _UploadScreenState extends State<UploadScreen> {
       final String userId = user?['id'];
       final List<String> imageUrls = [];
 
-      for (var image in _findSessionUploadData.images) {
-        final path =
-            'post_uploads/${DateTime.now().millisecondsSinceEpoch}-${image.split('/').last}';
+      for (var image in _findSessionEditData.images) {
+        if ((widget.post.images ?? []).contains(image)) {
+          imageUrls.add(image);
+        } else {
+          final path =
+              'post_uploads/${DateTime.now().millisecondsSinceEpoch}-${image.split('/').last}';
 
-        final response = await supabase.storage
-            .from(SUPABASE_BUCKET_NAME)
-            .upload(path, File(image));
+          final response = await supabase.storage
+              .from(SUPABASE_BUCKET_NAME)
+              .upload(path, File(image));
 
-        final filePath = response.replaceFirst('$SUPABASE_BUCKET_NAME/', '');
+          final filePath = response.replaceFirst('$SUPABASE_BUCKET_NAME/', '');
 
-        final imagePublicUrl =
-            supabase.storage.from(SUPABASE_BUCKET_NAME).getPublicUrl(filePath);
-        imageUrls.add(imagePublicUrl);
+          final imagePublicUrl = supabase.storage
+              .from(SUPABASE_BUCKET_NAME)
+              .getPublicUrl(filePath);
+
+          imageUrls.add(imagePublicUrl);
+        }
       }
 
-      await supabase.from('posts').insert({
+      await supabase.from('posts').update({
         'user_id': userId,
-        'title': _findSessionUploadData.title,
-        'levels': _findSessionUploadData.levels.map((el) => el.name).toList(),
-        'sessions':
-            _findSessionUploadData.sessions.map((el) => el.name).toList(),
-        'ages': _findSessionUploadData.ages.map((el) => el.name).toList(),
-        'regions': _findSessionUploadData.regions.toList(),
-        'contact': _findSessionUploadData.contact,
-        'description': _findSessionUploadData.description,
+        'title': _findSessionEditData.title,
+        'levels': _findSessionEditData.levels.map((el) => el.name).toList(),
+        'sessions': _findSessionEditData.sessions.map((el) => el.name).toList(),
+        'ages': _findSessionEditData.ages.map((el) => el.name).toList(),
+        'regions': _findSessionEditData.regions.toList(),
+        'contact': _findSessionEditData.contact,
+        'description': _findSessionEditData.description,
         'images': imageUrls,
-        // 'band_profile': ...,
-        'post_type': widget.postType.name,
-      });
+      }).eq('id', widget.post.id);
 
       ScaffoldMessenger.of(context)
-          .showSnackBar(customSnackbar('게시글을 작성했습니다.'));
+          .showSnackBar(customSnackbar('게시글을 수정했습니다.'));
     } catch (err) {
-      print('게시글 작성 에러: $err');
+      print('게시글 수정 에러: $err');
     }
   }
 
@@ -111,7 +112,7 @@ class _UploadScreenState extends State<UploadScreen> {
             bottom:
                 BorderSide(color: ColorSeed.boldOrangeStrong.color, width: 1)),
         title: Text(
-          '${postTypeTitle[widget.postType]} 구하기',
+          '게시글 수정',
           style: TextStyle(
               fontSize: 16,
               color: ColorSeed.boldOrangeStrong.color,
@@ -127,9 +128,10 @@ class _UploadScreenState extends State<UploadScreen> {
               children: [
                 TextInput(
                     label: '제목',
+                    initialValue: _findSessionEditData.title,
                     isRequired: true,
                     onChange: (value) {
-                      _findSessionUploadData.title = value ?? '';
+                      _findSessionEditData.title = value ?? '';
                     }),
                 const SizedBox(
                   height: 30,
@@ -139,20 +141,20 @@ class _UploadScreenState extends State<UploadScreen> {
                   subTitle: '밴드가 원하는 세션의 연주 레벨을 모두 선택해주세요.',
                   isRequired: true,
                   content: LevelSelector(
-                    selectedLevels: _findSessionUploadData.levels,
+                    selectedLevels: _findSessionEditData.levels,
                     onChange: (level) {
                       if (level == null) {
                         setState(() {
-                          _findSessionUploadData.levels = [];
+                          _findSessionEditData.levels = [];
                         });
                         return;
                       }
-                      if (_findSessionUploadData.levels.contains(level)) {
+                      if (_findSessionEditData.levels.contains(level)) {
                         debugPrint('해제: $level');
-                        _findSessionUploadData.levels.remove(level);
+                        _findSessionEditData.levels.remove(level);
                       } else {
                         debugPrint('선택: $level');
-                        _findSessionUploadData.levels.add(level);
+                        _findSessionEditData.levels.add(level);
                       }
                     },
                   ),
@@ -165,12 +167,12 @@ class _UploadScreenState extends State<UploadScreen> {
                   subTitle: '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
                   isRequired: true,
                   content: SessionSelector(
-                    selectedSessions: _findSessionUploadData.sessions,
+                    selectedSessions: _findSessionEditData.sessions,
                     onChange: (session) {
-                      if (_findSessionUploadData.sessions.contains(session)) {
-                        _findSessionUploadData.sessions.remove(session);
+                      if (_findSessionEditData.sessions.contains(session)) {
+                        _findSessionEditData.sessions.remove(session);
                       } else {
-                        _findSessionUploadData.sessions.add(session);
+                        _findSessionEditData.sessions.add(session);
                       }
                     },
                   ),
@@ -181,19 +183,19 @@ class _UploadScreenState extends State<UploadScreen> {
                 CustomForm(
                   label: '연령대',
                   content: AgeSelector(
-                    selectedAges: _findSessionUploadData.ages,
+                    selectedAges: _findSessionEditData.ages,
                     onChange: (age) {
                       if (age == null) {
                         setState(() {
-                          _findSessionUploadData.ages = [];
+                          _findSessionEditData.ages = [];
                         });
                         return;
                       }
 
-                      if (_findSessionUploadData.ages.contains(age)) {
-                        _findSessionUploadData.ages.remove(age);
+                      if (_findSessionEditData.ages.contains(age)) {
+                        _findSessionEditData.ages.remove(age);
                       } else {
-                        _findSessionUploadData.ages.add(age);
+                        _findSessionEditData.ages.add(age);
                       }
                     },
                   ),
@@ -204,14 +206,14 @@ class _UploadScreenState extends State<UploadScreen> {
                 CustomForm(
                   label: '지역(최대3개)',
                   content: RegionSelector(
-                    selectedRegions: _findSessionUploadData.regions,
+                    selectedRegions: _findSessionEditData.regions,
                     onChange: (region) {
-                      if (_findSessionUploadData.regions.contains(region)) {
-                        _findSessionUploadData.regions.remove(region);
+                      if (_findSessionEditData.regions.contains(region)) {
+                        _findSessionEditData.regions.remove(region);
                       } else {
                         /** TODO: 3개 이상 선택 시도 시 알럿 */
-                        if (_findSessionUploadData.regions.length >= 3) return;
-                        _findSessionUploadData.regions.add(region);
+                        if (_findSessionEditData.regions.length >= 3) return;
+                        _findSessionEditData.regions.add(region);
                       }
                     },
                   ),
@@ -225,16 +227,14 @@ class _UploadScreenState extends State<UploadScreen> {
                   content: MultipleImagePicker(
                     onSelect: (file) {
                       setState(() {
-                        if (_findSessionUploadData.images.contains(file.path)) {
-                          _findSessionUploadData.images.remove(file.path);
+                        if (_findSessionEditData.images.contains(file.path)) {
+                          _findSessionEditData.images.remove(file.path);
                         } else {
-                          _findSessionUploadData.images.add(file.path);
+                          _findSessionEditData.images.add(file.path);
                         }
                       });
                     },
-                    images: _findSessionUploadData.images
-                        .map((path) => path)
-                        .toList(),
+                    images: _findSessionEditData.images,
                   ),
                 ),
                 const SizedBox(
@@ -244,8 +244,9 @@ class _UploadScreenState extends State<UploadScreen> {
                   label: '연락처',
                   subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
                   content: TextInput(
+                    initialValue: _findSessionEditData.contact,
                     onChange: (value) {
-                      _findSessionUploadData.contact = value ?? '';
+                      _findSessionEditData.contact = value ?? '';
                     },
                   ),
                 ),
@@ -255,8 +256,9 @@ class _UploadScreenState extends State<UploadScreen> {
                 CustomForm(
                   label: '자세한 글',
                   content: TextInput(
+                    initialValue: _findSessionEditData.description,
                     onChange: (value) {
-                      _findSessionUploadData.description = value ?? '';
+                      _findSessionEditData.description = value ?? '';
                     },
                     keyboardType: TextInputType.multiline,
                     height: 96,
@@ -266,7 +268,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   height: 30,
                 ),
                 WideButton(
-                  text: '게시하기',
+                  text: '수정하기',
                   onPressed: _submit,
                 ),
               ],

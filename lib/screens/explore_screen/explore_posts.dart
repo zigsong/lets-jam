@@ -101,9 +101,12 @@ class _ExplorePostsState extends State<ExplorePosts> {
                           final deleted = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      PostDetailScreen(post: post)));
+                                  builder: (context) => PostDetailScreen(
+                                        postId: post.id,
+                                        userId: post.userId,
+                                      )));
 
+                          /** @zigsong TODO: 화면 다시 fetch하기 */
                           if (deleted == true) {
                             _refresh();
                           }
@@ -128,9 +131,12 @@ class _ExplorePostsState extends State<ExplorePosts> {
                           final deleted = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      PostDetailScreen(post: post)));
+                                  builder: (context) => PostDetailScreen(
+                                        postId: post.id,
+                                        userId: post.user.id,
+                                      )));
 
+                          /** @zigsong TODO: 화면 다시 fetch하기 */
                           if (deleted == true) {
                             _refresh();
                           }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/upload_screen/upload_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
