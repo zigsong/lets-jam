@@ -11,11 +11,10 @@ class UserModel {
   late AgeEnum age;
 
   /// Optional Fields
-  /// @zigsong TODO: optional로 바꾸기
-  late String contact;
+  late String? contact;
   late List<XFile> images = [];
-  late XFile profileImage;
-  late String bio;
+  late XFile? profileImage;
+  late String? bio;
 
   UserModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -28,7 +27,8 @@ class UserModel {
         age = AgeEnum.values
             .firstWhere((e) => e.toString() == 'AgeEnum.${json['age']}'),
         contact = json['contact'],
-        profileImage = XFile(json['profile_image']),
+        profileImage =
+            json['profile_image'] != null ? XFile(json['profile_image']) : null,
         images = (json['images'] as List<dynamic>)
             .map((image) => XFile(image as String))
             .toList(),

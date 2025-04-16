@@ -128,14 +128,16 @@ class _MyInfoScreenState extends State<MyInfoScreen> {
                           label: '연령그룹',
                           content: ageMap[widget.user.age]!,
                         ),
-                        RowData(
-                          label: '연락처',
-                          content: widget.user.contact,
-                        ),
-                        RowData(
-                          label: '소개',
-                          content: widget.user.bio,
-                        )
+                        if (widget.user.contact != null)
+                          RowData(
+                            label: '연락처',
+                            content: widget.user.contact!,
+                          ),
+                        if (widget.user.bio != null)
+                          RowData(
+                            label: '소개',
+                            content: widget.user.bio!,
+                          )
                       ],
                     ),
                   ),
