@@ -13,7 +13,7 @@ class SessionController extends GetxController {
   var isLoggedIn = false.obs;
 
   /// 쨈 프로필 등록 여부
-  var hasRegistered = false.obs;
+  var hasRegisteredProfile = false.obs;
 
   @override
   void onInit() async {
@@ -23,13 +23,13 @@ class SessionController extends GetxController {
 
   Future<void> _loadUser() async {
     try {
-      final sbUser = supabase.auth.currentUser;
-      if (sbUser == null || sbUser.email == null) return;
+      final session = supabase.auth.currentSession;
+      if (session == null) return;
 
+      final sbUser = session.user;
       final data =
           await supabase.from('users').select().eq('email', sbUser.email!);
 
-      /** TODO: 이미 가입된 사용자 이메일일 경우 알럿 */
       if (data.isNotEmpty) {
         user.value = UserModel.fromJson(data[0]);
         isLoggedIn.value = true;

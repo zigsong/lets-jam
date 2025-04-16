@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/upload_screen/age_selector.dart';
 import 'package:lets_jam/screens/upload_screen/level_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
-import 'package:lets_jam/utils/auth.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
@@ -36,6 +37,7 @@ class _UploadScreenState extends State<UploadScreen> {
   final _formKey = GlobalKey<FormState>();
   // Map<UploadRequiredEnum, bool> valiators = {};
   final supabase = Supabase.instance.client;
+  final SessionController sessionController = Get.find<SessionController>();
 
   final FindSessionUploadModel _findSessionUploadData =
       FindSessionUploadModel.init();
@@ -53,8 +55,8 @@ class _UploadScreenState extends State<UploadScreen> {
 
   Future<void> _savePostToSupabase() async {
     try {
-      final user = await getUser();
-      final String userId = user?['id'];
+      final user = sessionController.user.value;
+      final String userId = user!.id;
       final List<String> imageUrls = [];
 
       for (var image in _findSessionUploadData.images) {
