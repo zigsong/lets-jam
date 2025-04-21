@@ -170,16 +170,20 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                         label: '좋아요',
                         onPressed: _onLikeButtonTapped),
                     // MARK: AppBarItem 4개의 간격을 조정하기 위한 조치
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: BottomAppBarItem(
-                          isActive: _selectedIndex == 2,
-                          defaultIcon: Image.asset(
-                              'assets/icons/bottom_nav/add_default.png'),
-                          activeIcon: Image.asset(
-                              'assets/icons/bottom_nav/add_active.png'),
-                          label: '',
-                          onPressed: _onLikeButtonTapped),
+                    Semantics(
+                      label: '게시글 추가 버튼',
+                      button: true,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: BottomAppBarItem(
+                            isActive: _selectedIndex == 2,
+                            defaultIcon: Image.asset(
+                                'assets/icons/bottom_nav/add_default.png'),
+                            activeIcon: Image.asset(
+                                'assets/icons/bottom_nav/add_active.png'),
+                            label: '',
+                            onPressed: _onLikeButtonTapped),
+                      ),
                     ),
                     BottomAppBarItem(
                         isActive: _selectedIndex == 2,
