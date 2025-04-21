@@ -41,11 +41,11 @@ class _EditPostScreenState extends State<EditPostScreen> {
     _findSessionEditData = FindSessionUploadModel.fromPost(widget.post);
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      _savePostToSupabase();
+      await _savePostToSupabase();
 
       Navigator.pop(context, true);
     }
@@ -271,7 +271,9 @@ class _EditPostScreenState extends State<EditPostScreen> {
                 ),
                 WideButton(
                   text: '수정하기',
-                  onPressed: _submit,
+                  onPressed: () async {
+                    await _submit();
+                  },
                 ),
               ],
             ),

@@ -230,7 +230,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 );
 
                                 if (edited == true) {
-                                  /** @zigsong TODO: 화면 다시 fetch하기 수정 */
                                   _refresh();
                                 }
                               }),
