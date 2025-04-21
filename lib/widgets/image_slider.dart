@@ -18,45 +18,49 @@ class _ImageSliderState extends State<ImageSlider> {
   final CarouselSliderController _controller = CarouselSliderController();
 
   Widget sliderWidget() {
-    return widget.images != null
-        ? widget.images!.length > 1
-            ? CarouselSlider(
-                carouselController: _controller,
-                items: widget.images!.map(
-                  (image) {
-                    return Builder(
-                      builder: (context) {
-                        return Image.network(
-                          image,
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    );
-                  },
-                ).toList(),
-                options: CarouselOptions(
-                  height: widget.height ?? imageHeight,
-                  viewportFraction: 1.0,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _current = index;
-                    });
-                  },
-                ),
-              )
-            : Image.network(
-                widget.images![0],
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
-              )
-        : SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Image.asset(
-              'assets/images/post_default_img.png',
-              fit: BoxFit.cover,
-            ),
-          );
+    if (widget.images != null && widget.images!.length > 1) {
+      return CarouselSlider(
+        carouselController: _controller,
+        items: widget.images!.map(
+          (image) {
+            return Builder(
+              builder: (context) {
+                return Image.network(
+                  image,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+                );
+              },
+            );
+          },
+        ).toList(),
+        options: CarouselOptions(
+          height: widget.height ?? imageHeight,
+          viewportFraction: 1.0,
+          onPageChanged: (index, reason) {
+            setState(() {
+              _current = index;
+            });
+          },
+        ),
+      );
+    }
+
+    if (widget.images != null && widget.images!.length == 1) {
+      return Image.network(
+        widget.images![0],
+        width: MediaQuery.of(context).size.width,
+        fit: BoxFit.cover,
+      );
+    }
+
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Image.asset(
+        'assets/images/post_default_img.png',
+        fit: BoxFit.cover,
+      ),
+    );
   }
 
   Widget sliderIndicator() {
