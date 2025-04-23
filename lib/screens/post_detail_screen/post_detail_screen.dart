@@ -7,6 +7,7 @@ import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
+import 'package:lets_jam/screens/post_detail_screen/reply_section.dart';
 import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
@@ -132,7 +133,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           children: [
                             ImageSlider(images: post.images),
                             Padding(
-                              padding: const EdgeInsets.all(24),
+                              padding: const EdgeInsets.all(16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -181,6 +182,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 ],
                               ),
                             ),
+                            Divider(
+                              color: ColorSeed.meticulousGrayLight.color,
+                              indent: 16,
+                              endIndent: 16,
+                            ),
+                            const ReplySection(),
                           ],
                         ),
                       ),
@@ -419,10 +426,12 @@ class PostDetailAuthorInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(
-              top: BorderSide(width: 1, color: Color(0xffCACACA)),
-              bottom: BorderSide(width: 1, color: Color(0xffCACACA)))),
+              top: BorderSide(
+                  width: 1, color: ColorSeed.meticulousGrayLight.color),
+              bottom: BorderSide(
+                  width: 1, color: ColorSeed.meticulousGrayLight.color))),
       child: Row(
         children: [
           Expanded(

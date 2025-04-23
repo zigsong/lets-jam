@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:lets_jam/controllers/explore_filter_controller.dart';
 import 'package:lets_jam/models/post_model.dart';
-import 'package:lets_jam/screens/post_detail_screen.dart';
+import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
 import 'package:lets_jam/widgets/post_thumbnail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
