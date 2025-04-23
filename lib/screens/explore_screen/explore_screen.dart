@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/explore_filter_controller.dart';
+import 'package:lets_jam/main.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_bar.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_sheet.dart';
 import 'package:lets_jam/screens/explore_screen/explore_posts.dart';
@@ -18,12 +19,14 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, RouteAware {
   final PageController _pageViewController = PageController();
   int _selectedPage = 0;
 
   final ExploreFilterController exploreFilterController =
       Get.put(ExploreFilterController());
+
+  late void Function() _reloadItems;
 
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -43,6 +46,25 @@ class _ExploreScreenState extends State<ExploreScreen>
       parent: _controller,
       curve: Curves.fastLinearToSlowEaseIn,
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // 다른 화면에서 돌아왔을 때 호출됨
+    _reloadItems();
   }
 
   void _slidePage() {
@@ -76,12 +98,6 @@ class _ExploreScreenState extends State<ExploreScreen>
     setState(() {
       _isFilterSheetOpen = false;
     });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -141,6 +157,9 @@ class _ExploreScreenState extends State<ExploreScreen>
             child: Stack(children: [
               ExplorePosts(
                 pageController: _pageViewController,
+                onReloadRegister: (reloadFn) {
+                  _reloadItems = reloadFn;
+                },
               ),
               // dimmed 배경
               if (_isFilterSheetOpen)

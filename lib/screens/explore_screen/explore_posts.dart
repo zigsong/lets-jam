@@ -8,11 +8,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ExplorePosts extends StatefulWidget {
   final PageController pageController;
+  final void Function(void Function()) onReloadRegister;
 
-  const ExplorePosts({
-    super.key,
-    required this.pageController,
-  });
+  const ExplorePosts(
+      {super.key,
+      required this.pageController,
+      required this.onReloadRegister});
 
   @override
   State<ExplorePosts> createState() => _ExplorePostsState();
@@ -27,10 +28,12 @@ class _ExplorePostsState extends State<ExplorePosts> {
   @override
   void initState() {
     super.initState();
-    _posts = fetchPosts();
+
+    widget.onReloadRegister(_fetchPosts);
+    _posts = _fetchPosts();
   }
 
-  Future<List<PostModel>> fetchPosts() async {
+  Future<List<PostModel>> _fetchPosts() async {
     final response = await Supabase.instance.client.from('posts').select('*');
 
     return response.map<PostModel>((json) => PostModel.fromJson(json)).toList();
@@ -57,7 +60,7 @@ class _ExplorePostsState extends State<ExplorePosts> {
 
   void _refresh() {
     setState(() {
-      _posts = fetchPosts();
+      _posts = _fetchPosts();
     });
   }
 

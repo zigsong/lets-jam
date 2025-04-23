@@ -6,6 +6,9 @@ import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
+
 Future<void> main() async {
   /** splash screen 시간 */
   await Future.delayed(const Duration(milliseconds: 1000));
@@ -37,6 +40,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [routeObserver],
       // NOTE: 디바이스의 설정과 무관하게 폰트 사이즈를 고정시킴
       builder: (context, child) {
         final MediaQueryData data = MediaQuery.of(context);
