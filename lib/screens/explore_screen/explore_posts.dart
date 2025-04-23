@@ -34,7 +34,10 @@ class _ExplorePostsState extends State<ExplorePosts> {
   }
 
   Future<List<PostModel>> _fetchPosts() async {
-    final response = await Supabase.instance.client.from('posts').select('*');
+    final response = await Supabase.instance.client
+        .from('posts')
+        .select('*')
+        .order('created_at', ascending: false);
 
     return response.map<PostModel>((json) => PostModel.fromJson(json)).toList();
   }
