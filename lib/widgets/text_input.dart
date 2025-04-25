@@ -47,6 +47,7 @@ class TextInput extends StatelessWidget {
               ? const EdgeInsets.only(top: 26)
               : const EdgeInsets.all(0),
           child: SizedBox(
+            height: height,
             child: TextFormField(
               initialValue: initialValue,
               keyboardType: keyboardType,
@@ -64,7 +65,8 @@ class TextInput extends StatelessWidget {
                       borderSide: BorderSide(
                           color: ColorSeed.meticulousGrayLight.color, width: 1),
                       borderRadius: BorderRadius.circular(6)),
-                  contentPadding: const EdgeInsets.all(16)),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16)),
               cursorColor: ColorSeed.meticulousGrayLight.color,
               validator: validator,
               onChanged: onChange,
