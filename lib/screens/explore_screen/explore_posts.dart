@@ -139,7 +139,7 @@ class _ExplorePostsState extends State<ExplorePosts> {
                               MaterialPageRoute(
                                   builder: (context) => PostDetailScreen(
                                         postId: post.id,
-                                        userId: post.user.id,
+                                        userId: post.userId,
                                       )));
 
                           /** @zigsong TODO: 화면 다시 fetch하기 */
