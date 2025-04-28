@@ -41,7 +41,8 @@ class PostThumbnail extends StatelessWidget {
                   ),
                   SizedBox(
                       height: 28,
-                      child: Row(
+                      child: Wrap(
+                        runSpacing: 4,
                         children: [
                           PostBadge(
                               text: formatList(post.sessions

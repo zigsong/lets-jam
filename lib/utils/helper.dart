@@ -8,7 +8,7 @@ String formatList(List<dynamic> items) {
   String firstItem = items[0];
 
   if (items.length > 1) {
-    return '$firstItem 외 ${items.length - 1}';
+    return '$firstItem 외';
   } else {
     return firstItem;
   }
