@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
+import 'package:lets_jam/screens/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
@@ -57,7 +58,8 @@ class MyApp extends StatelessWidget {
               ColorScheme.fromSeed(seedColor: const Color(0xffFC784F))),
       initialRoute: '/',
       routes: {
-        '/': (context) => const DefaultNavigation(),
+        '/': (context) => const SplashScreen(),
+        '/home': (context) => const DefaultNavigation(),
         // '/second': (context) => SecondScreen(),
         // '/third': (context) => ThirdScreen(),
       },
