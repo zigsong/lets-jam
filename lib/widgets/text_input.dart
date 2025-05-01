@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class TextInput extends StatelessWidget {
-  const TextInput(
-      {super.key,
-      required this.onChange,
-      this.label,
-      this.initialValue,
-      this.placeholder,
-      this.validator,
-      this.keyboardType,
-      this.height,
-      this.isRequired});
+  const TextInput({
+    super.key,
+    required this.onChange,
+    this.label,
+    this.initialValue,
+    this.placeholder,
+    this.validator,
+    this.keyboardType,
+    this.height,
+    this.isRequired,
+    this.controller,
+  });
 
   final String? label;
   final String? initialValue;
@@ -21,6 +23,7 @@ class TextInput extends StatelessWidget {
   final TextInputType? keyboardType;
   final double? height;
   final bool? isRequired;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +52,7 @@ class TextInput extends StatelessWidget {
           child: SizedBox(
             height: height,
             child: TextFormField(
+              controller: controller,
               initialValue: initialValue,
               keyboardType: keyboardType,
               style: const TextStyle(fontSize: 13),

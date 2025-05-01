@@ -17,8 +17,14 @@ class ReplyInput extends StatefulWidget {
 class _ReplyInputState extends State<ReplyInput> {
   final supabase = Supabase.instance.client;
   final SessionController sessionController = Get.find<SessionController>();
+  final TextEditingController _textEditingController = TextEditingController();
 
   String _value = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Future<void> _saveReplyToSupabase() async {
     final currentUser = sessionController.user.value;
@@ -30,6 +36,15 @@ class _ReplyInputState extends State<ReplyInput> {
         'user_id': currentUser.id,
         'content': _value
       });
+
+      final content = _textEditingController.text;
+      if (content.isNotEmpty) {
+        _textEditingController.clear();
+
+        setState(() {
+          _value = '';
+        });
+      }
     } catch (err) {
       print('댓글 등록 에러: $err');
     }
@@ -37,6 +52,8 @@ class _ReplyInputState extends State<ReplyInput> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = sessionController.user.value;
+
     return Row(
       children: [
         Container(
@@ -44,8 +61,13 @@ class _ReplyInputState extends State<ReplyInput> {
           height: 50,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
           clipBehavior: Clip.antiAlias,
-          // @zigsong TODO: 세션 유저 프로필로 바꾸기
-          child: Image.asset('assets/images/profile_avatar.png'),
+          child: currentUser?.profileImage != null
+              ? Image.network(
+                  currentUser!.profileImage!.path,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+                )
+              : Image.asset('assets/images/profile_avatar.png'),
         ),
         const SizedBox(
           width: 16,
@@ -53,6 +75,7 @@ class _ReplyInputState extends State<ReplyInput> {
         /** @zigsong TODO: 댓글 placeholder 필요 */
         Expanded(
           child: TextInput(
+            controller: _textEditingController,
             onChange: (value) {
               setState(() {
                 _value = value!;
