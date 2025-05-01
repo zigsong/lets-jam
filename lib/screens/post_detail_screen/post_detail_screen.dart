@@ -187,7 +187,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               indent: 16,
                               endIndent: 16,
                             ),
-                            const ReplySection(),
+                            ReplySection(postId: post.id),
                           ],
                         ),
                       ),
