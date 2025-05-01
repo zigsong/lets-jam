@@ -7,7 +7,7 @@ import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
-import 'package:lets_jam/screens/post_detail_screen/reply_section.dart';
+import 'package:lets_jam/screens/post_detail_screen/reply_section/reply_section.dart';
 import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
