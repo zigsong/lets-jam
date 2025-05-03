@@ -219,45 +219,65 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     },
                   ),
                 ),
-                if (isMyPost == true)
-                  Positioned(
-                      top: MediaQuery.of(context).padding.top,
-                      right: 20,
-                      child: Row(
-                        children: [
-                          UtilButton(
-                              text: '수정',
-                              onPressed: () async {
-                                final edited = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditPostScreen(post: post),
-                                  ),
-                                );
+                /** 
+                 * @zigsong 
+                 * NOTE: 뒤로가기/좋아요/수정삭제 버튼 스크롤 시에도 탑에 고정되어있어야 하는지
+                 * 그렇다면 당근처럼 스크롤 시 UI 변경이 필요할듯
+                 */
 
-                                if (edited == true) {
-                                  _refresh();
-                                }
-                              }),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          UtilButton(
-                              text: '삭제',
-                              onPressed: () {
-                                showModal(
-                                  context: context,
-                                  title: '게시글 삭제',
-                                  desc: '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
-                                  confirmText: '삭제',
-                                  onConfirm: () {
-                                    _deletePost(post.id);
-                                  },
-                                );
-                              }),
-                        ],
-                      ))
+                isMyPost == true
+                    ? Positioned(
+                        top: MediaQuery.of(context).padding.top,
+                        right: 20,
+                        child: Row(
+                          children: [
+                            UtilButton(
+                                text: '수정',
+                                onPressed: () async {
+                                  final edited = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditPostScreen(post: post),
+                                    ),
+                                  );
+
+                                  if (edited == true) {
+                                    _refresh();
+                                  }
+                                }),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            UtilButton(
+                                text: '삭제',
+                                onPressed: () {
+                                  showModal(
+                                    context: context,
+                                    title: '게시글 삭제',
+                                    desc: '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
+                                    confirmText: '삭제',
+                                    onConfirm: () {
+                                      _deletePost(post.id);
+                                    },
+                                  );
+                                }),
+                          ],
+                        ))
+                    : Positioned(
+                        top: MediaQuery.of(context).padding.top,
+                        right: 27,
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: ColorSeed.organizedBlackMedium.color
+                                  .withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(6)),
+                          child: Image.asset('assets/images/like_empty.png'),
+                        ),
+                      )
               ],
             ),
           );
