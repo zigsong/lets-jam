@@ -19,7 +19,8 @@ class _ReplySectionState extends State<ReplySection> {
   late Future<List<ReplyModel>> _replys;
 
   Future<List<ReplyModel>> _fetchReplys() async {
-    final response = await supabase.from('comments').select();
+    final response =
+        await supabase.from('comments').select().eq('post_id', widget.postId);
 
     return response
         .map<ReplyModel>((json) => ReplyModel.fromJson(json))
