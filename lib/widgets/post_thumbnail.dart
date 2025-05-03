@@ -81,13 +81,29 @@ class PostThumbnail extends StatelessWidget {
             decoration: const BoxDecoration(
               color: Color(0xffD9D9D9),
             ),
-            child: Center(
-                child: (post.images?.length ?? 0) > 0
-                    ? Image.network(post.images![0],
-                        width: 104, height: 104, fit: BoxFit.cover)
-                    : Image.asset(
-                        'assets/images/jam_temp_filled.png',
-                      )),
+            child: Stack(children: [
+              Center(
+                  child: (post.images?.length ?? 0) > 0
+                      ? Image.network(post.images![0],
+                          width: 104, height: 104, fit: BoxFit.cover)
+                      : Image.asset(
+                          'assets/images/jam_temp_filled.png',
+                        )),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                      color:
+                          ColorSeed.organizedBlackMedium.color.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(6)),
+                  child: Image.asset('assets/images/like_empty.png'),
+                ),
+              )
+            ]),
           ),
         ],
       ),
