@@ -13,6 +13,7 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/modal.dart';
+import 'package:lets_jam/widgets/post_like_button.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/util_button.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
@@ -267,17 +268,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     : Positioned(
                         top: MediaQuery.of(context).padding.top,
                         right: 27,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              color: ColorSeed.organizedBlackMedium.color
-                                  .withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(6)),
-                          child: Image.asset('assets/images/like_empty.png'),
-                        ),
-                      )
+                        child: PostLikeButton(
+                          postId: post.id,
+                        ))
               ],
             ),
           );

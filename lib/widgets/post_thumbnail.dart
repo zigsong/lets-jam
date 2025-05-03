@@ -6,6 +6,7 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/date_parser.dart';
 import 'package:lets_jam/utils/helper.dart';
 import 'package:lets_jam/widgets/post_badge.dart';
+import 'package:lets_jam/widgets/post_like_button.dart';
 
 class PostThumbnail extends StatelessWidget {
   final PostModel post;
@@ -89,20 +90,14 @@ class PostThumbnail extends StatelessWidget {
                       : Image.asset(
                           'assets/images/jam_temp_filled.png',
                         )),
+              // MARK: 내 포스트에는 좋아요 버튼 미노출?
               Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                      color:
-                          ColorSeed.organizedBlackMedium.color.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(6)),
-                  child: Image.asset('assets/images/like_empty.png'),
-                ),
-              )
+                  top: 10,
+                  right: 10,
+                  child: PostLikeButton(
+                    postId: post.id,
+                    size: PostLikeButtonSize.sm,
+                  ))
             ]),
           ),
         ],
