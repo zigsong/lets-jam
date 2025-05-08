@@ -31,6 +31,8 @@ class _PostLikeButtonState extends State<PostLikeButton> {
 
   Future<void> _loadLikeStatus() async {
     final result = await isLikePost(widget.postId);
+    if (!mounted) return;
+
     setState(() {
       isLiked = result;
       isLoading = false;
