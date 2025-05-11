@@ -40,8 +40,39 @@ class _PostLikeButtonState extends State<PostLikeButton> {
   }
 
   Future<void> _toggleLike() async {
-    await toggleLikePost(widget.postId);
-    await _loadLikeStatus();
+    if (sessionController.user.value == null) {
+      throw Exception('로그인된 유저가 없습니다.');
+    }
+
+    final userId = sessionController.user.value!.id;
+
+    if (isLiked == true) {
+      try {
+        await supabase
+            .from('post_likes')
+            .delete()
+            .eq('user_id', userId)
+            .eq('post_id', widget.postId);
+
+        setState(() {
+          isLiked = false;
+        });
+      } catch (error) {
+        throw Exception('좋아요 취소 실패');
+      }
+    } else {
+      try {
+        await supabase
+            .from('post_likes')
+            .insert({'user_id': userId, 'post_id': widget.postId});
+
+        setState(() {
+          isLiked = true;
+        });
+      } catch (error) {
+        throw Exception('좋아요 실패');
+      }
+    }
   }
 
   /// 좋아요 여부
@@ -63,30 +94,6 @@ class _PostLikeButtonState extends State<PostLikeButton> {
         .maybeSingle();
 
     return existing != null;
-  }
-
-  /// 좋아요 동작
-  Future<void> toggleLikePost(String postId) async {
-    if (sessionController.user.value == null) {
-      throw Exception('로그인된 유저가 없습니다.');
-    }
-
-    final userId = sessionController.user.value!.id;
-    final existing = await isLikePost(postId);
-
-    print('existing: $existing');
-
-    try {
-      await supabase
-          .from('post_likes')
-          .delete()
-          .eq('user_id', userId)
-          .eq('post_id', postId);
-    } catch (error) {
-      throw Exception('좋아요 취소 실패');
-    }
-
-    print('좋아요 취소됨');
   }
 
   @override
