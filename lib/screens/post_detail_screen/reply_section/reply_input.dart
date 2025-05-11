@@ -26,7 +26,9 @@ class _ReplyInputState extends State<ReplyInput> {
     super.initState();
   }
 
-  Future<void> _saveReplyToSupabase() async {
+  Future<void> _submit() async {
+    if (_value == '') return;
+
     final currentUser = sessionController.user.value;
     if (currentUser == null) return;
 
@@ -72,17 +74,16 @@ class _ReplyInputState extends State<ReplyInput> {
         const SizedBox(
           width: 16,
         ),
-        /** @zigsong TODO: 댓글 placeholder 필요 */
         Expanded(
           child: TextInput(
             controller: _textEditingController,
+            placeholder: '댓글을 작성해 주세요',
             onChange: (value) {
               setState(() {
                 _value = value!;
               });
             },
             keyboardType: TextInputType.multiline,
-            height: 40,
           ),
         ),
         const SizedBox(
@@ -95,7 +96,7 @@ class _ReplyInputState extends State<ReplyInput> {
                 minimumSize: Size.zero,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6))),
-            onPressed: _saveReplyToSupabase,
+            onPressed: _submit,
             child: const Text(
               '등록',
               style: TextStyle(
