@@ -208,69 +208,88 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   ],
                 ),
                 Positioned(
-                  top: MediaQuery.of(context).padding.top,
-                  left: 8,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop(); // 뒤로 가기
-                    },
-                  ),
-                ),
-                /** 
-                 * @zigsong 
-                 * NOTE: 뒤로가기/좋아요/수정삭제 버튼 스크롤 시에도 탑에 고정되어있어야 하는지
-                 * 그렇다면 당근처럼 스크롤 시 UI 변경이 필요할듯
-                 */
-
-                isMyPost == true
-                    ? Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.only(
                         top: MediaQuery.of(context).padding.top,
-                        right: 20,
-                        child: Row(
-                          children: [
-                            UtilButton(
-                                text: '수정',
-                                onPressed: () async {
-                                  final edited = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          EditPostScreen(post: post),
-                                    ),
-                                  );
-
-                                  if (edited == true) {
-                                    _refresh();
-                                  }
-                                }),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            UtilButton(
-                                text: '삭제',
-                                onPressed: () {
-                                  showModal(
-                                    context: context,
-                                    title: '게시글 삭제',
-                                    desc: '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
-                                    confirmText: '삭제',
-                                    onConfirm: () {
-                                      _deletePost(post.id);
-                                    },
-                                  );
-                                }),
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            ColorSeed.organizedBlackMedium.color
+                                .withOpacity(0.5),
+                            ColorSeed.organizedBlackMedium.color.withOpacity(0),
                           ],
-                        ))
-                    : Positioned(
-                        top: MediaQuery.of(context).padding.top,
-                        right: 27,
-                        child: PostLikeButton(
-                          postId: post.id,
-                        ))
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.arrow_back_ios,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop(); // 뒤로 가기
+                              },
+                            ),
+                          ),
+                          isMyPost == true
+                              ? Padding(
+                                  padding: const EdgeInsets.only(right: 20),
+                                  child: Row(
+                                    children: [
+                                      UtilButton(
+                                          text: '수정',
+                                          onPressed: () async {
+                                            final edited = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditPostScreen(post: post),
+                                              ),
+                                            );
+
+                                            if (edited == true) {
+                                              _refresh();
+                                            }
+                                          }),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      UtilButton(
+                                          text: '삭제',
+                                          onPressed: () {
+                                            showModal(
+                                              context: context,
+                                              title: '게시글 삭제',
+                                              desc:
+                                                  '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
+                                              confirmText: '삭제',
+                                              onConfirm: () {
+                                                _deletePost(post.id);
+                                              },
+                                            );
+                                          }),
+                                    ],
+                                  ),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.only(right: 27),
+                                  child: PostLikeButton(
+                                    postId: post.id,
+                                  ),
+                                )
+                        ],
+                      ),
+                    )),
               ],
             ),
           );
