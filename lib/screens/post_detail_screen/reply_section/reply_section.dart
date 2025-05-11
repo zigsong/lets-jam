@@ -33,6 +33,12 @@ class _ReplySectionState extends State<ReplySection> {
     _replys = _fetchReplys();
   }
 
+  void _refresh() {
+    setState(() {
+      _replys = _fetchReplys();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -60,6 +66,7 @@ class _ReplySectionState extends State<ReplySection> {
                 ),
                 ReplyInput(
                   postId: widget.postId,
+                  onSubmit: _refresh,
                 ),
                 const SizedBox(
                   height: 20,

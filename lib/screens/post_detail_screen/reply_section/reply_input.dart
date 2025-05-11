@@ -6,9 +6,10 @@ import 'package:lets_jam/widgets/text_input.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ReplyInput extends StatefulWidget {
-  const ReplyInput({super.key, required this.postId});
+  const ReplyInput({super.key, required this.postId, required this.onSubmit});
 
   final String postId;
+  final void Function() onSubmit;
 
   @override
   State<ReplyInput> createState() => _ReplyInputState();
@@ -47,6 +48,8 @@ class _ReplyInputState extends State<ReplyInput> {
           _value = '';
         });
       }
+
+      widget.onSubmit();
     } catch (err) {
       print('댓글 등록 에러: $err');
     }
