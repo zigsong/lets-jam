@@ -78,7 +78,7 @@ class _PostLikeButtonState extends State<PostLikeButton> {
   /// 좋아요 여부
   Future<bool> isLikePost(String postId) async {
     if (sessionController.user.value == null) {
-      throw Exception('로그인된 유저가 없습니다.');
+      return false;
     }
 
     final userId = sessionController.user.value!.id;
@@ -99,6 +99,8 @@ class _PostLikeButtonState extends State<PostLikeButton> {
   @override
   Widget build(BuildContext context) {
     final bool isSmall = widget.size == PostLikeButtonSize.sm;
+
+    if (sessionController.user.value == null) return const SizedBox.shrink();
 
     return GestureDetector(
       onTap: _toggleLike,

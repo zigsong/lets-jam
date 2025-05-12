@@ -22,9 +22,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Obx(() {
       final user = sessionController.user.value;
       return (sessionController.isLoggedIn.isTrue && user != null
-          // ? MyInfoScreen(user: user)
+          ? MyInfoScreen(user: user)
           /** NOTE: WelcomeScreen 확인용 임시 */
-          ? WelcomeScreen(user: supabase.auth.currentUser!)
+          // ? WelcomeScreen(user: supabase.auth.currentUser!)
           : LoginScreen());
     });
   }

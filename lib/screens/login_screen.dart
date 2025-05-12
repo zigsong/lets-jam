@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/welcome_screen.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -19,21 +20,32 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const SizedBox(height: 20),
+          SizedBox(
+              width: 222,
+              child: Image.asset('assets/images/jam_full_logo.png')),
+          const SizedBox(height: 160),
+          Text(
+            'JAM에서 함께할 밴드와 멤버를 만나보세요',
+            style: TextStyle(
+                fontSize: 16, color: ColorSeed.organizedBlackMedium.color),
+          ),
+          const SizedBox(
+            height: 22,
+          ),
           Obx(() {
             bool isLoggedIn = sessionController.isLoggedIn.isTrue;
             var user = sessionController.user.value;
 
             return loginButton(
                 context: context,
-                text: '카카오 로그인',
+                text: '카카오로 시작하기',
                 textColor: Colors.black,
                 buttonColor: Colors.yellow,
                 svgPath: 'assets/images/kakao.svg',
-                width: 20,
-                height: 20,
+                width: 18,
+                height: 18,
                 onPressed: () async {
                   await sessionController.signIn();
                   /** 
@@ -53,7 +65,30 @@ class LoginScreen extends StatelessWidget {
                     }
                   }
                 });
-          })
+          }),
+          const SizedBox(
+            height: 8,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.06,
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shadowColor: Colors.transparent,
+                    backgroundColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    side:
+                        BorderSide(color: ColorSeed.meticulousGrayLight.color)),
+                onPressed: () {},
+                child: Text('먼저 둘러볼게요',
+                    style: TextStyle(
+                        color: ColorSeed.organizedBlackMedium.color))),
+          ),
+          const SizedBox(
+            height: 40,
+          )
         ],
       )),
     );
@@ -76,15 +111,16 @@ Widget loginButton({
     height: MediaQuery.of(context).size.height * 0.06,
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
-        elevation: 2,
+        shadowColor: Colors.transparent,
         backgroundColor: buttonColor,
         side: side,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
       onPressed: onPressed,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
               child: svgPath != null
@@ -94,12 +130,13 @@ Widget loginButton({
                       height: height?.toDouble(),
                     )
                   : Container()),
-          Expanded(
-            child: Text(
-              text,
-              textAlign: TextAlign.center, // 텍스트 가운데 정렬
-              style: TextStyle(color: textColor),
-            ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: textColor),
           ),
         ],
       ),
