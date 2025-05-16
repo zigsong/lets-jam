@@ -7,13 +7,10 @@ import 'package:lets_jam/widgets/post_thumbnail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ExplorePosts extends StatefulWidget {
-  final PageController pageController;
-  final void Function(void Function()) onReloadRegister;
+  final PageController? pageController;
+  final void Function(void Function())? onReloadRegister;
 
-  const ExplorePosts(
-      {super.key,
-      required this.pageController,
-      required this.onReloadRegister});
+  const ExplorePosts({super.key, this.pageController, this.onReloadRegister});
 
   @override
   State<ExplorePosts> createState() => _ExplorePostsState();
@@ -29,7 +26,7 @@ class _ExplorePostsState extends State<ExplorePosts> {
   void initState() {
     super.initState();
 
-    widget.onReloadRegister(_fetchPosts);
+    if (widget.onReloadRegister != null) _fetchPosts;
     _posts = _fetchPosts();
   }
 

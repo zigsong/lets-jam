@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
+import 'package:lets_jam/screens/liked_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/bottom_app_bar_item.dart';
@@ -50,7 +51,7 @@ class _DefaultNavigationState extends State<DefaultNavigation>
 
   final List<Widget> _widgetOptions = <Widget>[
     const ExploreScreen(),
-    const ExploreScreen(),
+    const LikedScreen(),
     const ProfileScreen(),
     const ProfileScreen()
   ];
@@ -167,7 +168,7 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                             'assets/icons/bottom_nav/like_default.png'),
                         activeIcon: Image.asset(
                             'assets/icons/bottom_nav/like_active.png'),
-                        label: '좋아요',
+                        label: '찜',
                         onPressed: _onLikeButtonTapped),
                     // MARK: AppBarItem 4개의 간격을 조정하기 위한 조치
                     Semantics(
