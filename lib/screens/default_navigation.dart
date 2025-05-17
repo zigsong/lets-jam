@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
-import 'package:lets_jam/screens/liked_screen.dart';
+import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/bottom_app_bar_item.dart';

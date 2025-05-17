@@ -7,10 +7,13 @@ import 'package:lets_jam/widgets/post_thumbnail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ExplorePosts extends StatefulWidget {
-  final PageController? pageController;
-  final void Function(void Function())? onReloadRegister;
+  final PageController pageController;
+  final void Function(void Function()) onReloadRegister;
 
-  const ExplorePosts({super.key, this.pageController, this.onReloadRegister});
+  const ExplorePosts(
+      {super.key,
+      required this.pageController,
+      required this.onReloadRegister});
 
   @override
   State<ExplorePosts> createState() => _ExplorePostsState();
@@ -26,7 +29,7 @@ class _ExplorePostsState extends State<ExplorePosts> {
   void initState() {
     super.initState();
 
-    if (widget.onReloadRegister != null) _fetchPosts;
+    widget.onReloadRegister(_fetchPosts);
     _posts = _fetchPosts();
   }
 
@@ -35,6 +38,8 @@ class _ExplorePostsState extends State<ExplorePosts> {
         .from('posts')
         .select('*')
         .order('created_at', ascending: false);
+
+    print('기본 데이터: $response');
 
     return response.map<PostModel>((json) => PostModel.fromJson(json)).toList();
   }

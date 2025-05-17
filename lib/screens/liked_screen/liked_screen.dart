@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_jam/screens/explore_screen/explore_posts.dart';
+import 'package:lets_jam/screens/liked_screen/liked_posts.dart';
 
 class LikedScreen extends StatefulWidget {
   const LikedScreen({super.key});
@@ -34,8 +34,7 @@ class _LikedScreenState extends State<LikedScreen> {
         ),
         const Expanded(
           child: Stack(children: [
-            ExplorePosts(),
-            // dimmed 배경
+            LikedPosts(),
           ]),
         )
       ]),
