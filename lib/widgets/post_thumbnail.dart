@@ -10,8 +10,9 @@ import 'package:lets_jam/widgets/post_like_button.dart';
 
 class PostThumbnail extends StatelessWidget {
   final PostModel post;
+  final bool? withLikedTag;
 
-  const PostThumbnail({super.key, required this.post});
+  const PostThumbnail({super.key, required this.post, this.withLikedTag});
 
   @override
   Widget build(BuildContext context) {
@@ -26,56 +27,99 @@ class PostThumbnail extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      post.title,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w500),
+              child: Stack(
+                children: [
+                  if (withLikedTag == true)
+                    Positioned(
+                      top: 10,
+                      left: 0,
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(18, 2, 10, 2),
+                        decoration: BoxDecoration(
+                          color: post.postType == PostTypeEnum.findBand
+                              ? Colors.white
+                              : ColorSeed.boldOrangeStrong.color,
+                          border: post.postType == PostTypeEnum.findBand
+                              ? Border.all(
+                                  color: ColorSeed.boldOrangeStrong.color)
+                              : null,
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                        ),
+                        child: Text(
+                          post.postType == PostTypeEnum.findBand ? '밴드' : '멤버',
+                          style: TextStyle(
+                              color: post.postType == PostTypeEnum.findBand
+                                  ? ColorSeed.boldOrangeStrong.color
+                                  : Colors.white),
+                        ),
+                      ),
                     ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Wrap(
-                      runSpacing: 4,
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        PostBadge(
-                            text: formatList(post.sessions
-                                .map((session) => sessionMap[session])
-                                .toList())),
-                        const SizedBox(
-                          width: 4,
+                        Row(
+                          children: [
+                            if (withLikedTag == true)
+                              const SizedBox(
+                                width: 44,
+                              ),
+                            Text(
+                              post.title,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ],
                         ),
-                        if (post.regions != null && post.regions!.isNotEmpty)
-                          PostBadge(text: formatList(post.regions!)),
                         const SizedBox(
-                          width: 4,
+                          height: 6,
                         ),
-                        if (post.levels.isNotEmpty)
-                          PostBadge(
-                              text: formatList(post.levels
-                                  .map((level) => levelMap[level])
-                                  .toList())),
+                        Wrap(
+                          runSpacing: 4,
+                          children: [
+                            PostBadge(
+                                text: formatList(post.sessions
+                                    .map((session) => sessionMap[session])
+                                    .toList())),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            if (post.regions != null &&
+                                post.regions!.isNotEmpty)
+                              PostBadge(text: formatList(post.regions!)),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            if (post.levels.isNotEmpty)
+                              PostBadge(
+                                  text: formatList(post.levels
+                                      .map((level) => levelMap[level])
+                                      .toList())),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                          ],
+                        ),
                         const SizedBox(
-                          width: 4,
+                          height: 4,
+                        ),
+                        Text(
+                          getRelativeTime(post.createdAt),
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      getRelativeTime(post.createdAt),
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
             Container(

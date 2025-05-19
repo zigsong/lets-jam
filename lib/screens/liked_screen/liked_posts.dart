@@ -70,7 +70,10 @@ class _LikedPostsState extends State<LikedPosts> {
                 itemBuilder: (context, index) {
                   final post = posts[index];
                   return GestureDetector(
-                    child: PostThumbnail(post: post),
+                    child: PostThumbnail(
+                      post: post,
+                      withLikedTag: true,
+                    ),
                     onTap: () async {
                       final deleted = await Navigator.push(
                           context,
