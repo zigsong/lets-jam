@@ -70,12 +70,14 @@ class PostThumbnail extends StatelessWidget {
                               const SizedBox(
                                 width: 44,
                               ),
-                            Text(
-                              post.title,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            Expanded(
+                              child: Text(
+                                post.title,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
                             ),
                           ],
                         ),
