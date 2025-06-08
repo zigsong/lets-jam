@@ -133,8 +133,11 @@ class PostThumbnail extends StatelessWidget {
             Container(
               width: 106,
               decoration: const BoxDecoration(
-                color: Color(0xffD9D9D9),
-              ),
+                  color: Color(0xffD9D9D9),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
+                  )),
               child: Stack(children: [
                 Center(
                     child: (post.images?.length ?? 0) > 0
