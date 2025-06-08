@@ -40,8 +40,14 @@ class PostThumbnail extends StatelessWidget {
                               ? Colors.white
                               : ColorSeed.boldOrangeStrong.color,
                           border: post.postType == PostTypeEnum.findBand
-                              ? Border.all(
-                                  color: ColorSeed.boldOrangeStrong.color)
+                              ? Border(
+                                  top: BorderSide(
+                                      color: ColorSeed.boldOrangeStrong.color),
+                                  right: BorderSide(
+                                      color: ColorSeed.boldOrangeStrong.color),
+                                  bottom: BorderSide(
+                                      color: ColorSeed.boldOrangeStrong.color),
+                                )
                               : null,
                           borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(30),
