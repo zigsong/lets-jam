@@ -5,6 +5,7 @@ class TextInput extends StatelessWidget {
   const TextInput({
     super.key,
     required this.onChange,
+    this.onSubmit,
     this.label,
     this.initialValue,
     this.placeholder,
@@ -13,17 +14,20 @@ class TextInput extends StatelessWidget {
     this.height,
     this.isRequired,
     this.controller,
+    this.hasSuffixButton,
   });
 
   final String? label;
   final String? initialValue;
   final String? placeholder;
   final void Function(String?) onChange;
+  final void Function()? onSubmit;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final double? height;
   final bool? isRequired;
   final TextEditingController? controller;
+  final bool? hasSuffixButton;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +73,16 @@ class TextInput extends StatelessWidget {
                           color: ColorSeed.meticulousGrayLight.color, width: 1),
                       borderRadius: BorderRadius.circular(6)),
                   contentPadding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16)),
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  suffixIcon: hasSuffixButton == true
+                      ? IconButton(
+                          icon: Image.asset(
+                            'assets/icons/send.png',
+                            width: 20,
+                          ),
+                          onPressed: onSubmit,
+                        )
+                      : null),
               cursorColor: ColorSeed.meticulousGrayLight.color,
               validator: validator,
               onChanged: onChange,

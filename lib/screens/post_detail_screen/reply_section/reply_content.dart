@@ -69,8 +69,8 @@ class _ReplyContentState extends State<ReplyContent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 50,
-                height: 50,
+                width: 40,
+                height: 40,
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(100)),
                 clipBehavior: Clip.antiAlias,

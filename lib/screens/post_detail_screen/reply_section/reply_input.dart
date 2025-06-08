@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
-import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -60,10 +59,11 @@ class _ReplyInputState extends State<ReplyInput> {
     final currentUser = sessionController.user.value;
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 50,
-          height: 50,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
           clipBehavior: Clip.antiAlias,
           child: currentUser?.profileImage != null
@@ -86,25 +86,12 @@ class _ReplyInputState extends State<ReplyInput> {
                 _value = value!;
               });
             },
+            height: 40,
+            hasSuffixButton: true,
+            onSubmit: _submit,
             keyboardType: TextInputType.multiline,
           ),
         ),
-        const SizedBox(
-          width: 16,
-        ),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: ColorSeed.organizedBlackMedium.color,
-                padding: const EdgeInsets.all(13.5),
-                minimumSize: Size.zero,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6))),
-            onPressed: _submit,
-            child: const Text(
-              '등록',
-              style: TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w500, height: 1),
-            ))
       ],
     );
   }
