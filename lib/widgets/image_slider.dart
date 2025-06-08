@@ -50,12 +50,14 @@ class _ImageSliderState extends State<ImageSlider> {
       return Image.network(
         widget.images![0],
         width: MediaQuery.of(context).size.width,
+        height: imageHeight,
         fit: BoxFit.cover,
       );
     }
 
     return SizedBox(
       width: MediaQuery.of(context).size.width,
+      height: imageHeight,
       child: Image.asset(
         'assets/images/post_default_img.png',
         fit: BoxFit.cover,
