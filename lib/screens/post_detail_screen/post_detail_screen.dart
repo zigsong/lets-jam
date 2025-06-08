@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/age_enum.dart';
@@ -366,44 +365,6 @@ class PostDetailInfo extends StatelessWidget {
           _filterDataList(
               '연령대', post.ages?.map((age) => ageMap[age]!).toList()),
           _filterDataList('지역', post.regions),
-          Row(
-            children: [
-              const SizedBox(
-                width: 48,
-                child: Text(
-                  '연락처',
-                  style: TextStyle(fontSize: 13, height: 1),
-                ),
-              ),
-              Flexible(
-                child: GestureDetector(
-                  child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text(
-                        post.contact,
-                        softWrap: true,
-                        style: const TextStyle(
-                            decoration: TextDecoration.underline),
-                      ),
-                      const SizedBox(
-                        width: 4,
-                      ),
-                      SvgPicture.asset(
-                        'assets/icons/plus_copy.svg',
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("연락처가 복사되었습니다")),
-                    );
-                  },
-                ),
-              )
-            ],
-          )
         ],
       ),
     );
