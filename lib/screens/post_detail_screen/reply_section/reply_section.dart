@@ -19,8 +19,11 @@ class _ReplySectionState extends State<ReplySection> {
   late Future<List<ReplyModel>> _replys;
 
   Future<List<ReplyModel>> _fetchReplys() async {
-    final response =
-        await supabase.from('comments').select().eq('post_id', widget.postId);
+    final response = await supabase
+        .from('comments')
+        .select()
+        .eq('post_id', widget.postId)
+        .order('created_at', ascending: true);
 
     return response
         .map<ReplyModel>((json) => ReplyModel.fromJson(json))
@@ -74,7 +77,7 @@ class _ReplySectionState extends State<ReplySection> {
                 Column(
                     children: replys
                         .map((reply) =>
-                            ReplyContent(reply: reply, onDelete: _refresh))
+                            ReplyContent(reply: reply, onRefresh: _refresh))
                         .toList())
               ],
             ),

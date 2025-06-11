@@ -7,13 +7,14 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/date_parser.dart';
 import 'package:lets_jam/widgets/modal.dart';
+import 'package:lets_jam/widgets/text_input.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ReplyContent extends StatefulWidget {
-  const ReplyContent({super.key, required this.reply, required this.onDelete});
+  const ReplyContent({super.key, required this.reply, required this.onRefresh});
 
   final ReplyModel reply;
-  final void Function() onDelete;
+  final void Function() onRefresh;
 
   @override
   State<ReplyContent> createState() => _ReplyContentState();
@@ -24,13 +25,16 @@ class _ReplyContentState extends State<ReplyContent> {
 
   final SessionController sessionController = Get.find<SessionController>();
   late Future<UserModel> _author;
+  late String _editingValue;
 
   bool? isMyReply;
+  bool isEditing = false;
 
   @override
   void initState() {
     super.initState();
     _author = _fetchUserById();
+    _editingValue = widget.reply.content;
   }
 
   Future<UserModel> _fetchUserById() async {
@@ -54,10 +58,27 @@ class _ReplyContentState extends State<ReplyContent> {
     }
   }
 
+  Future<void> _editReply() async {
+    try {
+      await supabase.from('comments').update({
+        'content': _editingValue,
+      }).eq('id', widget.reply.id);
+
+      widget.onRefresh();
+    } catch (error) {
+      print('댓글 수정 에러 : $error');
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(customSnackbar('댓글 수정에 실패했어요'));
+
+      throw Error;
+    }
+  }
+
   Future<void> _deleteReply() async {
     try {
       await supabase.from('comments').delete().eq('id', widget.reply.id);
-      widget.onDelete();
+      widget.onRefresh();
     } catch (error) {
       print('댓글 삭제 에러 : $error');
 
@@ -126,33 +147,74 @@ class _ReplyContentState extends State<ReplyContent> {
                           ],
                         ),
                         if (isMyReply == true)
-                          Row(
-                            children: [
-                              ReplyButton(text: '수정', onPressed: () {}),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              ReplyButton(
-                                  text: '삭제',
-                                  onPressed: () {
-                                    showModal(
-                                      context: context,
-                                      desc: '댓글을 정말 삭제할까요?',
-                                      confirmText: '삭제',
-                                      onConfirm: _deleteReply,
-                                    );
-                                  }),
-                            ],
-                          )
+                          !isEditing
+                              ? Row(
+                                  children: [
+                                    AccessoryButton(
+                                        text: '수정',
+                                        onPressed: () {
+                                          setState(() {
+                                            isEditing = true;
+                                          });
+                                        }),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    AccessoryButton(
+                                        text: '삭제',
+                                        onPressed: () {
+                                          showModal(
+                                            context: context,
+                                            desc: '댓글을 정말 삭제할까요?',
+                                            confirmText: '삭제',
+                                            onConfirm: _deleteReply,
+                                          );
+                                        }),
+                                  ],
+                                )
+                              : Row(
+                                  children: [
+                                    AccessoryButton(
+                                        text: '취소',
+                                        onPressed: () {
+                                          setState(() {
+                                            isEditing = false;
+                                          });
+                                        }),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    AccessoryButton(
+                                        text: '저장',
+                                        isReversed: true,
+                                        onPressed: () {
+                                          _editReply();
+                                          setState(() {
+                                            isEditing = false;
+                                          });
+                                        }),
+                                  ],
+                                )
                       ],
                     ),
                     const SizedBox(
                       height: 8,
                     ),
-                    Text(
-                      widget.reply.content,
-                      textAlign: TextAlign.left,
-                    )
+                    isEditing == false
+                        ? Text(
+                            widget.reply.content,
+                            textAlign: TextAlign.left,
+                          )
+                        : TextInput(
+                            initialValue: widget.reply.content,
+                            onChange: (value) {
+                              setState(() {
+                                _editingValue = value!;
+                              });
+                            },
+                            height: 40,
+                            keyboardType: TextInputType.multiline,
+                          ),
                   ],
                 ),
               )
@@ -164,11 +226,16 @@ class _ReplyContentState extends State<ReplyContent> {
   }
 }
 
-class ReplyButton extends StatelessWidget {
+class AccessoryButton extends StatelessWidget {
   final String text;
   final Function() onPressed;
+  final bool? isReversed;
 
-  const ReplyButton({super.key, required this.text, required this.onPressed});
+  const AccessoryButton(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.isReversed = false});
 
   @override
   Widget build(BuildContext context) {
@@ -177,13 +244,23 @@ class ReplyButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 13.5, vertical: 8.5),
         decoration: BoxDecoration(
-          border: Border.all(color: ColorSeed.meticulousGrayMedium.color),
+          color: isReversed == false
+              ? Colors.white
+              : ColorSeed.organizedBlackMedium.color,
+          border: Border.all(
+              color: isReversed == false
+                  ? ColorSeed.meticulousGrayMedium.color
+                  : ColorSeed.organizedBlackMedium.color),
           borderRadius: BorderRadius.circular(6),
         ),
         child: Text(
           text,
-          style:
-              TextStyle(color: ColorSeed.meticulousGrayMedium.color, height: 1),
+          style: TextStyle(
+              color: isReversed == false
+                  ? ColorSeed.meticulousGrayMedium.color
+                  : Colors.white,
+              height: 1,
+              fontWeight: FontWeight.w500),
         ),
       ),
     );
