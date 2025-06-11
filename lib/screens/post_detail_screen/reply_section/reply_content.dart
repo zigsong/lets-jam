@@ -4,13 +4,16 @@ import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/reply_model.dart';
 import 'package:lets_jam/models/user_model.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/date_parser.dart';
+import 'package:lets_jam/widgets/modal.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ReplyContent extends StatefulWidget {
-  const ReplyContent({super.key, required this.reply});
+  const ReplyContent({super.key, required this.reply, required this.onDelete});
 
   final ReplyModel reply;
+  final void Function() onDelete;
 
   @override
   State<ReplyContent> createState() => _ReplyContentState();
@@ -47,6 +50,20 @@ class _ReplyContentState extends State<ReplyContent> {
       return author;
     } catch (error) {
       print('댓글 작성자 불러오기 에러 : $error');
+      throw Error;
+    }
+  }
+
+  Future<void> _deleteReply() async {
+    try {
+      await supabase.from('comments').delete().eq('id', widget.reply.id);
+      widget.onDelete();
+    } catch (error) {
+      print('댓글 삭제 에러 : $error');
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(customSnackbar('댓글 삭제에 실패했어요'));
+
       throw Error;
     }
   }
@@ -115,7 +132,16 @@ class _ReplyContentState extends State<ReplyContent> {
                               const SizedBox(
                                 width: 8,
                               ),
-                              ReplyButton(text: '삭제', onPressed: () {}),
+                              ReplyButton(
+                                  text: '삭제',
+                                  onPressed: () {
+                                    showModal(
+                                      context: context,
+                                      desc: '댓글을 정말 삭제할까요?',
+                                      confirmText: '삭제',
+                                      onConfirm: _deleteReply,
+                                    );
+                                  }),
                             ],
                           )
                       ],

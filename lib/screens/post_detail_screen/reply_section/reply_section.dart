@@ -73,7 +73,8 @@ class _ReplySectionState extends State<ReplySection> {
                 ),
                 Column(
                     children: replys
-                        .map((reply) => ReplyContent(reply: reply))
+                        .map((reply) =>
+                            ReplyContent(reply: reply, onDelete: _refresh))
                         .toList())
               ],
             ),
