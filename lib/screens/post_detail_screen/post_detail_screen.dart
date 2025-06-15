@@ -37,6 +37,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   late Future<UserModel> _author;
 
   bool? isMyPost;
+  bool _scrolledPastThreshold = false;
 
   @override
   void initState() {
@@ -123,173 +124,207 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           final post = snapshot.data!;
 
           return Scaffold(
-            body: Stack(
-              children: [
-                Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            ImageSlider(images: post.images),
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    post.title,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        height: 26 / 20,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  FutureBuilder(
-                                    future: _author,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const CircularProgressIndicator();
-                                      } else if (snapshot.hasError ||
-                                          !snapshot.hasData) {
-                                        return const Text('작성자 정보를 불러올 수 없습니다');
-                                      } else {
-                                        return PostDetailAuthorInfo(
-                                            user: snapshot.data!);
-                                      }
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  if (post.postType == PostTypeEnum.findBand)
-                                    WantedSession(post: post),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  PostDetailInfo(post: post),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12),
-                                    child: Text(post.description),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              color: ColorSeed.meticulousGrayLight.color,
-                              indent: 16,
-                              endIndent: 16,
-                            ),
-                            ReplySection(postId: post.id),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.only(
-                            top: 24, left: 24, right: 24, bottom: 40),
-                        child: post.postType == PostTypeEnum.findMember
-                            ? WideButton(
-                                text: '문의하기',
-                                onPressed: () {},
-                              )
-                            : WideButton(
-                                text: '세션에게 연락하기',
-                                onPressed: () {},
-                              ))
-                  ],
-                ),
-                Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).padding.top,
-                      ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            ColorSeed.organizedBlackMedium.color
-                                .withOpacity(0.5),
-                            ColorSeed.organizedBlackMedium.color.withOpacity(0),
-                          ],
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.arrow_back_ios,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop(); // 뒤로 가기
-                              },
-                            ),
-                          ),
-                          isMyPost == true
-                              ? Padding(
-                                  padding: const EdgeInsets.only(right: 20),
-                                  child: Row(
-                                    children: [
-                                      UtilButton(
-                                          text: '수정',
-                                          onPressed: () async {
-                                            final edited = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EditPostScreen(post: post),
-                                              ),
-                                            );
+            body: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                final offset = notification.metrics.pixels;
+                const threshold = 150.0; // threshold 설정
 
-                                            if (edited == true) {
-                                              _refresh();
-                                            }
-                                          }),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      UtilButton(
-                                          text: '삭제',
-                                          onPressed: () {
-                                            showModal(
-                                              context: context,
-                                              title: '게시글 삭제',
-                                              desc:
-                                                  '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
-                                              confirmText: '삭제',
-                                              onConfirm: () {
-                                                _deletePost(post.id);
-                                              },
-                                            );
-                                          }),
-                                    ],
-                                  ),
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.only(right: 27),
-                                  child: PostLikeButton(
-                                    postId: post.id,
-                                  ),
-                                )
-                        ],
+                if (offset > threshold && !_scrolledPastThreshold) {
+                  setState(() {
+                    _scrolledPastThreshold = true;
+                  });
+                } else if (offset <= threshold && _scrolledPastThreshold) {
+                  setState(() {
+                    _scrolledPastThreshold = false;
+                  });
+                }
+
+                return true; // 이벤트 계속 전달되지 않게 여기서 처리 완료
+              },
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ImageSlider(images: post.images),
+                              Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      post.title,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          height: 26 / 20,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    FutureBuilder(
+                                      future: _author,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const CircularProgressIndicator();
+                                        } else if (snapshot.hasError ||
+                                            !snapshot.hasData) {
+                                          return const Text(
+                                              '작성자 정보를 불러올 수 없습니다');
+                                        } else {
+                                          return PostDetailAuthorInfo(
+                                              user: snapshot.data!);
+                                        }
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    if (post.postType == PostTypeEnum.findBand)
+                                      WantedSession(post: post),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    PostDetailInfo(post: post),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12),
+                                      child: Text(post.description),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                color: ColorSeed.meticulousGrayLight.color,
+                                indent: 16,
+                                endIndent: 16,
+                              ),
+                              ReplySection(postId: post.id),
+                            ],
+                          ),
+                        ),
                       ),
-                    )),
-              ],
+                      Padding(
+                          padding: const EdgeInsets.only(
+                              top: 24, left: 24, right: 24, bottom: 40),
+                          child: post.postType == PostTypeEnum.findMember
+                              ? WideButton(
+                                  text: '문의하기',
+                                  onPressed: () {},
+                                )
+                              : WideButton(
+                                  text: '세션에게 연락하기',
+                                  onPressed: () {},
+                                ))
+                    ],
+                  ),
+                  Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).padding.top,
+                        ),
+                        decoration: _scrolledPastThreshold
+                            ? const BoxDecoration(color: Colors.white)
+                            : BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    ColorSeed.organizedBlackMedium.color
+                                        .withOpacity(0.5),
+                                    ColorSeed.organizedBlackMedium.color
+                                        .withOpacity(0),
+                                  ],
+                                ),
+                              ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: _scrolledPastThreshold
+                                      ? ColorSeed.organizedBlackMedium.color
+                                      : Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 뒤로 가기
+                                },
+                              ),
+                            ),
+                            isMyPost == true
+                                ? Padding(
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: Row(
+                                      children: [
+                                        UtilButton(
+                                            text: '수정',
+                                            color: _scrolledPastThreshold
+                                                ? ColorSeed
+                                                    .organizedBlackMedium.color
+                                                : null,
+                                            onPressed: () async {
+                                              final edited =
+                                                  await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditPostScreen(
+                                                          post: post),
+                                                ),
+                                              );
+
+                                              if (edited == true) {
+                                                _refresh();
+                                              }
+                                            }),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        UtilButton(
+                                            text: '삭제',
+                                            color: _scrolledPastThreshold
+                                                ? ColorSeed
+                                                    .organizedBlackMedium.color
+                                                : null,
+                                            onPressed: () {
+                                              showModal(
+                                                context: context,
+                                                title: '게시글 삭제',
+                                                desc:
+                                                    '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
+                                                confirmText: '삭제',
+                                                onConfirm: () {
+                                                  _deletePost(post.id);
+                                                },
+                                              );
+                                            }),
+                                      ],
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.only(right: 27),
+                                    child: PostLikeButton(
+                                      postId: post.id,
+                                    ),
+                                  )
+                          ],
+                        ),
+                      )),
+                ],
+              ),
             ),
           );
         });

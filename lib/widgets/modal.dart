@@ -97,7 +97,7 @@ void showModal({
     barrierDismissible: true,
     /** @zigsong TODO: 얘도 바꿀까? */
     barrierLabel: "Modal",
-    barrierColor: Colors.black.withOpacity(0.5),
+    barrierColor: ColorSeed.organizedBlackMedium.color.withOpacity(0.7),
     transitionDuration: const Duration(milliseconds: 300),
     pageBuilder: (_, __, ___) {
       return Center(
