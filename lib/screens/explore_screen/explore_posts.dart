@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:lets_jam/controllers/explore_filter_controller.dart';
@@ -108,11 +111,17 @@ class _ExplorePostsState extends State<ExplorePosts> {
                         onTap: () async {
                           final deleted = await Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => PostDetailScreen(
-                                        postId: post.id,
-                                        userId: post.userId,
-                                      )));
+                              Platform.isIOS
+                                  ? CupertinoPageRoute(
+                                      builder: (context) => PostDetailScreen(
+                                            postId: post.id,
+                                            userId: post.userId,
+                                          ))
+                                  : MaterialPageRoute(
+                                      builder: (context) => PostDetailScreen(
+                                            postId: post.id,
+                                            userId: post.userId,
+                                          )));
 
                           /** @zigsong TODO: 화면 다시 fetch하기 */
                           if (deleted == true) {
@@ -138,11 +147,17 @@ class _ExplorePostsState extends State<ExplorePosts> {
                         onTap: () async {
                           final deleted = await Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => PostDetailScreen(
-                                        postId: post.id,
-                                        userId: post.userId,
-                                      )));
+                              Platform.isIOS
+                                  ? CupertinoPageRoute(
+                                      builder: (context) => PostDetailScreen(
+                                            postId: post.id,
+                                            userId: post.userId,
+                                          ))
+                                  : MaterialPageRoute(
+                                      builder: (context) => PostDetailScreen(
+                                            postId: post.id,
+                                            userId: post.userId,
+                                          )));
 
                           /** @zigsong TODO: 화면 다시 fetch하기 */
                           if (deleted == true) {
