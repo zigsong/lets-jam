@@ -86,7 +86,6 @@ class _ReplyInputState extends State<ReplyInput> {
                 _value = value!;
               });
             },
-            height: 40,
             hasSuffixButton: true,
             onSubmit: _submit,
             keyboardType: TextInputType.multiline,

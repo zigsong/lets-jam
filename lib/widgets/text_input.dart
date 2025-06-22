@@ -59,6 +59,7 @@ class TextInput extends StatelessWidget {
               controller: controller,
               initialValue: initialValue,
               keyboardType: keyboardType,
+              textInputAction: TextInputAction.done,
               style: const TextStyle(fontSize: 13),
               maxLines: keyboardType == TextInputType.multiline ? null : 1,
               decoration: InputDecoration(
@@ -80,12 +81,18 @@ class TextInput extends StatelessWidget {
                             'assets/icons/send.png',
                             width: 20,
                           ),
-                          onPressed: onSubmit,
+                          onPressed: () {
+                            onSubmit?.call();
+                            FocusScope.of(context).unfocus(); // 키보드 닫기
+                          },
                         )
                       : null),
               cursorColor: ColorSeed.meticulousGrayLight.color,
               validator: validator,
               onChanged: onChange,
+              onTapOutside: (PointerDownEvent event) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
             ),
           ),
         ),

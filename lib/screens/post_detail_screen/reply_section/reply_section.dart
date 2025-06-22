@@ -23,7 +23,7 @@ class _ReplySectionState extends State<ReplySection> {
         .from('comments')
         .select()
         .eq('post_id', widget.postId)
-        .order('created_at', ascending: true);
+        .order('created_at', ascending: false);
 
     return response
         .map<ReplyModel>((json) => ReplyModel.fromJson(json))
