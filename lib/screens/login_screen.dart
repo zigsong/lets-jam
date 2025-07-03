@@ -34,38 +34,33 @@ class LoginScreen extends StatelessWidget {
           const SizedBox(
             height: 22,
           ),
-          Obx(() {
-            bool isLoggedIn = sessionController.isLoggedIn.isTrue;
-            var user = sessionController.user.value;
-
-            return loginButton(
-                context: context,
-                text: '카카오로 시작하기',
-                textColor: Colors.black,
-                buttonColor: Colors.yellow,
-                svgPath: 'assets/images/kakao.svg',
-                width: 18,
-                height: 18,
-                onPressed: () async {
-                  await sessionController.signIn();
-                  /** 
+          // bool isLoggedIn = sessionController.isLoggedIn.isTrue;
+          // var user = sessionController.user.value;
+          loginButton(
+              context: context,
+              text: '카카오로 시작하기',
+              textColor: Colors.black,
+              buttonColor: Colors.yellow,
+              svgPath: 'assets/images/kakao.svg',
+              width: 18,
+              height: 18,
+              onPressed: () async {
+                await sessionController.signIn();
+                /** 
                    * 이미 가입된 사용자면 DefaultNavigation으로,
                    * 신규 가입 사용자라면 WelcomeScreen으로
                    */
-                  if (isLoggedIn) {
-                    /** NOTE: mounted 아닌 상태도 있나? */
-                    if (context.mounted) {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => user != null
-                                  ? const DefaultNavigation()
-                                  : WelcomeScreen(
-                                      user: supabase.auth.currentUser!)));
-                    }
-                  }
-                });
-          }),
+                // if (sessionController.isLoggedIn.isTrue && context.mounted) {
+                //   Navigator.pushReplacement(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) =>
+                //               sessionController.user.value != null
+                //                   ? const DefaultNavigation()
+                //                   : WelcomeScreen(
+                //                       user: supabase.auth.currentUser!)));
+                // }
+              }),
           const SizedBox(
             height: 8,
           ),

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/models/user_model.dart';
+import 'package:lets_jam/screens/welcome_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionController extends GetxController {
@@ -19,6 +22,14 @@ class SessionController extends GetxController {
   void onInit() async {
     super.onInit();
     await _loadUser();
+
+    /** NOTE: 회원가입 화면 확인용 */
+    everAll([isLoggedIn, user], (_) {
+      if (isLoggedIn.value && user.value != null) {
+        // 원하는 곳에서 navigation 가능
+        Get.to(WelcomeScreen(user: supabase.auth.currentUser!));
+      }
+    });
   }
 
   Future<void> _loadUser() async {
