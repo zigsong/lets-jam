@@ -61,7 +61,6 @@ class TextInput extends StatelessWidget {
                     controller: controller,
                     initialValue: initialValue,
                     keyboardType: keyboardType,
-                    textInputAction: TextInputAction.done,
                     style: const TextStyle(fontSize: 13),
                     maxLines:
                         keyboardType == TextInputType.multiline ? null : 1,
