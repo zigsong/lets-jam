@@ -54,47 +54,63 @@ class TextInput extends StatelessWidget {
               ? const EdgeInsets.only(top: 26)
               : const EdgeInsets.all(0),
           child: SizedBox(
-            height: height,
-            child: TextFormField(
-              controller: controller,
-              initialValue: initialValue,
-              keyboardType: keyboardType,
-              textInputAction: TextInputAction.done,
-              style: const TextStyle(fontSize: 13),
-              maxLines: keyboardType == TextInputType.multiline ? null : 1,
-              decoration: InputDecoration(
-                  hintText: placeholder,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: ColorSeed.meticulousGrayLight.color, width: 1),
-                    borderRadius: BorderRadius.circular(6),
+              height: height,
+              child: Stack(
+                children: [
+                  TextFormField(
+                    controller: controller,
+                    initialValue: initialValue,
+                    keyboardType: keyboardType,
+                    textInputAction: TextInputAction.done,
+                    style: const TextStyle(fontSize: 13),
+                    maxLines:
+                        keyboardType == TextInputType.multiline ? null : 1,
+                    decoration: InputDecoration(
+                      hintText: placeholder,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: ColorSeed.meticulousGrayLight.color,
+                            width: 1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: ColorSeed.meticulousGrayLight.color,
+                            width: 1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      contentPadding: const EdgeInsets.only(
+                        left: 16,
+                        top: 10,
+                        bottom: 10,
+                        right: 48, // 충분히 넓게 잡아서 아이콘 침범 방지
+                      ),
+                    ),
+                    cursorColor: ColorSeed.meticulousGrayLight.color,
+                    validator: validator,
+                    onChanged: onChange,
+                    onTapOutside: (PointerDownEvent event) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
                   ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: ColorSeed.meticulousGrayLight.color, width: 1),
-                      borderRadius: BorderRadius.circular(6)),
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                  suffixIcon: hasSuffixButton == true
-                      ? IconButton(
-                          icon: Image.asset(
-                            'assets/icons/send.png',
-                            width: 20,
-                          ),
-                          onPressed: () {
-                            onSubmit?.call();
-                            FocusScope.of(context).unfocus(); // 키보드 닫기
-                          },
-                        )
-                      : null),
-              cursorColor: ColorSeed.meticulousGrayLight.color,
-              validator: validator,
-              onChanged: onChange,
-              onTapOutside: (PointerDownEvent event) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              },
-            ),
-          ),
+                  if (hasSuffixButton == true)
+                    Positioned(
+                      right: 4,
+                      child: IconButton(
+                        icon: Image.asset(
+                          'assets/icons/send.png',
+                          width: 20,
+                        ),
+                        onPressed: () {
+                          onSubmit?.call();
+                          FocusScope.of(context).unfocus(); // 키보드 닫기
+                        },
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ),
+                ],
+              )),
         ),
       ],
     );
