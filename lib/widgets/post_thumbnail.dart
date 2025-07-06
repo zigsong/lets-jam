@@ -129,37 +129,29 @@ class PostThumbnail extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              decoration: const BoxDecoration(
-                  color: Color(0xffD9D9D9),
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(8),
-                    bottomRight: Radius.circular(8),
-                  )),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
-                child: Stack(children: [
-                  Center(
-                      child: (post.images?.length ?? 0) > 0
-                          ? Image.network(post.images![0],
-                              width: 104, height: 104, fit: BoxFit.cover)
-                          : Image.asset(
-                              'assets/images/jam_temp_filled.png',
-                              width: 104,
-                              height: 104,
-                            )),
-                  Positioned(
-                      top: 10,
-                      right: 10,
-                      child: PostLikeButton(
-                        postId: post.id,
-                        size: PostLikeButtonSize.sm,
-                      ))
-                ]),
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(8),
+                bottomRight: Radius.circular(8),
               ),
+              child: Stack(children: [
+                Center(
+                    child: (post.images?.length ?? 0) > 0
+                        ? Image.network(post.images![0],
+                            width: 104, height: 104, fit: BoxFit.cover)
+                        : Image.asset(
+                            'assets/images/jam_temp_filled.png',
+                            width: 104,
+                            height: 104,
+                          )),
+                Positioned(
+                    top: 10,
+                    right: 10,
+                    child: PostLikeButton(
+                      postId: post.id,
+                      size: PostLikeButtonSize.sm,
+                    ))
+              ]),
             ),
           ],
         ),
