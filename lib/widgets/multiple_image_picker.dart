@@ -38,33 +38,33 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
       children: [
         GestureDetector(
           child: Container(
-              width: 50,
-              height: 50,
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
                   border: Border.all(width: 1, color: const Color(0xff8F9098)),
                   borderRadius: BorderRadius.circular(8)),
               alignment: Alignment.center, // SVG를 중앙에 배치
               child: Image.asset(
                 'assets/icons/upload_camera.png',
-                width: 20,
-                height: 20,
+                width: 34,
+                height: 34,
               )),
           onTap: () {
             getImage(ImageSource.gallery);
           },
         ),
         const SizedBox(
-          width: 2,
+          width: 8,
         ),
         Row(
           children: widget.images
               .map((image) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    padding: const EdgeInsets.only(right: 8),
                     child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12)),
+                      width: 80,
+                      height: 80,
+                      decoration:
+                          BoxDecoration(borderRadius: BorderRadius.circular(8)),
                       clipBehavior: Clip.antiAlias,
                       child: buildImageFromString(image),
                     ),
