@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:lets_jam/screens/band_screen/band_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
 import 'package:lets_jam/screens/profile_screen.dart';
@@ -52,7 +53,7 @@ class _DefaultNavigationState extends State<DefaultNavigation>
   final List<Widget> _widgetOptions = <Widget>[
     const ExploreScreen(),
     const LikedScreen(),
-    const ProfileScreen(),
+    const BandScreen(),
     const ProfileScreen()
   ];
 
