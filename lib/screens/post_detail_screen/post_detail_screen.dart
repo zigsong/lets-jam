@@ -386,9 +386,11 @@ class PostDetailInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       decoration: BoxDecoration(
-          color: ColorSeed.boldOrangeLight.color,
+          color: const Color(0xfff5f5f5),
+          border:
+              Border.all(width: 1, color: ColorSeed.meticulousGrayLight.color),
           borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [
@@ -412,7 +414,7 @@ class PostDetailInfo extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.only(top: 4.0),
             child: SizedBox(
               width: 44,
               child: Text(
@@ -423,21 +425,20 @@ class PostDetailInfo extends StatelessWidget {
           ),
           if (tags != null)
             Expanded(
-              child: Wrap(
-                  runSpacing: 8,
-                  children: tags
-                      .map(
-                        (tag) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: Tag(
-                            text: tag,
-                            color: TagColorEnum.black,
-                            selected: true,
-                            size: TagSizeEnum.small,
-                          ),
-                        ),
-                      )
-                      .toList()),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: Wrap(
+                    runSpacing: 8,
+                    spacing: 8,
+                    children: tags
+                        .map((tag) => Text(
+                              "#$tag",
+                              style: const TextStyle(
+                                  color: Color(0xff7c7c7c),
+                                  fontWeight: FontWeight.w500),
+                            ))
+                        .toList()),
+              ),
             )
         ],
       ),
