@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/screens/band_screen/gradient_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+
+Map<SessionEnum, String> sessionImagesActive = {
+  SessionEnum.vocalM: 'assets/images/session_selector/vocal_m_active.png',
+  SessionEnum.vocalF: 'assets/images/session_selector/vocal_fm_active.png',
+  SessionEnum.drum: 'assets/images/session_selector/drum_active.png',
+  SessionEnum.keyboard: 'assets/images/session_selector/keyboard_active.png',
+  SessionEnum.bass: 'assets/images/session_selector/bass_active.png',
+  SessionEnum.guitar: 'assets/images/session_selector/guitar_active.png',
+};
 
 class BandScreen extends StatefulWidget {
   const BandScreen({super.key});
@@ -10,6 +20,12 @@ class BandScreen extends StatefulWidget {
 }
 
 class _BandScreenState extends State<BandScreen> {
+  final List<SessionEnum> mockSessions = [
+    SessionEnum.vocalF,
+    SessionEnum.drum,
+    SessionEnum.keyboard
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -42,6 +58,7 @@ class _BandScreenState extends State<BandScreen> {
               height: 10,
             ),
             const Text('안녕하세요! 데이식스, 터치드 좋아하는 직밴 입니다\n📞 공연문의 환영!',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
                 )),
@@ -100,6 +117,58 @@ class _BandScreenState extends State<BandScreen> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '가능한 세션',
+                    style: TextStyle(color: Colors.white, height: 18 / 13),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                      children: mockSessions
+                          .map((session) => Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Container(
+                                width: 69,
+                                height: 69,
+                                clipBehavior: Clip.antiAlias,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.white,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Stack(
+                                      alignment: AlignmentDirectional.bottomEnd,
+                                      children: [
+                                        Image.asset(
+                                            sessionImagesActive[session]!),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 10, bottom: 10),
+                                          child: Text(
+                                            sessionMap[session]!,
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ]),
+                                ),
+                              )))
+                          .toList()),
+                ],
+              ),
             )
           ],
         ),
