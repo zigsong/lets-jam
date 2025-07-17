@@ -75,7 +75,7 @@ class _PostProfilePageState extends State<PostProfilePage> {
             bottom:
                 BorderSide(color: ColorSeed.boldOrangeStrong.color, width: 1)),
         title: Text(
-          '프로필 작성하기',
+          '프로필 작성',
           style: TextStyle(
               fontSize: 16,
               color: ColorSeed.boldOrangeStrong.color,
