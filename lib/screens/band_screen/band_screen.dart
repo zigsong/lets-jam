@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/screens/band_screen/gradient_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/widgets/post_type_badge.dart';
 
 Map<SessionEnum, String> sessionImagesActive = {
   SessionEnum.vocalM: 'assets/images/session_selector/vocal_m_active.png',
@@ -31,7 +33,7 @@ class _BandScreenState extends State<BandScreen> {
     return Stack(children: [
       const GradientSplitScreen(),
       Positioned(
-        bottom: 80,
+        bottom: 60,
         left: 0,
         right: 0,
         child: Column(
@@ -128,7 +130,10 @@ class _BandScreenState extends State<BandScreen> {
                 children: [
                   const Text(
                     '가능한 세션',
-                    style: TextStyle(color: Colors.white, height: 18 / 13),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        height: 18 / 13),
                   ),
                   const SizedBox(
                     height: 10,
@@ -167,6 +172,62 @@ class _BandScreenState extends State<BandScreen> {
                                 ),
                               )))
                           .toList()),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  const Text(
+                    '작성한 글(2)',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        height: 18 / 13),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(height: 1, color: Colors.white),
+                  Column(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 13.5),
+                        child: Row(
+                          children: [
+                            PostTypeBadge(
+                              postType: PostTypeEnum.findBand,
+                            ),
+                            SizedBox(
+                              width: 13,
+                            ),
+                            Text(
+                              '밴드가 로망인 1년차 베이시스트 구합니다...',
+                              style: TextStyle(
+                                  color: Colors.white, height: 13 / 18),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(height: 1, color: Colors.white),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 13.5),
+                        child: Row(
+                          children: [
+                            PostTypeBadge(
+                              postType: PostTypeEnum.findMember,
+                            ),
+                            SizedBox(
+                              width: 13,
+                            ),
+                            Text(
+                              '두탕뛸 수 있는 밴드 구해요 열씨미 할께영',
+                              style: TextStyle(
+                                  color: Colors.white, height: 13 / 18),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(height: 1, color: Colors.white),
                 ],
               ),
             )
