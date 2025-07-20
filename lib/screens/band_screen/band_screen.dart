@@ -4,6 +4,7 @@ import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/screens/band_screen/gradient_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/post_type_badge.dart';
+import 'package:share_plus/share_plus.dart';
 
 Map<SessionEnum, String> sessionImagesActive = {
   SessionEnum.vocalM: 'assets/images/session_selector/vocal_m_active.png',
@@ -27,6 +28,11 @@ class _BandScreenState extends State<BandScreen> {
     SessionEnum.drum,
     SessionEnum.keyboard
   ];
+
+  void onClickShareCourtUrl() {
+    // TODO: webview_flutter로 현재 링크 가져오기
+    SharePlus.instance.share(ShareParams(text: 'JAM에서 공유하기'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +80,9 @@ class _BandScreenState extends State<BandScreen> {
                   width: 96.5,
                   height: 36,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      onClickShareCourtUrl();
+                    },
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       backgroundColor: Colors.transparent,
