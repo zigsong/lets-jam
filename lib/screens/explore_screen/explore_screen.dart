@@ -125,13 +125,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                          width: 25,
-                          height: 30,
-                          child: isBandTabSelected
-                              ? Image.asset('assets/images/logo_sm_white.png')
-                              : Image.asset(
-                                  'assets/images/logo_sm_orange.png')),
+                      const SizedBox(width: 28, height: 28, child: Text('')),
                       PageToggler(
                         selectedIndex: _selectedPage,
                         onTap: _slidePage,
