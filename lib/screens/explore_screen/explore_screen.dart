@@ -3,11 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/explore_filter_controller.dart';
 import 'package:lets_jam/main.dart';
+import 'package:lets_jam/screens/alarm_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_bar.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_sheet.dart';
 import 'package:lets_jam/screens/explore_screen/explore_posts.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
-import 'package:lets_jam/widgets/page_toggler.dart';
+import 'package:lets_jam/widgets/home_toggler.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({
@@ -126,16 +127,24 @@ class _ExploreScreenState extends State<ExploreScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const SizedBox(width: 28, height: 28, child: Text('')),
-                      PageToggler(
+                      HomeToggler(
                         selectedIndex: _selectedPage,
                         onTap: _slidePage,
                       ),
-                      SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: isBandTabSelected
-                              ? Image.asset('assets/icons/bell_white.png')
-                              : Image.asset('assets/icons/bell_active.png')),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const AlarmScreen()),
+                          );
+                        },
+                        child: SizedBox(
+                            width: 28,
+                            height: 28,
+                            child: isBandTabSelected
+                                ? Image.asset('assets/icons/bell_white.png')
+                                : Image.asset('assets/icons/bell_active.png')),
+                      ),
                     ],
                   ),
                 ),

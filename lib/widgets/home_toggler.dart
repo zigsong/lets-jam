@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
-class PageToggler extends StatelessWidget {
+class HomeToggler extends StatelessWidget {
   final VoidCallback onTap;
   final int selectedIndex;
 
-  const PageToggler(
+  const HomeToggler(
       {super.key, required this.onTap, required this.selectedIndex});
 
   @override
