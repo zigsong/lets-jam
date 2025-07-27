@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class GradientSplitScreen extends StatelessWidget {
   const GradientSplitScreen({super.key});
@@ -18,7 +19,7 @@ class GradientSplitScreen extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(color: Colors.black),
+            child: Container(color: ColorSeed.organizedBlackMedium.color),
           ),
 
           // 2. 상단 이미지 (1:1 비율)
@@ -40,13 +41,13 @@ class GradientSplitScreen extends StatelessWidget {
             right: 0,
             height: halfHeight,
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black,
+                    ColorSeed.organizedBlackMedium.color,
                   ],
                 ),
               ),
