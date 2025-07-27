@@ -501,11 +501,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          const Icon(
-            Icons.more_vert,
-            color: Color(0xff606060),
-          ),
+          )
         ],
       ),
     );
