@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
-import 'package:lets_jam/screens/band_screen/gradient_screen.dart';
+import 'package:lets_jam/screens/profile_screen/gradient_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/post_type_badge.dart';
 import 'package:share_plus/share_plus.dart';
@@ -15,14 +15,14 @@ Map<SessionEnum, String> sessionImagesActive = {
   SessionEnum.guitar: 'assets/images/session_selector/guitar_active.png',
 };
 
-class BandScreen extends StatefulWidget {
-  const BandScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<BandScreen> createState() => _BandScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _BandScreenState extends State<BandScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   final List<SessionEnum> mockSessions = [
     SessionEnum.vocalF,
     SessionEnum.drum,

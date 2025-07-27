@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:lets_jam/screens/band_screen/band_screen.dart';
+import 'package:lets_jam/screens/band_screen.dart';
+import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
-import 'package:lets_jam/screens/profile_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/bottom_app_bar_item.dart';
 import 'package:lets_jam/widgets/post_bottom_sheet.dart';
@@ -54,7 +54,7 @@ class _DefaultNavigationState extends State<DefaultNavigation>
     const ExploreScreen(),
     const LikedScreen(),
     const BandScreen(),
-    const ProfileScreen()
+    const ProfileScreen(),
   ];
 
   void _onHomeButtonTapped() {
