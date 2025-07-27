@@ -156,8 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: Colors.white,
-                                  ),
+                                      color: Colors.white, width: 0.5),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: ClipRRect(
@@ -169,11 +168,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             sessionImagesActive[session]!),
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              right: 10, bottom: 10),
+                                              right: 8, bottom: 8),
                                           child: Text(
                                             sessionMap[session]!,
                                             style: const TextStyle(
-                                                color: Colors.white),
+                                                color: Colors.white,
+                                                fontSize: 10),
                                           ),
                                         ),
                                       ]),
@@ -193,7 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Container(height: 1, color: Colors.white),
+                  Container(height: 0.5, color: Colors.white),
                   Column(
                     children: [
                       const Padding(
@@ -214,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ),
-                      Container(height: 1, color: Colors.white),
+                      Container(height: 0.5, color: Colors.white),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 13.5),
                         child: Row(
@@ -235,7 +235,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ],
                   ),
-                  Container(height: 1, color: Colors.white),
+                  Container(height: 0.5, color: Colors.white),
                 ],
               ),
             )

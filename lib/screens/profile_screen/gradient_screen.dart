@@ -7,7 +7,6 @@ class GradientSplitScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    // 1.1은 이미지 shadermask를 위한 보정값
     final halfHeight = screenHeight / 2 * 1.1;
 
     return Scaffold(
@@ -39,7 +38,7 @@ class GradientSplitScreen extends StatelessWidget {
             top: 0,
             left: 0,
             right: 0,
-            height: halfHeight,
+            height: halfHeight * 1.1,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
