@@ -137,6 +137,24 @@ class _UploadScreenState extends State<UploadScreen> {
                   height: 30,
                 ),
                 CustomForm(
+                  label: '세션',
+                  subTitle: '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
+                  isRequired: true,
+                  content: SessionSelector(
+                    selectedSessions: _findSessionUploadData.sessions,
+                    onChange: (session) {
+                      if (_findSessionUploadData.sessions.contains(session)) {
+                        _findSessionUploadData.sessions.remove(session);
+                      } else {
+                        _findSessionUploadData.sessions.add(session);
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                CustomForm(
                   label: '레벨',
                   subTitle: '밴드가 원하는 세션의 연주 레벨을 모두 선택해주세요.',
                   isRequired: true,
@@ -155,24 +173,6 @@ class _UploadScreenState extends State<UploadScreen> {
                       } else {
                         debugPrint('선택: $level');
                         _findSessionUploadData.levels.add(level);
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                CustomForm(
-                  label: '세션',
-                  subTitle: '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
-                  isRequired: true,
-                  content: SessionSelector(
-                    selectedSessions: _findSessionUploadData.sessions,
-                    onChange: (session) {
-                      if (_findSessionUploadData.sessions.contains(session)) {
-                        _findSessionUploadData.sessions.remove(session);
-                      } else {
-                        _findSessionUploadData.sessions.add(session);
                       }
                     },
                   ),
