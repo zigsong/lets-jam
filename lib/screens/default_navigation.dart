@@ -103,10 +103,10 @@ class _DefaultNavigationState extends State<DefaultNavigation>
             GestureDetector(
               onTap: _toggleBottomSheet,
               child: AnimatedOpacity(
-                opacity: _isBottomSheetOpen ? 0.5 : 0.0,
+                opacity: _isBottomSheetOpen ? 0.7 : 0.0,
                 duration: const Duration(milliseconds: 300),
                 child: Container(
-                  color: Colors.grey,
+                  color: ColorSeed.organizedBlackLight.color,
                 ),
               ),
             ),
