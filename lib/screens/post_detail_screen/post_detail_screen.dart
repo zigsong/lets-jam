@@ -345,7 +345,7 @@ class WantedSession extends StatelessWidget {
     return Container(
         width: MediaQuery.of(context).size.width,
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
             border: Border.all(color: ColorSeed.boldOrangeRegular.color),
             borderRadius: BorderRadius.circular(10)),
@@ -367,6 +367,7 @@ class WantedSession extends StatelessWidget {
                       text: tag,
                       color: TagColorEnum.orange,
                       selected: true,
+                      size: TagSizeEnum.small,
                     ),
                   ),
                 ),
