@@ -318,6 +318,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     padding: const EdgeInsets.only(right: 27),
                                     child: PostLikeButton(
                                       postId: post.id,
+                                      hasBackground: !_scrolledPastThreshold,
                                     ),
                                   )
                           ],

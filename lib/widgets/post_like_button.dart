@@ -9,8 +9,10 @@ enum PostLikeButtonSize { sm, lg }
 class PostLikeButton extends StatefulWidget {
   final String postId;
   final PostLikeButtonSize? size;
+  final bool? hasBackground;
 
-  const PostLikeButton({super.key, required this.postId, this.size});
+  const PostLikeButton(
+      {super.key, required this.postId, this.size, this.hasBackground = true});
 
   @override
   State<PostLikeButton> createState() => _PostLikeButtonState();
@@ -108,9 +110,11 @@ class _PostLikeButtonState extends State<PostLikeButton> {
         width: isSmall ? 24 : 40,
         height: isSmall ? 24 : 40,
         padding: EdgeInsets.all(isSmall ? 4 : 8),
-        decoration: BoxDecoration(
-            color: ColorSeed.organizedBlackMedium.color.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(6)),
+        decoration: widget.hasBackground == true
+            ? BoxDecoration(
+                color: ColorSeed.organizedBlackMedium.color.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(6))
+            : null,
         child: isLiked == true
             ? Image.asset('assets/images/like_filled.png')
             : Image.asset('assets/images/like_empty.png'),
