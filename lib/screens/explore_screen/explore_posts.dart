@@ -10,13 +10,11 @@ import 'package:lets_jam/widgets/post_thumbnail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ExplorePosts extends StatefulWidget {
-  final PageController pageController;
+  final PostTypeEnum postType;
   final void Function(void Function()) onReloadRegister;
 
   const ExplorePosts(
-      {super.key,
-      required this.pageController,
-      required this.onReloadRegister});
+      {super.key, required this.postType, required this.onReloadRegister});
 
   @override
   State<ExplorePosts> createState() => _ExplorePostsState();
@@ -91,84 +89,44 @@ class _ExplorePostsState extends State<ExplorePosts> {
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: PageView(
-            controller: widget.pageController,
-            physics: const NeverScrollableScrollPhysics(), // 기본 슬라이드 동작을 막음
-            children: [
-              Obx(() {
-                final filteredPosts = _filterPosts(findSessionPosts);
+          child: Obx(() {
+            final filteredPosts = widget.postType == PostTypeEnum.findBand
+                ? _filterPosts(findSessionPosts)
+                : _filterPosts(findBandPosts);
 
-                return ListView.separated(
-                    padding: EdgeInsets.zero,
-                    itemCount: filteredPosts.length,
-                    separatorBuilder: (context, index) => const SizedBox(
-                          height: 8,
-                        ),
-                    itemBuilder: (context, index) {
-                      final post = filteredPosts[index];
-                      return GestureDetector(
-                        child: PostThumbnail(post: post),
-                        onTap: () async {
-                          final deleted = await Navigator.push(
-                              context,
-                              Platform.isIOS
-                                  ? CupertinoPageRoute(
-                                      builder: (context) => PostDetailScreen(
-                                            postId: post.id,
-                                            userId: post.userId,
-                                          ))
-                                  : MaterialPageRoute(
-                                      builder: (context) => PostDetailScreen(
-                                            postId: post.id,
-                                            userId: post.userId,
-                                          )));
+            return ListView.separated(
+                padding: EdgeInsets.zero,
+                itemCount: filteredPosts.length,
+                separatorBuilder: (context, index) => const SizedBox(
+                      height: 8,
+                    ),
+                itemBuilder: (context, index) {
+                  final post = filteredPosts[index];
+                  return GestureDetector(
+                    child: PostThumbnail(post: post),
+                    onTap: () async {
+                      final deleted = await Navigator.push(
+                          context,
+                          Platform.isIOS
+                              ? CupertinoPageRoute(
+                                  builder: (context) => PostDetailScreen(
+                                        postId: post.id,
+                                        userId: post.userId,
+                                      ))
+                              : MaterialPageRoute(
+                                  builder: (context) => PostDetailScreen(
+                                        postId: post.id,
+                                        userId: post.userId,
+                                      )));
 
-                          /** @zigsong TODO: 화면 다시 fetch하기 */
-                          if (deleted == true) {
-                            _refresh();
-                          }
-                        },
-                      );
-                    });
-              }),
-              Obx(() {
-                final filteredPosts = _filterPosts(findBandPosts);
-
-                return ListView.separated(
-                    padding: EdgeInsets.zero,
-                    itemCount: filteredPosts.length,
-                    separatorBuilder: (context, index) => const SizedBox(
-                          height: 8,
-                        ),
-                    itemBuilder: (context, index) {
-                      final post = filteredPosts[index];
-                      return GestureDetector(
-                        child: PostThumbnail(post: post),
-                        onTap: () async {
-                          final deleted = await Navigator.push(
-                              context,
-                              Platform.isIOS
-                                  ? CupertinoPageRoute(
-                                      builder: (context) => PostDetailScreen(
-                                            postId: post.id,
-                                            userId: post.userId,
-                                          ))
-                                  : MaterialPageRoute(
-                                      builder: (context) => PostDetailScreen(
-                                            postId: post.id,
-                                            userId: post.userId,
-                                          )));
-
-                          /** @zigsong TODO: 화면 다시 fetch하기 */
-                          if (deleted == true) {
-                            _refresh();
-                          }
-                        },
-                      );
-                    });
-              })
-            ],
-          ),
+                      /** @zigsong TODO: 화면 다시 fetch하기 */
+                      if (deleted == true) {
+                        _refresh();
+                      }
+                    },
+                  );
+                });
+          }),
         );
       },
     );
