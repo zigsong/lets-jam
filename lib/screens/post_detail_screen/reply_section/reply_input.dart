@@ -83,7 +83,7 @@ class _ReplyInputState extends State<ReplyInput> {
             placeholder: '댓글을 작성해 주세요',
             onChange: (value) {
               setState(() {
-                _value = value!;
+                _value = value;
               });
             },
             hasSuffixButton: true,

@@ -4,7 +4,7 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 class TextInput extends StatelessWidget {
   const TextInput({
     super.key,
-    required this.onChange,
+    this.onChange,
     this.onSubmit,
     this.label,
     this.initialValue,
@@ -20,7 +20,7 @@ class TextInput extends StatelessWidget {
   final String? label;
   final String? initialValue;
   final String? placeholder;
-  final void Function(String?) onChange;
+  final void Function(String)? onChange;
   final void Function()? onSubmit;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
@@ -88,6 +88,9 @@ class TextInput extends StatelessWidget {
                     cursorColor: ColorSeed.meticulousGrayLight.color,
                     validator: validator,
                     onChanged: onChange,
+                    onFieldSubmitted: (value) {
+                      onSubmit?.call();
+                    },
                     onTapOutside: (PointerDownEvent event) {
                       FocusManager.instance.primaryFocus?.unfocus();
                     },

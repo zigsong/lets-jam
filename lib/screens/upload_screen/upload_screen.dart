@@ -9,6 +9,7 @@ import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/upload_screen/age_selector.dart';
 import 'package:lets_jam/screens/upload_screen/level_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
+import 'package:lets_jam/screens/upload_screen/tag_selector.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
@@ -217,6 +218,14 @@ class _UploadScreenState extends State<UploadScreen> {
                       }
                     },
                   ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                const CustomForm(
+                  label: '태그',
+                  subTitle: '밴드를 소개할 수 있는 태그를 작성해주세요',
+                  content: TagSelector(),
                 ),
                 const SizedBox(
                   height: 30,
