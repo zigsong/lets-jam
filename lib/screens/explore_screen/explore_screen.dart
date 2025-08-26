@@ -21,8 +21,7 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen>
     with SingleTickerProviderStateMixin, RouteAware {
-  final PageController _pageViewController = PageController();
-  int _selectedPage = 0;
+  final int _selectedPage = 0;
 
   final ExploreFilterController exploreFilterController =
       Get.put(ExploreFilterController());
@@ -68,18 +67,6 @@ class _ExploreScreenState extends State<ExploreScreen>
     _reloadItems();
   }
 
-  void _slidePage() {
-    setState(() {
-      _selectedPage = _selectedPage == 0 ? 1 : 0;
-    });
-
-    _pageViewController.animateToPage(
-      _selectedPage,
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.easeInOut,
-    );
-  }
-
   void _toggleExploreFilter() {
     if (_animation.status != AnimationStatus.completed) {
       _controller.forward();
@@ -103,72 +90,64 @@ class _ExploreScreenState extends State<ExploreScreen>
 
   @override
   Widget build(BuildContext context) {
-    var isBandTabSelected = _selectedPage == 0;
-
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      /** 상태바 아이콘 색상 */
-      value: !isBandTabSelected
-          ? SystemUiOverlayStyle.dark
-          : SystemUiOverlayStyle.light,
-      child: DefaultTabController(
-        initialIndex: 0,
-        length: 2,
+    return DefaultTabController(
+      initialIndex: 0,
+      length: 2,
+      child: SafeArea(
         child: Column(
           children: [
-            Container(
-                height: 82,
-                decoration: BoxDecoration(
-                    color: isBandTabSelected
-                        ? ColorSeed.boldOrangeStrong.color
-                        : Colors.transparent),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const SizedBox(width: 28, height: 28, child: Text('')),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => const AlarmScreen()),
-                            );
-                          },
-                          child: SizedBox(
-                              width: 28,
-                              height: 28,
-                              child: isBandTabSelected
-                                  ? Image.asset('assets/icons/bell_white.png')
-                                  : Image.asset(
-                                      'assets/icons/bell_active.png')),
-                        ),
-                      ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(width: 28, height: 28, child: Text('')),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => const AlarmScreen()),
+                        );
+                      },
+                      child: SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: Image.asset('assets/icons/bell_orange.png')),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            PreferredSize(
+              preferredSize: const Size.fromHeight(36),
+              child: TabBar(
+                labelColor: ColorSeed.boldOrangeMedium.color,
+                unselectedLabelColor: ColorSeed.meticulousGrayMedium.color,
+                indicatorColor: ColorSeed.boldOrangeMedium.color,
+                indicatorWeight: 2.0,
+                indicatorSize: TabBarIndicatorSize.tab,
+                // labelPadding: EdgeInsets.zero,
+                tabs: [
+                  Container(
+                    height: 36,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      '밴드 들어가기',
+                      style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
-                )),
-            TabBar(
-              labelColor: ColorSeed.boldOrangeMedium.color,
-              unselectedLabelColor: ColorSeed.meticulousGrayMedium.color,
-              indicatorColor: ColorSeed.boldOrangeMedium.color,
-              indicatorWeight: 2.0,
-              indicatorSize: TabBarIndicatorSize.tab,
-              tabs: const [
-                Tab(
-                  child: Text(
-                    '멤버 구하기',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                  Container(
+                    height: 36,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      '멤버 구하기',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
-                ),
-                Tab(
-                  child: Text(
-                    '밴드 찾기',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
             // 포스팅 필터 및 선택된 태그
             ExploreFilterBar(
@@ -183,13 +162,13 @@ class _ExploreScreenState extends State<ExploreScreen>
                   TabBarView(
                     children: [
                       ExplorePosts(
-                        postType: PostTypeEnum.findMember,
+                        postType: PostTypeEnum.findBand,
                         onReloadRegister: (reloadFn) {
                           _reloadItems = reloadFn;
                         },
                       ),
                       ExplorePosts(
-                        postType: PostTypeEnum.findBand,
+                        postType: PostTypeEnum.findMember,
                         onReloadRegister: (reloadFn) {
                           _reloadItems = reloadFn;
                         },
