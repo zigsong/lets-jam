@@ -69,15 +69,15 @@ class _DefaultNavigationState extends State<DefaultNavigation>
     });
   }
 
-  void _onBandButtonTapped() {
-    setState(() {
-      _selectedIndex = 2;
-    });
-  }
+  // void _onBandButtonTapped() {
+  //   setState(() {
+  //     _selectedIndex = 2;
+  //   });
+  // }
 
   void _onProfileButtonTapped() {
     setState(() {
-      _selectedIndex = 3;
+      _selectedIndex = 2;
     });
   }
 
@@ -145,12 +145,9 @@ class _DefaultNavigationState extends State<DefaultNavigation>
               ),
               child: BottomAppBar(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                height: 84,
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 32),
+                height: 72,
                 color: Colors.white,
-                /** MARK: 있으나 없으나? */
-                // shape: const CircularNotchedRectangle(),
-                notchMargin: 5,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,57 +168,62 @@ class _DefaultNavigationState extends State<DefaultNavigation>
                             'assets/icons/bottom_nav/like_active.png'),
                         label: '찜',
                         onPressed: _onLikeButtonTapped),
-                    // MARK: AppBarItem 4개의 간격을 조정하기 위한 조치
-                    Semantics(
-                      label: '게시글 추가 버튼',
-                      button: true,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: BottomAppBarItem(
-                            isActive: _selectedIndex == 2,
-                            defaultIcon: Image.asset(
-                                'assets/icons/bottom_nav/add_default.png'),
-                            activeIcon: Image.asset(
-                                'assets/icons/bottom_nav/add_active.png'),
-                            label: '',
-                            onPressed: _onLikeButtonTapped),
-                      ),
-                    ),
+                    // BottomAppBarItem(
+                    //     isActive: _selectedIndex == 2,
+                    //     defaultIcon: Image.asset(
+                    //         'assets/icons/bottom_nav/band_default.png'),
+                    //     activeIcon: Image.asset(
+                    //         'assets/icons/bottom_nav/band_active.png'),
+                    //     label: '밴드',
+                    //     onPressed: _onBandButtonTapped),
                     BottomAppBarItem(
                         isActive: _selectedIndex == 2,
-                        defaultIcon: Image.asset(
-                            'assets/icons/bottom_nav/band_default.png'),
-                        activeIcon: Image.asset(
-                            'assets/icons/bottom_nav/band_active.png'),
-                        label: '밴드',
-                        onPressed: _onBandButtonTapped),
-                    BottomAppBarItem(
-                        isActive: _selectedIndex == 3,
                         defaultIcon: Image.asset(
                             'assets/icons/bottom_nav/profile_default.png'),
                         activeIcon: Image.asset(
                             'assets/icons/bottom_nav/profile_active.png'),
                         label: '프로필',
                         onPressed: _onProfileButtonTapped),
+                    Semantics(
+                      label: '게시글 추가 버튼',
+                      button: true,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: BottomAppBarItem(
+                            isActive: _selectedIndex == 3,
+                            defaultIcon: Image.asset(
+                                'assets/icons/bottom_nav/add_default.png'),
+                            activeIcon: Image.asset(
+                                'assets/icons/bottom_nav/add_active.png'),
+                            label: '글쓰기',
+                            onPressed: _onLikeButtonTapped),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
             Positioned(
-                top: -14,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(10.5),
-                      backgroundColor: ColorSeed.boldOrangeStrong.color,
-                      elevation: 0),
-                  onPressed: _toggleBottomSheet,
-                  child: Transform.rotate(
-                      angle: _isBottomSheetOpen ? 45 * pi / 180 : 0,
-                      child: SizedBox(
-                          width: 44,
-                          child: Image.asset(
-                              'assets/icons/bottom_nav/add_white.png'))),
+                top: -16,
+                right: 30,
+                child: SizedBox(
+                  width: 56,
+                  height: 56,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: EdgeInsets.zero,
+                        backgroundColor: ColorSeed.boldOrangeStrong.color,
+                        elevation: 0),
+                    onPressed: _toggleBottomSheet,
+                    child: Transform.rotate(
+                        angle: _isBottomSheetOpen ? 45 * pi / 180 : 0,
+                        child: SizedBox(
+                            width: 28,
+                            height: 28,
+                            child: Image.asset(
+                                'assets/icons/bottom_nav/add_white.png'))),
+                  ),
                 ))
           ],
         ));
