@@ -115,13 +115,31 @@ class PostThumbnail extends StatelessWidget {
                             ),
                           ],
                         ),
+                        if (post.tags != null && post.tags!.isNotEmpty)
+                          const SizedBox(
+                            height: 6,
+                          ),
+                        Row(
+                          children: post.tags!
+                              .map((tag) => Padding(
+                                    padding: const EdgeInsets.only(right: 6),
+                                    child: Text(
+                                      tag,
+                                      style: TextStyle(
+                                          color: ColorSeed
+                                              .organizedBlackLight.color,
+                                          fontSize: 11),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
                         const SizedBox(
                           height: 4,
                         ),
                         Text(
                           getRelativeTime(post.createdAt),
                           style:
-                              const TextStyle(fontSize: 12, color: Colors.grey),
+                              const TextStyle(fontSize: 11, color: Colors.grey),
                         ),
                       ],
                     ),
