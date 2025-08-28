@@ -12,6 +12,7 @@ class FindSessionUploadModel {
   List<String> regions;
   String contact;
   String description;
+  List<String> tags;
   List<String> images;
 
   FindSessionUploadModel.init()
@@ -22,6 +23,7 @@ class FindSessionUploadModel {
         regions = [],
         contact = '',
         description = '',
+        tags = [],
         images = [];
 
   FindSessionUploadModel.fromPost(PostModel post)
@@ -32,5 +34,6 @@ class FindSessionUploadModel {
         regions = post.regions ?? [],
         contact = post.contact,
         description = post.description,
+        tags = post.tags ?? [],
         images = post.images ?? [];
 }

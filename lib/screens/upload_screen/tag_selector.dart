@@ -3,7 +3,11 @@ import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 
 class TagSelector extends StatefulWidget {
-  const TagSelector({super.key});
+  const TagSelector(
+      {super.key, required this.selectedTags, required this.onSelect});
+
+  final List<String> selectedTags;
+  final Function(String tag) onSelect;
 
   @override
   State<TagSelector> createState() => _TagSelectorState();
@@ -11,15 +15,12 @@ class TagSelector extends StatefulWidget {
 
 class _TagSelectorState extends State<TagSelector> {
   String _value = '';
-  final List<String> _selectedTags = [];
   final TextEditingController _textEditingController = TextEditingController();
 
   void _submit() {
     if (_value == '') return;
 
-    setState(() {
-      _selectedTags.add(_value);
-    });
+    widget.onSelect(_value);
 
     final content = _textEditingController.text;
     if (content.isNotEmpty) {
@@ -39,11 +40,11 @@ class _TagSelectorState extends State<TagSelector> {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: _selectedTags.map((tag) {
+          children: widget.selectedTags.map((tag) {
             return GestureDetector(
               onTap: () {
                 setState(() {
-                  _selectedTags.remove(tag);
+                  widget.selectedTags.remove(tag);
                 });
               },
               child: Tag(
@@ -61,7 +62,7 @@ class _TagSelectorState extends State<TagSelector> {
         ),
         TextInput(
             controller: _textEditingController,
-            placeholder: '#메탈 #국내팝 #인디',
+            placeholder: widget.selectedTags.isEmpty ? '#대학생밴드 #데이식스 #메탈' : '',
             onChange: (value) {
               setState(() {
                 _value = value;

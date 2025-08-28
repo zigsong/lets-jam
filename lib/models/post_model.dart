@@ -17,6 +17,7 @@ class PostModel {
   List<String>? regions;
   String contact;
   String description;
+  List<String>? tags;
   List<String>? images;
   dynamic bandProfile;
 
@@ -32,6 +33,7 @@ class PostModel {
       required this.description,
       this.ages,
       this.regions,
+      this.tags,
       this.images});
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class PostModel {
         regions: (json['regions'] as List<dynamic>).cast<String>(),
         contact: json['contact'],
         description: json['description'],
+        tags: json['tags'],
         images:
             json['images'] != null ? List<String>.from(json['images']) : null);
   }
@@ -63,6 +66,8 @@ class PostModel {
       'regions': regions,
       'contact': contact,
       'description': description,
+      'tags': tags,
+      'images': images,
     };
   }
 
@@ -141,8 +146,4 @@ class PostModel {
         throw Exception('Invalid age value: $age');
     }
   }
-
-  // static List<AgeEnum> _imagesFromJson(List<dynamic> imagesJson) {
-  //   return imagesJson.map((image) => _ageFromString(image as String)).toList();
-  // }
 }

@@ -85,8 +85,8 @@ class _UploadScreenState extends State<UploadScreen> {
         'regions': _findSessionUploadData.regions.toList(),
         'contact': _findSessionUploadData.contact,
         'description': _findSessionUploadData.description,
+        'tags': _findSessionUploadData.tags,
         'images': imageUrls,
-        // 'band_profile': ...,
         'post_type': widget.postType.name,
       });
 
@@ -152,32 +152,32 @@ class _UploadScreenState extends State<UploadScreen> {
                     },
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                CustomForm(
-                  label: '레벨',
-                  subTitle: '밴드가 원하는 세션의 연주 레벨을 모두 선택해주세요.',
-                  isRequired: true,
-                  content: LevelSelector(
-                    selectedLevels: _findSessionUploadData.levels,
-                    onChange: (level) {
-                      if (level == null) {
-                        setState(() {
-                          _findSessionUploadData.levels = [];
-                        });
-                        return;
-                      }
-                      if (_findSessionUploadData.levels.contains(level)) {
-                        debugPrint('해제: $level');
-                        _findSessionUploadData.levels.remove(level);
-                      } else {
-                        debugPrint('선택: $level');
-                        _findSessionUploadData.levels.add(level);
-                      }
-                    },
-                  ),
-                ),
+                // const SizedBox(
+                //   height: 30,
+                // ),
+                // CustomForm(
+                //   label: '레벨',
+                //   subTitle: '밴드가 원하는 세션의 연주 레벨을 모두 선택해주세요.',
+                //   isRequired: true,
+                //   content: LevelSelector(
+                //     selectedLevels: _findSessionUploadData.levels,
+                //     onChange: (level) {
+                //       if (level == null) {
+                //         setState(() {
+                //           _findSessionUploadData.levels = [];
+                //         });
+                //         return;
+                //       }
+                //       if (_findSessionUploadData.levels.contains(level)) {
+                //         debugPrint('해제: $level');
+                //         _findSessionUploadData.levels.remove(level);
+                //       } else {
+                //         debugPrint('선택: $level');
+                //         _findSessionUploadData.levels.add(level);
+                //       }
+                //     },
+                //   ),
+                // ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -222,10 +222,20 @@ class _UploadScreenState extends State<UploadScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                const CustomForm(
-                  label: '태그',
-                  subTitle: '밴드를 소개할 수 있는 태그를 작성해주세요',
-                  content: TagSelector(),
+                CustomForm(
+                  label: '해시태그',
+                  subTitle: '자유롭게 작성해주세요 (최대 5개)',
+                  content: TagSelector(
+                    selectedTags: _findSessionUploadData.tags,
+                    onSelect: (tag) {
+                      if (_findSessionUploadData.tags.contains(tag)) {
+                        _findSessionUploadData.tags.remove(tag);
+                      } else {
+                        if (_findSessionUploadData.tags.length >= 5) return;
+                        _findSessionUploadData.tags.add(tag);
+                      }
+                    },
+                  ),
                 ),
                 const SizedBox(
                   height: 30,
