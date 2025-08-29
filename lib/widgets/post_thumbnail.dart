@@ -26,6 +26,7 @@ class PostThumbnail extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
+              flex: 7,
               child: Stack(
                 children: [
                   if (withLikedTag == true)
@@ -115,31 +116,32 @@ class PostThumbnail extends StatelessWidget {
                             ),
                           ],
                         ),
-                        if (post.tags != null && post.tags!.isNotEmpty)
+                        if (post.tags != null && post.tags!.isNotEmpty) ...[
                           const SizedBox(
                             height: 6,
                           ),
-                        Row(
-                          children: post.tags!
-                              .map((tag) => Padding(
-                                    padding: const EdgeInsets.only(right: 6),
-                                    child: Text(
-                                      tag,
-                                      style: TextStyle(
-                                          color: ColorSeed
-                                              .organizedBlackLight.color,
-                                          fontSize: 11),
-                                    ),
-                                  ))
-                              .toList(),
-                        ),
+                          Row(
+                            children: post.tags!
+                                .map((tag) => Padding(
+                                      padding: const EdgeInsets.only(right: 6),
+                                      child: Text(
+                                        '#$tag',
+                                        style: TextStyle(
+                                            color: ColorSeed
+                                                .organizedBlackLight.color,
+                                            fontSize: 12),
+                                      ),
+                                    ))
+                                .toList(),
+                          ),
+                        ],
                         const SizedBox(
                           height: 4,
                         ),
                         Text(
                           getRelativeTime(post.createdAt),
                           style:
-                              const TextStyle(fontSize: 11, color: Colors.grey),
+                              const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -147,29 +149,36 @@ class PostThumbnail extends StatelessWidget {
                 ],
               ),
             ),
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(8),
-                bottomRight: Radius.circular(8),
-              ),
-              child: Stack(children: [
-                Center(
-                    child: (post.images?.length ?? 0) > 0
-                        ? Image.network(post.images![0],
-                            width: 104, height: 104, fit: BoxFit.cover)
+            Flexible(
+              flex: 3,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+                child: Stack(children: [
+                  Positioned.fill(
+                    child: (post.images?.isNotEmpty ?? false)
+                        ? Image.network(
+                            post.images![0],
+                            fit: BoxFit.cover,
+                            alignment: Alignment.center,
+                          )
                         : Image.asset(
                             'assets/images/jam_temp_filled.png',
-                            width: 104,
-                            height: 104,
-                          )),
-                Positioned(
-                    top: 10,
-                    right: 10,
-                    child: PostLikeButton(
-                      postId: post.id,
-                      size: PostLikeButtonSize.sm,
-                    ))
-              ]),
+                            fit: BoxFit.cover,
+                            alignment: Alignment.center,
+                          ),
+                  ),
+                  Positioned(
+                      top: 10,
+                      right: 10,
+                      child: PostLikeButton(
+                        postId: post.id,
+                        size: PostLikeButtonSize.sm,
+                      ))
+                ]),
+              ),
             ),
           ],
         ),
