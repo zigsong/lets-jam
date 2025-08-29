@@ -3,6 +3,7 @@ import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/upload_screen/upload_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
+/// @deprecated
 class PostBottomSheet extends StatelessWidget {
   final VoidCallback onClose;
   const PostBottomSheet({super.key, required this.onClose});
@@ -83,7 +84,7 @@ class PostBottomSheetSelect extends StatelessWidget {
         onClose();
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => UploadScreen(postType: postType),
+            builder: (context) => const UploadScreen(),
           ),
         );
       },

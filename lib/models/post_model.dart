@@ -49,7 +49,7 @@ class PostModel {
         regions: (json['regions'] as List<dynamic>).cast<String>(),
         contact: json['contact'],
         description: json['description'],
-        tags: json['tags'],
+        tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
         images:
             json['images'] != null ? List<String>.from(json['images']) : null);
   }

@@ -7,7 +7,6 @@ import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/upload_screen/age_selector.dart';
-import 'package:lets_jam/screens/upload_screen/level_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
 import 'package:lets_jam/screens/upload_screen/tag_selector.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
@@ -27,14 +26,14 @@ Map<PostTypeEnum, String> postTypeTitle = {
 const SUPABASE_BUCKET_NAME = 'images';
 
 class UploadScreen extends StatefulWidget {
-  final PostTypeEnum postType;
-  const UploadScreen({super.key, required this.postType});
+  const UploadScreen({super.key});
 
   @override
   State<UploadScreen> createState() => _UploadScreenState();
 }
 
 class _UploadScreenState extends State<UploadScreen> {
+  final PostTypeEnum postType = PostTypeEnum.findMember;
   final _formKey = GlobalKey<FormState>();
   // Map<UploadRequiredEnum, bool> valiators = {};
   final supabase = Supabase.instance.client;
@@ -87,7 +86,7 @@ class _UploadScreenState extends State<UploadScreen> {
         'description': _findSessionUploadData.description,
         'tags': _findSessionUploadData.tags,
         'images': imageUrls,
-        'post_type': widget.postType.name,
+        'post_type': postType.name,
       });
 
       ScaffoldMessenger.of(context)
@@ -114,7 +113,7 @@ class _UploadScreenState extends State<UploadScreen> {
             bottom:
                 BorderSide(color: ColorSeed.boldOrangeStrong.color, width: 1)),
         title: Text(
-          '${postTypeTitle[widget.postType]} 구하기',
+          '글쓰기',
           style: TextStyle(
               fontSize: 16,
               color: ColorSeed.boldOrangeStrong.color,
