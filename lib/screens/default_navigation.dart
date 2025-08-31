@@ -31,7 +31,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
   final List<Widget> _widgetOptions = <Widget>[
     const ExploreScreen(),
     const LikedScreen(),
-    const BandScreen(),
+    // const BandScreen(),
     const ProfileScreen(),
   ];
 
@@ -74,7 +74,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
               child: BottomAppBar(
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 32),
-                height: 72,
+                height: 66,
                 color: Colors.white,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
