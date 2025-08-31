@@ -132,31 +132,38 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
               ),
             ),
             Positioned(
-                top: -16,
-                right: 30,
+                top: -20,
+                right: 28,
                 child: SizedBox(
-                  width: 56,
-                  height: 56,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: EdgeInsets.zero,
-                        backgroundColor: ColorSeed.boldOrangeStrong.color,
-                        elevation: 0),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const UploadScreen(),
+                  width: 64,
+                  height: 64,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent, // 빈
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const UploadScreen(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: ColorSeed.boldOrangeStrong.color,
+                          shape: BoxShape.circle,
                         ),
-                      );
-                    },
-                    child: Transform.rotate(
-                        angle: _isBottomSheetOpen ? 45 * pi / 180 : 0,
-                        child: SizedBox(
-                            width: 28,
-                            height: 28,
-                            child: Image.asset(
-                                'assets/icons/bottom_nav/add_white.png'))),
+                        child: Center(
+                          child: Transform.rotate(
+                              angle: _isBottomSheetOpen ? 45 * pi / 180 : 0,
+                              child: SizedBox(
+                                  width: 28,
+                                  height: 28,
+                                  child: Image.asset(
+                                      'assets/icons/bottom_nav/add_white.png'))),
+                        ),
+                      ),
+                    ),
                   ),
                 ))
           ],
