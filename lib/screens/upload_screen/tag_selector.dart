@@ -14,22 +14,26 @@ class TagSelector extends StatefulWidget {
 }
 
 class _TagSelectorState extends State<TagSelector> {
-  String _value = '';
   final TextEditingController _textEditingController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _textEditingController.text = "#";
+  }
+
   void _submit() {
-    if (_value == '') return;
+    String value = _textEditingController.text;
+    if (value == '') return;
 
-    widget.onSelect(_value);
+    setState(() {
+      widget.onSelect(value);
+    });
 
-    final content = _textEditingController.text;
-    if (content.isNotEmpty) {
-      _textEditingController.clear();
-
-      setState(() {
-        _value = '';
-      });
-    }
+    _textEditingController.text = '#';
+    _textEditingController.selection = TextSelection.fromPosition(
+      TextPosition(offset: _textEditingController.text.length), // 커서를 맨 끝으로
+    );
   }
 
   @override
@@ -52,7 +56,6 @@ class _TagSelectorState extends State<TagSelector> {
                 color: TagColorEnum.black,
                 size: TagSizeEnum.small,
                 selected: true,
-                withXIcon: true,
               ),
             );
           }).toList(),
@@ -60,15 +63,7 @@ class _TagSelectorState extends State<TagSelector> {
         const SizedBox(
           height: 8,
         ),
-        TextInput(
-            controller: _textEditingController,
-            placeholder: widget.selectedTags.isEmpty ? '#대학생밴드 #데이식스 #메탈' : '',
-            onChange: (value) {
-              setState(() {
-                _value = value;
-              });
-            },
-            onSubmit: _submit),
+        TextInput(controller: _textEditingController, onSubmit: _submit),
       ],
     );
   }
