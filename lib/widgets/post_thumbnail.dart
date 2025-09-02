@@ -106,35 +106,31 @@ class PostThumbnail extends StatelessWidget {
                             const SizedBox(
                               width: 4,
                             ),
-                            if (post.levels.isNotEmpty)
-                              PostBadge(
-                                  text: formatList(post.levels
-                                      .map((level) => levelMap[level])
-                                      .toList())),
                             const SizedBox(
                               width: 4,
                             ),
                           ],
                         ),
-                        if (post.tags != null && post.tags!.isNotEmpty) ...[
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          Row(
-                            children: post.tags!
-                                .map((tag) => Padding(
-                                      padding: const EdgeInsets.only(right: 6),
-                                      child: Text(
-                                        '#$tag',
-                                        style: TextStyle(
-                                            color: ColorSeed
-                                                .organizedBlackLight.color,
-                                            fontSize: 12),
-                                      ),
-                                    ))
-                                .toList(),
-                          ),
-                        ],
+                        const SizedBox(
+                          height: 6,
+                        ),
+                        (post.tags != null && post.tags!.isNotEmpty)
+                            ? Row(
+                                children: post.tags!
+                                    .map((tag) => Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 6),
+                                          child: Text(
+                                            '#$tag',
+                                            style: TextStyle(
+                                                color: ColorSeed
+                                                    .organizedBlackLight.color,
+                                                fontSize: 12),
+                                          ),
+                                        ))
+                                    .toList(),
+                              )
+                            : const SizedBox(height: 12),
                         const SizedBox(
                           height: 4,
                         ),
