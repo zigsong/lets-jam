@@ -53,6 +53,18 @@ class _UploadScreenState extends State<UploadScreen> {
     }
   }
 
+  void _toggleUploadType() {
+    if (postType == PostTypeEnum.findMember) {
+      setState(() {
+        postType = PostTypeEnum.findBand;
+      });
+    } else {
+      setState(() {
+        postType = PostTypeEnum.findMember;
+      });
+    }
+  }
+
   Future<void> _savePostToSupabase() async {
     try {
       final user = sessionController.user.value;
@@ -105,13 +117,10 @@ class _UploadScreenState extends State<UploadScreen> {
          * - 스크롤 시에도 App Bar 뒤쪽에 색상 생기지 않도록
          * */
         forceMaterialTransparency: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: ColorSeed.boldOrangeLight.color,
         elevation: 0,
         iconTheme:
             IconThemeData(color: ColorSeed.boldOrangeStrong.color, size: 20),
-        shape: Border(
-            bottom:
-                BorderSide(color: ColorSeed.boldOrangeStrong.color, width: 1)),
         title: Text(
           '글쓰기',
           style: TextStyle(
@@ -123,7 +132,14 @@ class _UploadScreenState extends State<UploadScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
-          child: Form(
+          child: Column(
+            children: [
+              UploadTypeToggler(
+                  onTap: _toggleUploadType,
+                  selectedIndex: postType == PostTypeEnum.findMember ? 0 : 1),
+              const SizedBox(
+                height: 30,
+              ),
             key: _formKey,
             child: Column(
               children: [
