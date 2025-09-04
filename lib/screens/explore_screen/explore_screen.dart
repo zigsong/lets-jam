@@ -103,7 +103,9 @@ class _ExploreScreenState extends State<ExploreScreen>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const SizedBox(width: 28, height: 28, child: Text('')),
+                    SizedBox(
+                        height: 28,
+                        child: Image.asset('assets/icons/jam_logo.png')),
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
