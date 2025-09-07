@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/explore_filter_controller.dart';
 import 'package:lets_jam/main.dart';
@@ -32,6 +31,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   late Animation<double> _animation;
 
   bool _isFilterSheetOpen = false;
+  FilterEnum _filterType = FilterEnum.region;
 
   @override
   void initState() {
@@ -155,7 +155,12 @@ class _ExploreScreenState extends State<ExploreScreen>
             ExploreFilterBar(
               selectedPage: _selectedPage,
               isFilterSheetOpen: _isFilterSheetOpen,
-              onToggleFilter: _toggleExploreFilter,
+              onToggleFilter: (filterType) {
+                _toggleExploreFilter();
+                setState(() {
+                  _filterType = filterType;
+                });
+              },
             ),
             // 포스팅 목록
             Expanded(
@@ -178,7 +183,6 @@ class _ExploreScreenState extends State<ExploreScreen>
                     ],
                   ),
                   // dimmed 배경
-                  // TODO: 필터 UI 수정하면서 구조 같이 수정하기
                   if (_isFilterSheetOpen)
                     GestureDetector(
                       onTap: _toggleExploreFilter,
@@ -196,6 +200,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                         axis: Axis.vertical,
                         child: ExploreFilterSheet(
                           applyFilter: _applyFilter,
+                          type: _filterType,
                         )),
                 ],
               ),

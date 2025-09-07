@@ -24,7 +24,7 @@ class WideButton extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
         ),
       ),
     );

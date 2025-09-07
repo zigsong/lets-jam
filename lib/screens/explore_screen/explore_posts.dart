@@ -47,10 +47,6 @@ class _ExplorePostsState extends State<ExplorePosts> {
 
   _filterPosts(List<PostModel> posts) {
     return posts.where((post) {
-      bool matchLevels = exploreFilterController.levels.isEmpty ||
-          post.levels
-              .any((level) => exploreFilterController.levels.contains(level));
-
       bool matchSessions = exploreFilterController.sessions.isEmpty ||
           post.sessions.any(
               (session) => exploreFilterController.sessions.contains(session));
@@ -60,7 +56,7 @@ class _ExplorePostsState extends State<ExplorePosts> {
                   exploreFilterController.regions.contains(region)) ??
               false);
 
-      return matchLevels && matchSessions && matchRegions;
+      return matchSessions && matchRegions;
     }).toList();
   }
 
