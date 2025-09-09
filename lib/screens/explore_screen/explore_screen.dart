@@ -20,8 +20,6 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen>
     with SingleTickerProviderStateMixin, RouteAware {
-  final int _selectedPage = 0;
-
   final ExploreFilterController exploreFilterController =
       Get.put(ExploreFilterController());
 
@@ -31,7 +29,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   late Animation<double> _animation;
 
   bool _isFilterSheetOpen = false;
-  FilterEnum _filterType = FilterEnum.region;
+  FilterEnum _currentFilterType = FilterEnum.region;
 
   @override
   void initState() {
@@ -153,12 +151,11 @@ class _ExploreScreenState extends State<ExploreScreen>
             ),
             // 포스팅 필터 및 선택된 태그
             ExploreFilterBar(
-              selectedPage: _selectedPage,
               isFilterSheetOpen: _isFilterSheetOpen,
               onToggleFilter: (filterType) {
                 _toggleExploreFilter();
                 setState(() {
-                  _filterType = filterType;
+                  _currentFilterType = filterType;
                 });
               },
             ),
@@ -200,7 +197,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                         axis: Axis.vertical,
                         child: ExploreFilterSheet(
                           applyFilter: _applyFilter,
-                          type: _filterType,
+                          type: _currentFilterType,
                         )),
                 ],
               ),

@@ -9,14 +9,11 @@ import 'package:lets_jam/widgets/tag.dart';
 class ExploreFilterBar extends StatefulWidget {
   const ExploreFilterBar({
     super.key,
-    required this.selectedPage,
     required this.isFilterSheetOpen,
     required this.onToggleFilter,
   });
 
-  final int selectedPage;
   final bool isFilterSheetOpen;
-
   final void Function(FilterEnum filterType) onToggleFilter;
 
   @override
@@ -24,6 +21,20 @@ class ExploreFilterBar extends StatefulWidget {
 }
 
 class _ExploreFilterBarState extends State<ExploreFilterBar> {
+  FilterEnum? _currentFilter;
+
+  @override
+  void didUpdateWidget(ExploreFilterBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.isFilterSheetOpen != widget.isFilterSheetOpen &&
+        widget.isFilterSheetOpen == false) {
+      setState(() {
+        _currentFilter = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final ExploreFilterController exploreFilterController =
@@ -44,12 +55,8 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
               Expanded(
                 child: Obx(() {
                   List<SessionEnum> sessionFilters =
-                      exploreFilterController.tempSessions;
-                  List<String> regionFilters =
-                      exploreFilterController.tempRegions;
-
-                  bool isFilterApplied =
-                      sessionFilters.isNotEmpty || regionFilters.isNotEmpty;
+                      exploreFilterController.sessions;
+                  List<String> regionFilters = exploreFilterController.regions;
 
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,28 +66,47 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                           GestureDetector(
                               onTap: () {
                                 widget.onToggleFilter(FilterEnum.region);
+                                setState(() {
+                                  _currentFilter = FilterEnum.region;
+                                });
                               },
-                              child: const Tag(
-                                  text: '지역', color: TagColorEnum.orange)),
+                              child: Tag(
+                                  text: '지역',
+                                  color: TagColorEnum.orange,
+                                  selected:
+                                      _currentFilter == FilterEnum.region ||
+                                          regionFilters.isNotEmpty)),
                           const SizedBox(
                             width: 12,
                           ),
                           GestureDetector(
                               onTap: () {
                                 widget.onToggleFilter(FilterEnum.session);
+                                setState(() {
+                                  _currentFilter = FilterEnum.session;
+                                });
                               },
-                              child: const Tag(
-                                  text: '세션', color: TagColorEnum.orange)),
+                              child: Tag(
+                                  text: '세션',
+                                  color: TagColorEnum.orange,
+                                  selected:
+                                      _currentFilter == FilterEnum.session ||
+                                          sessionFilters.isNotEmpty)),
                         ],
                       ),
                       Row(
                         children: [
-                          Text(
-                            '초기화',
-                            style: TextStyle(
-                                color: ColorSeed.boldOrangeRegular.color,
-                                fontSize: 13,
-                                height: 1.38),
+                          GestureDetector(
+                            onTap: () {
+                              // TODO: 여기 구현
+                            },
+                            child: Text(
+                              '초기화',
+                              style: TextStyle(
+                                  color: ColorSeed.boldOrangeRegular.color,
+                                  fontSize: 13,
+                                  height: 1.38),
+                            ),
                           ),
                           const SizedBox(
                             width: 4,
