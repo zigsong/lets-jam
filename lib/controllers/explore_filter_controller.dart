@@ -35,6 +35,11 @@ class ExploreFilterController extends GetxController {
     regions.assignAll(tempRegions);
   }
 
+  void resetTemps() {
+    tempSessions.clear();
+    tempRegions.clear();
+  }
+
   void reset() {
     sessions.clear();
     regions.clear();

@@ -71,7 +71,9 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                                 });
                               },
                               child: Tag(
-                                  text: '지역',
+                                  text: regionFilters.isEmpty
+                                      ? '지역'
+                                      : '지역 ${regionFilters.length}',
                                   color: TagColorEnum.orange,
                                   selected:
                                       _currentFilter == FilterEnum.region ||
@@ -87,7 +89,9 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                                 });
                               },
                               child: Tag(
-                                  text: '세션',
+                                  text: sessionFilters.isEmpty
+                                      ? '세션'
+                                      : '세션 ${sessionFilters.length}',
                                   color: TagColorEnum.orange,
                                   selected:
                                       _currentFilter == FilterEnum.session ||
@@ -98,7 +102,10 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              // TODO: 여기 구현
+                              setState(() {
+                                _currentFilter = null;
+                                exploreFilterController.reset();
+                              });
                             },
                             child: Text(
                               '초기화',
