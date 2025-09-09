@@ -23,9 +23,6 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle labelStyle =
-        const TextStyle(fontSize: 13, fontWeight: FontWeight.w600);
-
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(

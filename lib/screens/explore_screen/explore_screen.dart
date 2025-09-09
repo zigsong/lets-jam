@@ -74,11 +74,15 @@ class _ExploreScreenState extends State<ExploreScreen>
 
     setState(() {
       _isFilterSheetOpen = !_isFilterSheetOpen;
+
+      if (_isFilterSheetOpen) {
+        exploreFilterController.resetTemps(_currentFilterType);
+      }
     });
   }
 
   void _applyFilter() {
-    exploreFilterController.applyFilters();
+    exploreFilterController.applyFilters(_currentFilterType);
 
     _controller.animateBack(0, duration: const Duration(milliseconds: 300));
     setState(() {

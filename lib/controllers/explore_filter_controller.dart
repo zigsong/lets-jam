@@ -14,7 +14,6 @@ class ExploreFilterController extends GetxController {
   void toggleSession(SessionEnum session) {
     if (tempSessions.contains(session)) {
       tempSessions.remove(session);
-      sessions.remove(session);
     } else {
       tempSessions.add(session);
     }
@@ -23,16 +22,26 @@ class ExploreFilterController extends GetxController {
   void toggleRegion(String regionId) {
     if (tempRegions.contains(regionId)) {
       tempRegions.remove(regionId);
-      regions.remove(regionId);
     } else {
       tempRegions.add(regionId);
     }
   }
 
   // 필터 적용 (버튼 클릭 시 호출)
-  void applyFilters() {
-    sessions.assignAll(tempSessions);
-    regions.assignAll(tempRegions);
+  void applyFilters(FilterEnum filter) {
+    if (filter == FilterEnum.session) {
+      sessions.assignAll(tempSessions);
+    } else if (filter == FilterEnum.region) {
+      regions.assignAll(tempRegions);
+    }
+  }
+
+  void resetTemps(FilterEnum filter) {
+    if (filter == FilterEnum.session) {
+      tempSessions.assignAll(sessions);
+    } else if (filter == FilterEnum.region) {
+      tempRegions.assignAll(regions);
+    }
   }
 
   void reset() {
