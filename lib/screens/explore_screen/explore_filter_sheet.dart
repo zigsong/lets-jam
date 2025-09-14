@@ -39,26 +39,24 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
               widget.type == FilterEnum.session
                   ? Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Expanded(
-                        child: Obx(() => Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: SessionEnum.values.map((session) {
-                                final sessions =
-                                    exploreFilterController.tempSessions;
+                      child: Obx(() => Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: SessionEnum.values.map((session) {
+                              final sessions =
+                                  exploreFilterController.tempSessions;
 
-                                return Tag(
-                                  text: sessionMap[session] ?? '',
-                                  color: TagColorEnum.black,
-                                  selected: sessions.contains(session),
-                                  onToggle: () {
-                                    exploreFilterController
-                                        .toggleSession(session);
-                                  },
-                                );
-                              }).toList(),
-                            )),
-                      ))
+                              return Tag(
+                                text: sessionMap[session] ?? '',
+                                color: TagColorEnum.black,
+                                selected: sessions.contains(session),
+                                onToggle: () {
+                                  exploreFilterController
+                                      .toggleSession(session);
+                                },
+                              );
+                            }).toList(),
+                          )))
                   : Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 11, horizontal: 16),
@@ -71,12 +69,11 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
               Padding(
                 padding: const EdgeInsets.only(
                     top: 20, right: 16, bottom: 20, left: 16),
-                child: Expanded(
-                    child: WideButton(
-                        text: '필터 적용',
-                        onPressed: () {
-                          widget.applyFilter();
-                        })),
+                child: WideButton(
+                    text: '필터 적용',
+                    onPressed: () {
+                      widget.applyFilter();
+                    }),
               )
             ],
           )
