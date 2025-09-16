@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/screens/liked_screen/liked_posts.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class LikedScreen extends StatefulWidget {
   const LikedScreen({super.key});
@@ -18,9 +19,12 @@ class _LikedScreenState extends State<LikedScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 '내가 찜한 글',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800),
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    color: ColorSeed.boldOrangeMedium.color),
               ),
               SizedBox(
                   width: 28,
