@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/explore_filter_controller.dart';
+import 'package:lets_jam/models/region_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/tag.dart';
@@ -56,7 +57,8 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                 child: Obx(() {
                   List<SessionEnum> sessionFilters =
                       exploreFilterController.sessions;
-                  List<String> regionFilters = exploreFilterController.regions;
+                  List<District> regionFilters =
+                      exploreFilterController.regions;
 
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -85,9 +85,6 @@ class _PostLikeButtonState extends State<PostLikeButton> {
 
     final userId = sessionController.user.value!.id;
 
-    print('userId: $userId');
-    print('postId: $postId');
-
     final existing = await supabase
         .from('post_likes')
         .select()

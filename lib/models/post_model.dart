@@ -1,5 +1,6 @@
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
+import 'package:lets_jam/models/region_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 
 enum PostTypeEnum { findBand, findMember }
@@ -14,7 +15,7 @@ class PostModel {
   List<LevelEnum> levels;
   List<SessionEnum> sessions;
   List<AgeEnum>? ages;
-  List<String>? regions;
+  List<District>? regions; // TODO: 여기 몬가 문제가?
   String contact;
   String description;
   List<String>? tags;
@@ -46,7 +47,7 @@ class PostModel {
         levels: _levelsFromJson(json['levels']),
         sessions: _sesssionsFromJson(json['sessions']),
         ages: _agesFromJson(json['ages']),
-        regions: (json['regions'] as List<dynamic>).cast<String>(),
+        regions: _regionsFromJson(json['regions']),
         contact: json['contact'],
         description: json['description'],
         tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
@@ -126,6 +127,13 @@ class PostModel {
       default:
         throw Exception('Invalid session value: $session');
     }
+  }
+
+  static List<District> _regionsFromJson(List<dynamic> regionsJson) {
+    return (regionsJson)
+        .map((regionName) => District.values.firstWhere(
+            (district) => district.displayName == regionName as String))
+        .toList();
   }
 
   static List<AgeEnum> _agesFromJson(List<dynamic> agesJson) {

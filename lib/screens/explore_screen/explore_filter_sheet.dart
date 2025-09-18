@@ -18,7 +18,7 @@ class ExploreFilterSheet extends StatefulWidget {
 }
 
 class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
-  final ExploreFilterController exploreFilterController =
+  final ExploreFilterController filterController =
       Get.put(ExploreFilterController());
 
   @override
@@ -43,16 +43,14 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                             spacing: 8,
                             runSpacing: 8,
                             children: SessionEnum.values.map((session) {
-                              final sessions =
-                                  exploreFilterController.tempSessions;
+                              final sessions = filterController.tempSessions;
 
                               return Tag(
                                 text: sessionMap[session] ?? '',
                                 color: TagColorEnum.black,
                                 selected: sessions.contains(session),
                                 onToggle: () {
-                                  exploreFilterController
-                                      .toggleSession(session);
+                                  filterController.toggleSession(session);
                                 },
                               );
                             }).toList(),
@@ -61,9 +59,9 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 11, horizontal: 16),
                       child: RegionFilter(
-                        selectedRegionIds: exploreFilterController.tempRegions,
-                        toggleRegion: (regionId) {
-                          exploreFilterController.toggleRegion(regionId);
+                        selectedRegions: filterController.tempRegions,
+                        toggleRegion: (region) {
+                          filterController.toggleRegion(region);
                         },
                       )),
               Padding(

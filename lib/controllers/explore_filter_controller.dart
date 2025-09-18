@@ -1,15 +1,16 @@
 import 'package:get/get.dart';
+import 'package:lets_jam/models/region_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 
 enum FilterEnum { session, region }
 
 class ExploreFilterController extends GetxController {
   var sessions = <SessionEnum>[].obs;
-  var regions = <String>[].obs;
+  var regions = <District>[].obs;
 
   // 태그 선택 시 임시 필터
   var tempSessions = <SessionEnum>[].obs;
-  var tempRegions = <String>[].obs;
+  var tempRegions = <District>[].obs;
 
   void toggleSession(SessionEnum session) {
     if (tempSessions.contains(session)) {
@@ -19,12 +20,28 @@ class ExploreFilterController extends GetxController {
     }
   }
 
-  void toggleRegion(String regionId) {
-    if (tempRegions.contains(regionId)) {
-      tempRegions.remove(regionId);
+  void toggleRegion(District district) {
+    if (tempRegions.contains(district)) {
+      tempRegions.remove(district);
     } else {
-      tempRegions.add(regionId);
+      tempRegions.add(district);
     }
+
+    // "전체" 옵션 선택 시 같은 Province의 개별 지역들 제거
+    if (district.isAll && tempRegions.contains(district)) {
+      final sameProvinceDistricts =
+          District.getByProvince(district.province).where((d) => !d.isAll);
+      tempRegions.removeWhere((d) => sameProvinceDistricts.contains(d));
+    }
+
+    // 개별 지역 선택 시 같은 Province의 "전체" 옵션 제거
+    if (!district.isAll && tempRegions.contains(district)) {
+      final allOption =
+          District.getByProvince(district.province).firstWhere((d) => d.isAll);
+      tempRegions.remove(allOption);
+    }
+
+    applyFilters(FilterEnum.region);
   }
 
   // 필터 적용 (버튼 클릭 시 호출)

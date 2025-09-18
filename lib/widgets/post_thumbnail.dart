@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
@@ -102,7 +101,10 @@ class PostThumbnail extends StatelessWidget {
                             ),
                             if (post.regions != null &&
                                 post.regions!.isNotEmpty)
-                              PostBadge(text: formatList(post.regions!)),
+                              PostBadge(
+                                  text: formatList(post.regions!
+                                      .map((region) => region.displayName)
+                                      .toList())),
                             const SizedBox(
                               width: 4,
                             ),

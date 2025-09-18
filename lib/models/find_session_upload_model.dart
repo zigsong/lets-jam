@@ -1,6 +1,7 @@
 import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
+import 'package:lets_jam/models/region_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 
 /// MARK: FindBandModel을 따로 만들어야 할까?
@@ -9,7 +10,7 @@ class FindSessionUploadModel {
   List<LevelEnum> levels;
   List<SessionEnum> sessions;
   List<AgeEnum> ages;
-  List<String> regions;
+  List<District> regions;
   String contact;
   String description;
   List<String> tags;

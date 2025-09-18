@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
-class DropdownItem {
-  final String id;
+class DropdownItem<T> {
+  final T value;
   final String text;
 
-  DropdownItem({required this.id, required this.text});
+  DropdownItem({required this.value, required this.text});
 }
 
 class CustomDropdown<T> extends StatefulWidget {

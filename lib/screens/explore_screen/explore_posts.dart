@@ -23,7 +23,7 @@ class ExplorePosts extends StatefulWidget {
 class _ExplorePostsState extends State<ExplorePosts> {
   late Future<List<PostModel>> _posts;
 
-  final ExploreFilterController exploreFilterController =
+  final ExploreFilterController filterController =
       Get.put(ExploreFilterController());
 
   @override
@@ -40,23 +40,27 @@ class _ExplorePostsState extends State<ExplorePosts> {
         .select('*')
         .order('created_at', ascending: false);
 
-    print('기본 데이터: $response');
-
     return response.map<PostModel>((json) => PostModel.fromJson(json)).toList();
   }
 
   _filterPosts(List<PostModel> posts) {
     return posts.where((post) {
-      bool matchSessions = exploreFilterController.sessions.isEmpty ||
-          post.sessions.any(
-              (session) => exploreFilterController.sessions.contains(session));
+      bool matchSessions = filterController.sessions.isEmpty ||
+          post.sessions
+              .any((session) => filterController.sessions.contains(session));
 
-      bool matchRegions = exploreFilterController.regions.isEmpty ||
-          (post.regions?.any((region) =>
-                  exploreFilterController.regions.contains(region)) ??
-              false);
+      print(filterController.sessions);
 
-      return matchSessions && matchRegions;
+      /** TODO: 여기 수정하기 */
+      // bool matchRegions = filterController.regions.isEmpty ||
+      //     (post.regions?.any(
+      //             (region) => filterController.regions.contains(region)) ??
+      //         false);
+
+      // print(filterController.regions);
+
+      // return matchSessions && matchRegions;
+      return matchSessions;
     }).toList();
   }
 

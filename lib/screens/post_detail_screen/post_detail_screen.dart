@@ -403,7 +403,8 @@ class PostDetailInfo extends StatelessWidget {
                 post.sessions.map((session) => sessionMap[session]!).toList()),
           _filterDataList(
               '연령대', post.ages?.map((age) => ageMap[age]!).toList()),
-          _filterDataList('지역', post.regions),
+          _filterDataList(
+              '지역', post.regions?.map((region) => region.name).toList()),
         ],
       ),
     );
