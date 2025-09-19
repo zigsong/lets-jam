@@ -53,6 +53,22 @@ class ExploreFilterController extends GetxController {
     }
   }
 
+  List<District> getExpandedRegions() {
+    List<District> expandedRegions = [];
+
+    for (District district in regions) {
+      if (district.isAll) {
+        // "전체" 옵션이면 해당 Province의 모든 District 추가
+        expandedRegions.addAll(District.getByProvince(district.province));
+      } else {
+        // 개별 지역이면 그대로 추가
+        expandedRegions.add(district);
+      }
+    }
+
+    return expandedRegions.toSet().toList(); // 중복 제거
+  }
+
   void resetTemps(FilterEnum filter) {
     if (filter == FilterEnum.session) {
       tempSessions.assignAll(sessions);
