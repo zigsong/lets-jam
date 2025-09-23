@@ -25,8 +25,8 @@ class RegionSelector extends StatefulWidget {
 class _RegionSelectorState extends State<RegionSelector> {
   final supabase = Supabase.instance.client;
 
-  late Province _selectedProvince;
-  String? _selectedRegion;
+  Province _selectedProvince = Province.seoul;
+  District _selectedRegion = District.seoulAll;
 
   @override
   void initState() {
@@ -78,7 +78,6 @@ class _RegionSelectorState extends State<RegionSelector> {
                 onSelect: (item) {
                   setState(() {
                     _selectedProvince = item.value;
-                    _selectedRegion = null;
                   });
                 },
               ),
@@ -88,17 +87,17 @@ class _RegionSelectorState extends State<RegionSelector> {
             ),
             Expanded(
               child: CustomDropdown(
-                currentValue: DropdownItem(
-                  value: _selectedRegion!,
-                  text: _selectedRegion!,
+                currentValue: DropdownItem<District>(
+                  value: _selectedRegion,
+                  text: _selectedRegion.displayName,
                 ),
                 options: District.getByProvince(_selectedProvince)
-                    .map((item) => DropdownItem<District>(
-                        value: item, text: item.displayName))
+                    .map((item) =>
+                        DropdownItem(value: item, text: item.displayName))
                     .toList(),
                 onSelect: (item) {
                   setState(() {
-                    _selectedRegion = item.text;
+                    _selectedRegion = item.value;
                   });
                   widget.onChange(item.value);
                 },
