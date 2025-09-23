@@ -157,7 +157,9 @@ class _ExploreScreenState extends State<ExploreScreen>
             ExploreFilterBar(
               isFilterSheetOpen: _isFilterSheetOpen,
               onToggleFilter: (filterType) {
-                _toggleExploreFilter();
+                if (!_isFilterSheetOpen) {
+                  _toggleExploreFilter();
+                }
                 setState(() {
                   _currentFilterType = filterType;
                 });
