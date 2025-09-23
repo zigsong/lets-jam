@@ -31,9 +31,9 @@ class Tag extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(
               horizontal:
-                  selected == true && size == TagSizeEnum.medium ? 16 : 12,
+                  selected == true && size == TagSizeEnum.medium ? 14 : 12,
               vertical:
-                  selected == true && size == TagSizeEnum.medium ? 8.5 : 4.5),
+                  selected == true && size == TagSizeEnum.medium ? 6.5 : 4.5),
           decoration: BoxDecoration(
               color: selected == true ? ColorSeed.boldOrangeMedium.color : null,
               border: selected == true
@@ -79,8 +79,8 @@ class Tag extends StatelessWidget {
       onTap: onToggle,
       child: Container(
         padding: EdgeInsets.symmetric(
-            horizontal: selected == true ? 16 : 14,
-            vertical: selected == true ? 6 : 4),
+            horizontal: selected == true ? 15 : 14,
+            vertical: selected == true ? 4 : 4),
         decoration: BoxDecoration(
             color:
                 selected == true ? ColorSeed.organizedBlackMedium.color : null,
