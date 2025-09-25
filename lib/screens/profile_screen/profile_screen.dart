@@ -4,6 +4,7 @@ import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/screens/profile_screen/gradient_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/post_type_badge.dart';
+import 'package:lets_jam/widgets/util_button.dart';
 import 'package:share_plus/share_plus.dart';
 
 Map<SessionEnum, String> sessionImagesActive = {
@@ -38,6 +39,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Stack(children: [
       const GradientSplitScreen(),
+      // TODO: 수정 삭제 버튼 - 내 게시글만
+      Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: Container(
+          height: MediaQuery.of(context).padding.top + 72,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF222222), Colors.transparent],
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top, right: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                UtilButton(
+                    text: '수정',
+                    color: ColorSeed.meticulousGrayLight.color,
+                    onPressed: () async {}),
+                const SizedBox(
+                  width: 8,
+                ),
+                UtilButton(
+                    text: '삭제',
+                    color: ColorSeed.meticulousGrayLight.color,
+                    onPressed: () {}),
+              ],
+            ),
+          ),
+        ),
+      ),
       Positioned(
         bottom: 60,
         left: 0,
