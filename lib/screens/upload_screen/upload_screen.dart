@@ -8,7 +8,7 @@ import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/upload_screen/age_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
-import 'package:lets_jam/screens/upload_screen/tag_selector.dart';
+import 'package:lets_jam/screens/upload_screen/hashtag_selector.dart';
 import 'package:lets_jam/screens/upload_screen/upload_type_toggler.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
@@ -218,7 +218,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     CustomForm(
                       label: '해시태그',
                       subTitle: '자유롭게 작성해주세요 (최대 5개) #대학생밴드 #데이식스 #메탈',
-                      content: TagSelector(
+                      content: HashTagSelector(
                         selectedTags: _findSessionUploadData.tags,
                         onSelect: (tag) {
                           if (_findSessionUploadData.tags.contains(tag)) {

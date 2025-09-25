@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
+/// TODO: 정리 필요...
 class TextInput extends StatelessWidget {
   const TextInput({
     super.key,
@@ -15,6 +16,7 @@ class TextInput extends StatelessWidget {
     this.isRequired,
     this.controller,
     this.hasSuffixButton,
+    this.focusNode,
   });
 
   final String? label;
@@ -28,6 +30,7 @@ class TextInput extends StatelessWidget {
   final bool? isRequired;
   final TextEditingController? controller;
   final bool? hasSuffixButton;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +62,7 @@ class TextInput extends StatelessWidget {
                 children: [
                   TextFormField(
                     controller: controller,
+                    focusNode: focusNode,
                     initialValue: initialValue,
                     keyboardType: keyboardType,
                     style: const TextStyle(fontSize: 13),
