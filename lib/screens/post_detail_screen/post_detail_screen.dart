@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/age_enum.dart';
-import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
@@ -396,15 +395,12 @@ class PostDetailInfo extends StatelessWidget {
           borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [
-          _filterDataList(
-              '레벨', post.levels.map((level) => levelMap[level]!).toList()),
           if (post.postType == PostTypeEnum.findMember)
             _filterDataList('세션',
                 post.sessions.map((session) => sessionMap[session]!).toList()),
           _filterDataList(
-              '연령대', post.ages?.map((age) => ageMap[age]!).toList()),
-          _filterDataList(
               '지역', post.regions?.map((region) => region.name).toList()),
+          _filterDataList('해시태그', post.tags?.map((tag) => tag).toList())
         ],
       ),
     );
@@ -419,7 +415,7 @@ class PostDetailInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
             child: SizedBox(
-              width: 44,
+              width: 48,
               child: Text(
                 label,
                 style: const TextStyle(fontSize: 13, height: 1),
