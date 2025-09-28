@@ -40,8 +40,6 @@ class ExploreFilterController extends GetxController {
           District.getByProvince(district.province).firstWhere((d) => d.isAll);
       tempRegions.remove(allOption);
     }
-
-    applyFilters(FilterEnum.region);
   }
 
   // 필터 적용 (버튼 클릭 시 호출)
