@@ -174,29 +174,6 @@ class _UploadScreenState extends State<UploadScreen> {
                       height: 30,
                     ),
                     CustomForm(
-                      label: '연령대',
-                      content: AgeSelector(
-                        selectedAges: _findSessionUploadData.ages,
-                        onChange: (age) {
-                          if (age == null) {
-                            setState(() {
-                              _findSessionUploadData.ages = [];
-                            });
-                            return;
-                          }
-
-                          if (_findSessionUploadData.ages.contains(age)) {
-                            _findSessionUploadData.ages.remove(age);
-                          } else {
-                            _findSessionUploadData.ages.add(age);
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    CustomForm(
                       label: '지역(최대3개)',
                       content: RegionSelector(
                         selectedRegions: _findSessionUploadData.regions,

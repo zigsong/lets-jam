@@ -139,32 +139,6 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   height: 30,
                 ),
                 CustomForm(
-                  label: '레벨',
-                  subTitle: '밴드가 원하는 세션의 연주 레벨을 모두 선택해주세요.',
-                  isRequired: true,
-                  content: LevelSelector(
-                    selectedLevels: _findSessionEditData.levels,
-                    onChange: (level) {
-                      if (level == null) {
-                        setState(() {
-                          _findSessionEditData.levels = [];
-                        });
-                        return;
-                      }
-                      if (_findSessionEditData.levels.contains(level)) {
-                        debugPrint('해제: $level');
-                        _findSessionEditData.levels.remove(level);
-                      } else {
-                        debugPrint('선택: $level');
-                        _findSessionEditData.levels.add(level);
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                CustomForm(
                   label: '세션',
                   subTitle: '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
                   isRequired: true,
@@ -175,29 +149,6 @@ class _EditPostScreenState extends State<EditPostScreen> {
                         _findSessionEditData.sessions.remove(session);
                       } else {
                         _findSessionEditData.sessions.add(session);
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                CustomForm(
-                  label: '연령대',
-                  content: AgeSelector(
-                    selectedAges: _findSessionEditData.ages,
-                    onChange: (age) {
-                      if (age == null) {
-                        setState(() {
-                          _findSessionEditData.ages = [];
-                        });
-                        return;
-                      }
-
-                      if (_findSessionEditData.ages.contains(age)) {
-                        _findSessionEditData.ages.remove(age);
-                      } else {
-                        _findSessionEditData.ages.add(age);
                       }
                     },
                   ),
