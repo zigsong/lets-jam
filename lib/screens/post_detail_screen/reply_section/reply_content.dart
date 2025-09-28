@@ -207,9 +207,9 @@ class _ReplyContentState extends State<ReplyContent> {
                           )
                         : TextInput(
                             initialValue: widget.reply.content,
-                            onChange: (value) {
+                            onChanged: (value) {
                               setState(() {
-                                _editingValue = value!;
+                                _editingValue = value;
                               });
                             },
                             height: 40,

@@ -111,7 +111,7 @@ class _PostProfilePageState extends State<PostProfilePage> {
                         label: '닉네임',
                         isRequired: true,
                         placeholder: '닉네임을 입력하세요',
-                        onChange: (value) {
+                        onChanged: (value) {
                           valiators[SignupRequiredEnum.nickname] = true;
                           widget.signupData.nickname = value ?? '';
                         },
@@ -128,7 +128,7 @@ class _PostProfilePageState extends State<PostProfilePage> {
                       child: TextInput(
                         label: '연락처',
                         placeholder: '연락처를 입력하세요',
-                        onChange: (value) {
+                        onChanged: (value) {
                           widget.signupData.contact = value ?? '';
                         },
                         keyboardType: TextInputType.phone,
@@ -179,7 +179,7 @@ class _PostProfilePageState extends State<PostProfilePage> {
                     ),
                     TextInput(
                       label: '자기소개',
-                      onChange: (value) {
+                      onChanged: (value) {
                         widget.signupData.bio = value;
                       },
                       keyboardType: TextInputType.multiline,

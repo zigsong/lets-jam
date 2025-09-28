@@ -148,7 +148,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     TextInput(
                         label: '제목',
                         isRequired: true,
-                        onChange: (value) {
+                        onChanged: (value) {
                           _findSessionUploadData.title = value ?? '';
                         }),
                     const SizedBox(
@@ -259,7 +259,7 @@ class _UploadScreenState extends State<UploadScreen> {
                       label: '연락처',
                       subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
                       content: TextInput(
-                        onChange: (value) {
+                        onChanged: (value) {
                           _findSessionUploadData.contact = value ?? '';
                         },
                       ),
@@ -270,7 +270,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     CustomForm(
                       label: '자세한 글',
                       content: TextInput(
-                        onChange: (value) {
+                        onChanged: (value) {
                           _findSessionUploadData.description = value ?? '';
                         },
                         keyboardType: TextInputType.multiline,

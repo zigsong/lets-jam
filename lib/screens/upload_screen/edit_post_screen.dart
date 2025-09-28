@@ -132,7 +132,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                     label: '제목',
                     initialValue: _findSessionEditData.title,
                     isRequired: true,
-                    onChange: (value) {
+                    onChanged: (value) {
                       _findSessionEditData.title = value ?? '';
                     }),
                 const SizedBox(
@@ -247,7 +247,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
                   content: TextInput(
                     initialValue: _findSessionEditData.contact,
-                    onChange: (value) {
+                    onChanged: (value) {
                       _findSessionEditData.contact = value ?? '';
                     },
                   ),
@@ -259,7 +259,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   label: '자세한 글',
                   content: TextInput(
                     initialValue: _findSessionEditData.description,
-                    onChange: (value) {
+                    onChanged: (value) {
                       _findSessionEditData.description = value ?? '';
                     },
                     keyboardType: TextInputType.multiline,
