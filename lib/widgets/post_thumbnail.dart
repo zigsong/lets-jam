@@ -9,9 +9,9 @@ import 'package:lets_jam/widgets/post_like_button.dart';
 
 class PostThumbnail extends StatelessWidget {
   final PostModel post;
-  final bool? withLikedTag;
+  final bool? withPrefixTag;
 
-  const PostThumbnail({super.key, required this.post, this.withLikedTag});
+  const PostThumbnail({super.key, required this.post, this.withPrefixTag});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class PostThumbnail extends StatelessWidget {
               flex: 7,
               child: Stack(
                 children: [
-                  if (withLikedTag == true)
+                  if (withPrefixTag == true)
                     Positioned(
                       top: 10,
                       left: 0,
@@ -71,7 +71,7 @@ class PostThumbnail extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            if (withLikedTag == true)
+                            if (withPrefixTag == true)
                               const SizedBox(
                                 width: 44,
                               ),
@@ -86,8 +86,8 @@ class PostThumbnail extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 6,
+                        SizedBox(
+                          height: withPrefixTag == true ? 12 : 6,
                         ),
                         Wrap(
                           runSpacing: 4,

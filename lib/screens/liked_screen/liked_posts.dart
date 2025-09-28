@@ -72,7 +72,7 @@ class _LikedPostsState extends State<LikedPosts> {
                   return GestureDetector(
                     child: PostThumbnail(
                       post: post,
-                      withLikedTag: true,
+                      withPrefixTag: true,
                     ),
                     onTap: () async {
                       final deleted = await Navigator.push(
