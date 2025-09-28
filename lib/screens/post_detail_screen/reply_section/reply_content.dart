@@ -212,7 +212,6 @@ class _ReplyContentState extends State<ReplyContent> {
                                 _editingValue = value;
                               });
                             },
-                            height: 40,
                             keyboardType: TextInputType.multiline,
                           ),
                   ],
