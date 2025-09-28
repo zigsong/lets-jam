@@ -15,7 +15,7 @@ class PostModel {
   List<LevelEnum> levels;
   List<SessionEnum> sessions;
   List<AgeEnum>? ages;
-  List<District>? regions; // TODO: 여기 몬가 문제가?
+  List<District>? regions;
   String contact;
   String description;
   List<String>? tags;

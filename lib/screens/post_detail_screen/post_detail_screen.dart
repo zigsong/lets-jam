@@ -399,7 +399,7 @@ class PostDetailInfo extends StatelessWidget {
             _filterDataList('세션',
                 post.sessions.map((session) => sessionMap[session]!).toList()),
           _filterDataList(
-              '지역', post.regions?.map((region) => region.name).toList()),
+              '지역', post.regions?.map((region) => region.displayName).toList()),
           _filterDataList('해시태그', post.tags?.map((tag) => tag).toList())
         ],
       ),
