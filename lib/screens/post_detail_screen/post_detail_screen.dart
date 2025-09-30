@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
-import 'package:lets_jam/models/age_enum.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/user_model.dart';
@@ -84,16 +83,17 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Future<void> _deletePost(String id) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
     try {
       await supabase.from('posts').delete().eq('id', id);
 
-      ScaffoldMessenger.of(context).showSnackBar(customSnackbar("게시글이 삭제되었어요"));
-      Navigator.pop(context, true);
+      scaffoldMessenger.showSnackBar(customSnackbar("게시글이 삭제되었어요"));
+      navigator.pop(true);
     } catch (error) {
       print('게시글 삭제 에러 : $error');
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(customSnackbar('게시글 삭제에 실패했어요'));
+      scaffoldMessenger.showSnackBar(customSnackbar('게시글 삭제에 실패했어요'));
 
       throw Error;
     }

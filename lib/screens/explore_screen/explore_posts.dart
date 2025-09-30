@@ -127,7 +127,6 @@ class _ExplorePostsState extends State<ExplorePosts> {
                                         userId: post.userId,
                                       )));
 
-                      /** @zigsong TODO: 화면 다시 fetch하기 */
                       if (deleted == true) {
                         _refresh();
                       }

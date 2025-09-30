@@ -83,7 +83,6 @@ class _LikedPostsState extends State<LikedPosts> {
                                     userId: post.userId,
                                   )));
 
-                      /** @zigsong TODO: 화면 다시 fetch하기 */
                       if (deleted == true) {
                         _refresh();
                       }
