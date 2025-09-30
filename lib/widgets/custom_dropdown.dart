@@ -57,7 +57,6 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
           child: CompositedTransformFollower(
             link: _layerLink,
             showWhenUnlinked: false,
-            // offset: const Offset(0, 36),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: Container(
@@ -71,18 +70,18 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: widget.options.asMap().entries.map((entry) {
-                    final isEnd = entry.key == 0 ||
-                        entry.key == widget.options.length - 1;
-
                     return Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.vertical(
+                        top: entry.key == 0
+                            ? const Radius.circular(6)
+                            : Radius.zero,
+                        bottom: entry.key == widget.options.length - 1
+                            ? const Radius.circular(6)
+                            : Radius.zero,
+                      ),
+                      clipBehavior: Clip.antiAlias,
                       child: InkWell(
-                        /** TODO: Radius 적용이 안되는것 같다 ㅠㅠ */
-                        borderRadius: BorderRadius.only(
-                          bottomLeft:
-                              isEnd ? const Radius.circular(6) : Radius.zero,
-                          bottomRight:
-                              isEnd ? const Radius.circular(6) : Radius.zero,
-                        ),
                         highlightColor: ColorSeed.boldOrangeLight.color,
                         child: Ink(
                           color: Colors.white,
