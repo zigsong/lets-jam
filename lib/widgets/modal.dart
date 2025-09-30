@@ -95,8 +95,7 @@ void showModal({
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
-    /** @zigsong TODO: 얘도 바꿀까? */
-    barrierLabel: "Modal",
+    barrierLabel: "다이얼로그 닫기",
     barrierColor: ColorSeed.organizedBlackMedium.color.withOpacity(0.7),
     transitionDuration: const Duration(milliseconds: 300),
     pageBuilder: (_, __, ___) {
