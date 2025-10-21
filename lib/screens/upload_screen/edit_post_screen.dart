@@ -6,6 +6,7 @@ import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/upload_screen/age_selector.dart';
+import 'package:lets_jam/screens/upload_screen/hashtag_selector.dart';
 import 'package:lets_jam/screens/upload_screen/level_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
@@ -167,6 +168,24 @@ class _EditPostScreenState extends State<EditPostScreen> {
                         /** TODO: 3개 이상 선택 시도 시 알럿 */
                         if (_findSessionEditData.regions.length >= 3) return;
                         _findSessionEditData.regions.add(region);
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                CustomForm(
+                  label: '해시태그',
+                  subTitle: '자유롭게 작성해주세요 (최대 5개) #대학생밴드 #데이식스 #메탈',
+                  content: HashTagSelector(
+                    selectedTags: _findSessionEditData.tags,
+                    onSelect: (tag) {
+                      if (_findSessionEditData.tags.contains(tag)) {
+                        _findSessionEditData.tags.remove(tag);
+                      } else {
+                        if (_findSessionEditData.tags.length >= 5) return;
+                        _findSessionEditData.tags.add(tag);
                       }
                     },
                   ),
