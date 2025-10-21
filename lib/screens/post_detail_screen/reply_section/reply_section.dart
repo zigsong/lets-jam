@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lets_jam/models/reply_model.dart';
 import 'package:lets_jam/screens/post_detail_screen/reply_section/reply_content.dart';
 import 'package:lets_jam/screens/post_detail_screen/reply_section/reply_input.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ReplySection extends StatefulWidget {
@@ -74,13 +75,24 @@ class _ReplySectionState extends State<ReplySection> {
                 const SizedBox(
                   height: 20,
                 ),
-                Column(
-                    children: replys
-                        .map((reply) => ReplyContent(
-                            key: ValueKey(reply.id),
-                            reply: reply,
-                            onRefresh: _refresh))
-                        .toList())
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: replys.length,
+                  itemBuilder: (context, index) {
+                    final reply = replys[index];
+                    return ReplyContent(
+                      key: ValueKey(reply.id),
+                      reply: reply,
+                      onRefresh: _refresh,
+                    );
+                  },
+                  separatorBuilder: (context, index) => Divider(
+                    color: ColorSeed.meticulousGrayLight.color,
+                    thickness: 0.5,
+                    height: 10,
+                  ),
+                )
               ],
             ),
           ),

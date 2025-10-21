@@ -101,7 +101,7 @@ class _ReplyContentState extends State<ReplyContent> {
         final author = snapshot.data!;
 
         return Container(
-          padding: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
