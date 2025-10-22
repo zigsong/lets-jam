@@ -62,6 +62,7 @@ class _ImageSliderState extends State<ImageSlider> {
             },
           ).toList(),
           options: CarouselOptions(
+            enableInfiniteScroll: false,
             height: widget.height ?? imageHeight,
             viewportFraction: 1.0,
             onPageChanged: (index, reason) {
