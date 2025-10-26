@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/screens/alarm_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_posts.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
@@ -26,10 +27,18 @@ class _LikedScreenState extends State<LikedScreen> {
                     fontWeight: FontWeight.w600,
                     color: ColorSeed.boldOrangeMedium.color),
               ),
-              SizedBox(
-                  width: 28,
-                  height: 28,
-                  child: Image.asset('assets/icons/bell_active.png')),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const AlarmScreen()),
+                  );
+                },
+                child: SizedBox(
+                    width: 28,
+                    height: 28,
+                    child: Image.asset('assets/icons/bell_active.png')),
+              ),
             ],
           ),
         ),
