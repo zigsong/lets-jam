@@ -125,6 +125,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           return Scaffold(
             body: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification notification) {
+                if (notification.metrics.axis != Axis.vertical) return false;
+
                 final offset = notification.metrics.pixels;
                 const threshold = 150.0; // threshold 설정
 
