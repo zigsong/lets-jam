@@ -73,9 +73,10 @@ class _ReplySectionState extends State<ReplySection> {
                   onSubmit: _refresh,
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 ListView.separated(
+                  padding: EdgeInsets.zero,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: replys.length,
