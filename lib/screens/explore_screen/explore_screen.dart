@@ -7,6 +7,7 @@ import 'package:lets_jam/screens/alarm_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_bar.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_sheet.dart';
 import 'package:lets_jam/screens/explore_screen/explore_posts.dart';
+import 'package:lets_jam/screens/settings_screen/settings_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -108,17 +109,37 @@ class _ExploreScreenState extends State<ExploreScreen>
                     SizedBox(
                         height: 28,
                         child: Image.asset('assets/icons/jam_logo.png')),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => const AlarmScreen()),
-                        );
-                      },
-                      child: SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: Image.asset('assets/icons/bell_orange.png')),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const AlarmScreen()),
+                            );
+                          },
+                          child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child:
+                                  Image.asset('assets/icons/bell_orange.png')),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const SettingsScreen()),
+                            );
+                          },
+                          child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: Image.asset('assets/icons/settings.png')),
+                        ),
+                      ],
                     ),
                   ],
                 ),
