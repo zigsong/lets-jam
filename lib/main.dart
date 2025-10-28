@@ -32,6 +32,8 @@ Future<void> main() async {
   /** ExploreFilterController도 이곳에서 initialize하기 */
   Get.put(SessionController());
 
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const GetMaterialApp(home: MyApp()));
 }
 

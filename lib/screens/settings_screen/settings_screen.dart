@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  String _version = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersion();
+  }
+
+  Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    print('info: $info');
+
+    setState(() {
+      _version = '${info.version} (${info.buildNumber})';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +36,7 @@ class SettingsScreen extends StatelessWidget {
       {'title': '신고하기', 'route': '/privacy'},
       {'title': '서비스 이용약관', 'route': '/about'},
       {'title': '개인정보 처리방침', 'route': '/about'},
-      {'title': '앱 버전 정보', 'route': '/about'},
+      {'title': '앱 버전 정보', 'subtitle': _version, 'route': '/about'},
       {'title': '로그아웃', 'route': '/about'},
       {'title': '회원 탈퇴', 'route': '/about'},
     ];
@@ -36,12 +59,26 @@ class SettingsScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = settings[index];
           return ListTile(
-            title: Text(
-              item['title']!,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+            title: Row(
+              children: [
+                Text(
+                  item['title']!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                if (item['subtitle'] != null)
+                  Text(
+                    item['subtitle']!,
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: ColorSeed.meticulousGrayMedium.color),
+                  )
+              ],
             ),
             onTap: () {
               Navigator.pushNamed(context, item['route']!);
