@@ -6,7 +6,6 @@ import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
-import 'package:lets_jam/screens/upload_screen/age_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
 import 'package:lets_jam/screens/upload_screen/hashtag_selector.dart';
 import 'package:lets_jam/screens/upload_screen/upload_type_toggler.dart';
@@ -43,11 +42,13 @@ class _UploadScreenState extends State<UploadScreen> {
   final FindSessionUploadModel _findSessionUploadData =
       FindSessionUploadModel.init();
 
-  void _submit() {
+  Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      _savePostToSupabase();
+      await _savePostToSupabase();
+
+      if (!mounted) return;
 
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const DefaultNavigation()));
@@ -94,7 +95,8 @@ class _UploadScreenState extends State<UploadScreen> {
         'sessions':
             _findSessionUploadData.sessions.map((el) => el.name).toList(),
         'ages': _findSessionUploadData.ages.map((el) => el.name).toList(),
-        'regions': _findSessionUploadData.regions.toList(),
+        'regions':
+            _findSessionUploadData.regions.map((el) => el.displayName).toList(),
         'contact': _findSessionUploadData.contact,
         'description': _findSessionUploadData.description,
         'tags': _findSessionUploadData.tags,
@@ -102,10 +104,14 @@ class _UploadScreenState extends State<UploadScreen> {
         'post_type': postType.name,
       });
 
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context)
           .showSnackBar(customSnackbar('게시글을 작성했습니다.'));
     } catch (err) {
       print('게시글 작성 에러: $err');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(customSnackbar('업로드 실패: $err'));
     }
   }
 
