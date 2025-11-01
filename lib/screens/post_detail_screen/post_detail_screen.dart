@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/post_model.dart';
@@ -178,7 +180,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                               '작성자 정보를 불러올 수 없습니다');
                                         } else {
                                           return PostDetailAuthorInfo(
-                                              user: snapshot.data!);
+                                              user: snapshot.data!,
+                                              contact: post.contact);
                                         }
                                       },
                                     ),
@@ -212,18 +215,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           ),
                         ),
                       ),
-                      Padding(
-                          padding: const EdgeInsets.only(
-                              top: 24, left: 24, right: 24, bottom: 40),
-                          child: post.postType == PostTypeEnum.findMember
-                              ? WideButton(
-                                  text: '문의하기',
-                                  onPressed: () {},
-                                )
-                              : WideButton(
-                                  text: '세션에게 연락하기',
-                                  onPressed: () {},
-                                ))
+                      if (post.postType == PostTypeEnum.findBand)
+                        Padding(
+                            padding: const EdgeInsets.only(
+                                top: 24, left: 24, right: 24, bottom: 40),
+                            child: WideButton(
+                              text: '세션에게 연락하기',
+                              onPressed: () {},
+                            ))
                     ],
                   ),
                   Positioned(
@@ -499,9 +498,11 @@ class PostDetailInfo extends StatelessWidget {
 }
 
 class PostDetailAuthorInfo extends StatelessWidget {
-  const PostDetailAuthorInfo({super.key, required this.user});
+  const PostDetailAuthorInfo(
+      {super.key, required this.user, required this.contact});
 
   final UserModel user;
+  final String contact;
 
   @override
   Widget build(BuildContext context) {
@@ -553,7 +554,46 @@ class PostDetailAuthorInfo extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorSeed.boldOrangeMedium.color,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: () {
+                showModal(
+                    context: context,
+                    title: '연락처 복사하기',
+                    desc: GestureDetector(
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: contact));
+                        // NOTE: 이거 넣을까?
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('연락처가 복사되었어요')),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Text(contact),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          SvgPicture.asset(
+                            'assets/icons/plus_copy.svg',
+                            fit: BoxFit.fitHeight,
+                          ),
+                        ],
+                      ),
+                    ),
+                    onConfirm: () {});
+              },
+              child: const Text(
+                '문의하기',
+              ))
         ],
       ),
     );

@@ -12,7 +12,7 @@ class Modal extends StatelessWidget {
       this.onCancel});
 
   final String? title;
-  final String desc;
+  final dynamic desc;
   final String? cancelText;
   final String? confirmText;
 
@@ -40,7 +40,7 @@ class Modal extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
               ]),
-            Text(desc),
+            if (desc is String) Text(desc) else desc,
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -86,7 +86,7 @@ class Modal extends StatelessWidget {
 void showModal({
   required BuildContext context,
   String? title,
-  required String desc,
+  required dynamic desc,
   String? cancelText,
   String? confirmText,
   required VoidCallback onConfirm,
