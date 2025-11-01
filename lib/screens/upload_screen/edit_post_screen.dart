@@ -5,9 +5,7 @@ import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/models/post_model.dart';
-import 'package:lets_jam/screens/upload_screen/age_selector.dart';
 import 'package:lets_jam/screens/upload_screen/hashtag_selector.dart';
-import 'package:lets_jam/screens/upload_screen/level_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
@@ -214,6 +212,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                 ),
                 CustomForm(
                   label: '연락처',
+                  isRequired: true,
                   subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
                   content: TextInput(
                     initialValue: _findSessionEditData.contact,

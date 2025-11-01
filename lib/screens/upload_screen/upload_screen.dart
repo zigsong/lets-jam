@@ -240,6 +240,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     ),
                     CustomForm(
                       label: '연락처',
+                      isRequired: true,
                       subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
                       content: TextInput(
                         onChanged: (value) {
