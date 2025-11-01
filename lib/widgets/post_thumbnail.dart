@@ -151,8 +151,8 @@ class PostThumbnail extends StatelessWidget {
               flex: 3,
               child: ClipRRect(
                 borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
+                  topRight: Radius.circular(7),
+                  bottomRight: Radius.circular(7),
                 ),
                 child: Stack(children: [
                   Positioned.fill(
