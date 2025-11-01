@@ -21,6 +21,7 @@ class PostModel {
   List<String>? tags;
   List<String>? images;
   dynamic bandProfile;
+  int? replyCount;
 
   PostModel(
       {required this.id,
@@ -35,24 +36,26 @@ class PostModel {
       this.ages,
       this.regions,
       this.tags,
-      this.images});
+      this.images,
+      this.replyCount});
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
-        id: json['id'],
-        createdAt: DateTime.parse(json['created_at']),
-        userId: json['user_id'],
-        postType: _postTypeFromString(json['post_type']),
-        title: json['title'],
-        levels: _levelsFromJson(json['levels']),
-        sessions: _sesssionsFromJson(json['sessions']),
-        ages: _agesFromJson(json['ages']),
-        regions: _regionsFromJson(json['regions']),
-        contact: json['contact'],
-        description: json['description'],
-        tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
-        images:
-            json['images'] != null ? List<String>.from(json['images']) : null);
+      id: json['id'],
+      createdAt: DateTime.parse(json['created_at']),
+      userId: json['user_id'],
+      postType: _postTypeFromString(json['post_type']),
+      title: json['title'],
+      levels: _levelsFromJson(json['levels']),
+      sessions: _sesssionsFromJson(json['sessions']),
+      ages: _agesFromJson(json['ages']),
+      regions: _regionsFromJson(json['regions']),
+      contact: json['contact'],
+      description: json['description'],
+      tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
+      images: json['images'] != null ? List<String>.from(json['images']) : null,
+      replyCount: (json['comment_count'] as List).length,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -69,6 +72,7 @@ class PostModel {
       'description': description,
       'tags': tags,
       'images': images,
+      'replyCount': replyCount
     };
   }
 

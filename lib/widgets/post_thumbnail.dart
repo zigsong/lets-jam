@@ -136,10 +136,34 @@ class PostThumbnail extends StatelessWidget {
                         const SizedBox(
                           height: 4,
                         ),
-                        Text(
-                          getRelativeTime(post.createdAt),
-                          style:
-                              const TextStyle(fontSize: 12, color: Colors.grey),
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  width: 10,
+                                  height: 10,
+                                  'assets/images/reply_count.png',
+                                ),
+                                const SizedBox(
+                                  width: 2,
+                                ),
+                                Text(
+                                  post.replyCount.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              getRelativeTime(post.createdAt),
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -23,6 +23,8 @@ class ExplorePosts extends StatefulWidget {
 }
 
 class _ExplorePostsState extends State<ExplorePosts> {
+  final supabase = Supabase.instance.client;
+
   late Future<List<PostModel>> _posts;
 
   final ExploreFilterController filterController =
@@ -37,9 +39,9 @@ class _ExplorePostsState extends State<ExplorePosts> {
   }
 
   Future<List<PostModel>> _fetchPosts() async {
-    final response = await Supabase.instance.client
+    final response = await supabase
         .from('posts')
-        .select('*')
+        .select('*, comment_count:comments!inner(id)')
         .order('created_at', ascending: false);
 
     return response.map<PostModel>((json) => PostModel.fromJson(json)).toList();
