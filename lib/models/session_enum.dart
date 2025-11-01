@@ -1,11 +1,4 @@
-enum SessionEnum {
-  vocalM,
-  vocalF,
-  drum,
-  guitar,
-  bass,
-  keyboard,
-}
+enum SessionEnum { vocalM, vocalF, drum, guitar, bass, keyboard, etc }
 
 Map<SessionEnum, String> sessionMap = {
   SessionEnum.vocalM: '보컬(남)',
@@ -14,4 +7,5 @@ Map<SessionEnum, String> sessionMap = {
   SessionEnum.guitar: '기타',
   SessionEnum.bass: '베이스',
   SessionEnum.keyboard: '키보드',
+  SessionEnum.etc: '그 외'
 };

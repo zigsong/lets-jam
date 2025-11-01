@@ -8,6 +8,7 @@ Map<SessionEnum, String> sessionImagesDefault = {
   SessionEnum.keyboard: 'assets/images/session_selector/keyboard.png',
   SessionEnum.bass: 'assets/images/session_selector/bass.png',
   SessionEnum.guitar: 'assets/images/session_selector/guitar.png',
+  SessionEnum.etc: 'assets/images/session_selector/etc.png',
 };
 
 Map<SessionEnum, String> sessionImagesActive = {
@@ -17,6 +18,7 @@ Map<SessionEnum, String> sessionImagesActive = {
   SessionEnum.keyboard: 'assets/images/session_selector/keyboard_active.png',
   SessionEnum.bass: 'assets/images/session_selector/bass_active.png',
   SessionEnum.guitar: 'assets/images/session_selector/guitar_active.png',
+  SessionEnum.etc: 'assets/images/session_selector/etc_active.png',
 };
 
 class SessionSelector extends StatefulWidget {
