@@ -44,6 +44,20 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     super.initState();
     _author = _fetchUserById();
     _post = _fetchPost();
+
+    // 페이지 진입 시 상태바 아이콘 흰색으로 설정
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // 배경 투명
+      statusBarIconBrightness: Brightness.light, // Android 아이콘 흰색
+      statusBarBrightness: Brightness.dark, // iOS 아이콘 흰색
+    ));
+  }
+
+  @override
+  void dispose() {
+    // 페이지 떠날 때 상태바 원래 색으로 복원
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    super.dispose();
   }
 
   Future<UserModel> _fetchUserById() async {
