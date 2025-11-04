@@ -20,9 +20,11 @@ class _AlarmScreenState extends State<AlarmScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
-          title: const Text(
+          iconTheme: IconThemeData(color: ColorSeed.boldOrangeMedium.color),
+          title: Text(
             '알림',
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(
+                fontSize: 18, color: ColorSeed.boldOrangeMedium.color),
           ),
           bottom: TabBar(
             labelColor: ColorSeed.boldOrangeMedium.color,
