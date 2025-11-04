@@ -23,6 +23,7 @@ Map<PostTypeEnum, String> postTypeTitle = {
   PostTypeEnum.findMember: '멤버',
 };
 
+// ignore: constant_identifier_names
 const SUPABASE_BUCKET_NAME = 'images';
 
 class UploadScreen extends StatefulWidget {
@@ -35,24 +36,67 @@ class UploadScreen extends StatefulWidget {
 class _UploadScreenState extends State<UploadScreen> {
   PostTypeEnum postType = PostTypeEnum.findMember;
   final _formKey = GlobalKey<FormState>();
-  // Map<UploadRequiredEnum, bool> valiators = {};
+
+  final FocusNode _titleFocus = FocusNode();
+  final FocusNode _contactFocus = FocusNode();
+
   final supabase = Supabase.instance.client;
   final SessionController sessionController = Get.find<SessionController>();
 
   final FindSessionUploadModel _findSessionUploadData =
       FindSessionUploadModel.init();
 
+  String? _titleErrorText;
+  String? _contactErrorText;
+  bool _sessionError = false; // 세션 선택 유효성용 flag
+  final _sessionKey = GlobalKey();
+
   Future<void> _submit() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+    setState(() {
+      _titleErrorText = null;
+      _contactErrorText = null;
+      _sessionError = false;
+    });
 
-      await _savePostToSupabase();
+    bool hasError = false;
 
-      if (!mounted) return;
-
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const DefaultNavigation()));
+    // 세션 유효성 검사
+    if (_findSessionUploadData.sessions.isEmpty) {
+      setState(() => _sessionError = true);
+    } else {
+      setState(() => _sessionError = false);
     }
+    if (_findSessionUploadData.title.isEmpty) {
+      _titleErrorText = '제목을 입력해주세요';
+      hasError = true;
+    }
+    if (_findSessionUploadData.sessions.isEmpty) {
+      _sessionError = true;
+      hasError = true;
+    }
+    if (_findSessionUploadData.contact.isEmpty) {
+      _contactErrorText = '연락처를 입력해주세요';
+      hasError = true;
+    }
+
+    if (hasError) {
+      setState(() {});
+      if (_findSessionUploadData.title.isEmpty) {
+        FocusScope.of(context).requestFocus(_titleFocus);
+      } else if (_findSessionUploadData.sessions.isEmpty) {
+        Scrollable.ensureVisible(_sessionKey.currentContext!,
+            duration: const Duration(milliseconds: 300));
+      } else if (_findSessionUploadData.contact.isEmpty) {
+        FocusScope.of(context).requestFocus(_contactFocus);
+      }
+      return;
+    }
+    _formKey.currentState!.save();
+    await _savePostToSupabase();
+
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const DefaultNavigation()));
   }
 
   void _toggleUploadType() {
@@ -116,6 +160,13 @@ class _UploadScreenState extends State<UploadScreen> {
   }
 
   @override
+  void dispose() {
+    _titleFocus.dispose();
+    _contactFocus.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -152,11 +203,17 @@ class _UploadScreenState extends State<UploadScreen> {
                 child: Column(
                   children: [
                     TextInput(
-                        label: '제목',
-                        isRequired: true,
-                        onChanged: (value) {
-                          _findSessionUploadData.title = value ?? '';
-                        }),
+                      label: '제목',
+                      focusNode: _titleFocus,
+                      isRequired: true,
+                      errorText: _titleErrorText,
+                      onChanged: (value) {
+                        setState(() {
+                          _findSessionUploadData.title = value;
+                          _titleErrorText = null;
+                        });
+                      },
+                    ),
                     const SizedBox(
                       height: 30,
                     ),
@@ -167,15 +224,40 @@ class _UploadScreenState extends State<UploadScreen> {
                       content: SessionSelector(
                         selectedSessions: _findSessionUploadData.sessions,
                         onChange: (session) {
-                          if (_findSessionUploadData.sessions
-                              .contains(session)) {
-                            _findSessionUploadData.sessions.remove(session);
-                          } else {
-                            _findSessionUploadData.sessions.add(session);
-                          }
+                          setState(() {
+                            if (_findSessionUploadData.sessions
+                                .contains(session)) {
+                              _findSessionUploadData.sessions.remove(session);
+                            } else {
+                              _findSessionUploadData.sessions.add(session);
+                            }
+                            _sessionError = false;
+                          });
                         },
                       ),
                     ),
+                    if (_sessionError)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 13.5,
+                                  height: 13.5,
+                                  child: Image.asset('assets/icons/info.png')),
+                              const SizedBox(width: 7),
+                              const Text(
+                                '세션을 최소 1개 이상 선택해주세요',
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     const SizedBox(
                       height: 30,
                     ),
@@ -243,8 +325,13 @@ class _UploadScreenState extends State<UploadScreen> {
                       isRequired: true,
                       subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
                       content: TextInput(
+                        focusNode: _contactFocus,
+                        errorText: _contactErrorText,
                         onChanged: (value) {
-                          _findSessionUploadData.contact = value ?? '';
+                          setState(() {
+                            _findSessionUploadData.contact = value;
+                            _contactErrorText = null;
+                          });
                         },
                       ),
                     ),
@@ -255,7 +342,7 @@ class _UploadScreenState extends State<UploadScreen> {
                       label: '자세한 글',
                       content: TextInput(
                         onChanged: (value) {
-                          _findSessionUploadData.description = value ?? '';
+                          _findSessionUploadData.description = value;
                         },
                         keyboardType: TextInputType.multiline,
                         height: 96,

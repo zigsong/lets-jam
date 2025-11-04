@@ -3,20 +3,21 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 
 /// TODO: 정리 필요...
 class TextInput extends StatelessWidget {
-  const TextInput({
-    super.key,
-    this.onChanged,
-    this.onSubmit,
-    this.label,
-    this.initialValue,
-    this.placeholder,
-    this.validator,
-    this.keyboardType,
-    this.height,
-    this.isRequired,
-    this.controller,
-    this.hasSuffixButton,
-  });
+  const TextInput(
+      {super.key,
+      this.onChanged,
+      this.onSubmit,
+      this.label,
+      this.initialValue,
+      this.placeholder,
+      this.validator,
+      this.keyboardType,
+      this.height,
+      this.isRequired,
+      this.controller,
+      this.hasSuffixButton,
+      this.focusNode,
+      this.errorText});
 
   final String? label;
   final String? initialValue;
@@ -29,14 +30,16 @@ class TextInput extends StatelessWidget {
   final bool? isRequired;
   final TextEditingController? controller;
   final bool? hasSuffixButton;
+  final FocusNode? focusNode;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null)
-          Positioned(
-              child: Row(
+          Row(
             children: [
               Text(
                 label!,
@@ -49,10 +52,10 @@ class TextInput extends StatelessWidget {
               Text(isRequired == true ? '*' : '',
                   style: TextStyle(color: ColorSeed.boldOrangeStrong.color))
             ],
-          )),
+          ),
         Padding(
           padding: label != null
-              ? const EdgeInsets.only(top: 26)
+              ? const EdgeInsets.only(top: 8)
               : const EdgeInsets.all(0),
           child: SizedBox(
               height: height,
@@ -60,6 +63,7 @@ class TextInput extends StatelessWidget {
                 children: [
                   TextFormField(
                     controller: controller,
+                    focusNode: focusNode,
                     initialValue: initialValue,
                     keyboardType: keyboardType,
                     style: const TextStyle(fontSize: 13),
@@ -115,6 +119,27 @@ class TextInput extends StatelessWidget {
                 ],
               )),
         ),
+        if (errorText != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 6, left: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                    width: 13.5,
+                    height: 13.5,
+                    child: Image.asset('assets/icons/info.png')),
+                const SizedBox(width: 7),
+                Text(
+                  errorText!,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }
