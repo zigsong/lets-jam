@@ -49,6 +49,8 @@ class _UploadScreenState extends State<UploadScreen> {
   String? _titleErrorText;
   String? _contactErrorText;
   bool _sessionError = false; // 세션 선택 유효성용 flag
+  bool _regionError = false;
+
   final _sessionKey = GlobalKey();
 
   Future<void> _submit() async {
@@ -56,11 +58,11 @@ class _UploadScreenState extends State<UploadScreen> {
       _titleErrorText = null;
       _contactErrorText = null;
       _sessionError = false;
+      _regionError = false;
     });
 
     bool hasError = false;
 
-    // 세션 유효성 검사
     if (_findSessionUploadData.sessions.isEmpty) {
       setState(() => _sessionError = true);
     } else {
@@ -262,21 +264,50 @@ class _UploadScreenState extends State<UploadScreen> {
                       height: 30,
                     ),
                     CustomForm(
-                      label: '지역(최대3개)',
+                      label: '지역',
+                      subTitle: '합주할 수 있는 지역을 선택해 주세요 (최대 3개)',
                       content: RegionSelector(
                         selectedRegions: _findSessionUploadData.regions,
                         onChange: (region) {
-                          if (_findSessionUploadData.regions.contains(region)) {
-                            _findSessionUploadData.regions.remove(region);
-                          } else {
-                            if (_findSessionUploadData.regions.length >= 3) {
-                              return;
+                          setState(() {
+                            if (_findSessionUploadData.regions
+                                .contains(region)) {
+                              _findSessionUploadData.regions.remove(region);
+                              _regionError = false;
+                            } else {
+                              if (_findSessionUploadData.regions.length >= 3) {
+                                _regionError = true;
+                                return;
+                              }
+                              _regionError = false;
+                              _findSessionUploadData.regions.add(region);
                             }
-                            _findSessionUploadData.regions.add(region);
-                          }
+                          });
                         },
                       ),
                     ),
+                    if (_regionError)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 13.5,
+                                  height: 13.5,
+                                  child: Image.asset('assets/icons/info.png')),
+                              const SizedBox(width: 7),
+                              const Text(
+                                '지역은 최대 3개까지 선택할 수 있어요',
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     const SizedBox(
                       height: 30,
                     ),
