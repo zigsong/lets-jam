@@ -54,7 +54,9 @@ class PostModel {
       description: json['description'],
       tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
       images: json['images'] != null ? List<String>.from(json['images']) : null,
-      replyCount: (json['comment_count'] as List).length,
+      replyCount: json['comment_count'] != null
+          ? (json['comment_count'] as List).length
+          : null,
     );
   }
 
@@ -128,6 +130,8 @@ class PostModel {
         return SessionEnum.bass;
       case 'keyboard':
         return SessionEnum.keyboard;
+      case 'etc':
+        return SessionEnum.etc;
       default:
         throw Exception('Invalid session value: $session');
     }
