@@ -16,6 +16,7 @@ import 'package:lets_jam/widgets/text_input.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+// ignore: constant_identifier_names
 const SUPABASE_BUCKET_NAME = 'images';
 
 class EditPostScreen extends StatefulWidget {
@@ -28,11 +29,21 @@ class EditPostScreen extends StatefulWidget {
 
 class _EditPostScreenState extends State<EditPostScreen> {
   final _formKey = GlobalKey<FormState>();
-  // Map<UploadRequiredEnum, bool> valiators = {};
+
+  final FocusNode _titleFocus = FocusNode();
+  final FocusNode _contactFocus = FocusNode();
+
   final supabase = Supabase.instance.client;
   final SessionController sessionController = Get.find<SessionController>();
 
   late final FindSessionUploadModel _findSessionEditData;
+
+  String? _titleErrorText;
+  String? _contactErrorText;
+  bool _sessionError = false; // 세션 선택 유효성용 flag
+  bool _regionError = false;
+
+  final _sessionKey = GlobalKey();
 
   @override
   void initState() {
@@ -41,13 +52,51 @@ class _EditPostScreenState extends State<EditPostScreen> {
   }
 
   Future<void> _submit() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+    setState(() {
+      _titleErrorText = null;
+      _contactErrorText = null;
+      _sessionError = false;
+      _regionError = false;
+    });
 
-      await _savePostToSupabase();
+    bool hasError = false;
 
-      Navigator.pop(context, true);
+    if (_findSessionEditData.sessions.isEmpty) {
+      setState(() => _sessionError = true);
+    } else {
+      setState(() => _sessionError = false);
     }
+    if (_findSessionEditData.title.isEmpty) {
+      _titleErrorText = '제목을 입력해주세요';
+      hasError = true;
+    }
+    if (_findSessionEditData.sessions.isEmpty) {
+      _sessionError = true;
+      hasError = true;
+    }
+    if (_findSessionEditData.contact.isEmpty) {
+      _contactErrorText = '연락처를 입력해주세요';
+      hasError = true;
+    }
+
+    if (hasError) {
+      setState(() {});
+      if (_findSessionEditData.title.isEmpty) {
+        FocusScope.of(context).requestFocus(_titleFocus);
+      } else if (_findSessionEditData.sessions.isEmpty) {
+        Scrollable.ensureVisible(_sessionKey.currentContext!,
+            duration: const Duration(milliseconds: 300));
+      } else if (_findSessionEditData.contact.isEmpty) {
+        FocusScope.of(context).requestFocus(_contactFocus);
+      }
+      return;
+    }
+
+    _formKey.currentState!.save();
+    await _savePostToSupabase();
+
+    if (!mounted) return;
+    Navigator.pop(context, true);
   }
 
   Future<void> _savePostToSupabase() async {
@@ -83,17 +132,28 @@ class _EditPostScreenState extends State<EditPostScreen> {
         'levels': _findSessionEditData.levels.map((el) => el.name).toList(),
         'sessions': _findSessionEditData.sessions.map((el) => el.name).toList(),
         'ages': _findSessionEditData.ages.map((el) => el.name).toList(),
-        'regions': _findSessionEditData.regions.toList(),
+        'regions':
+            _findSessionEditData.regions.map((el) => el.displayName).toList(),
         'contact': _findSessionEditData.contact,
         'description': _findSessionEditData.description,
+        'tags': _findSessionEditData.tags,
         'images': imageUrls,
       }).eq('id', widget.post.id);
+
+      if (!mounted) return;
 
       ScaffoldMessenger.of(context)
           .showSnackBar(customSnackbar('게시글을 수정했습니다.'));
     } catch (err) {
       print('게시글 수정 에러: $err');
     }
+  }
+
+  @override
+  void dispose() {
+    _titleFocus.dispose();
+    _contactFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -129,10 +189,15 @@ class _EditPostScreenState extends State<EditPostScreen> {
               children: [
                 TextInput(
                     label: '제목',
+                    focusNode: _titleFocus,
                     initialValue: _findSessionEditData.title,
                     isRequired: true,
+                    errorText: _titleErrorText,
                     onChanged: (value) {
-                      _findSessionEditData.title = value ?? '';
+                      setState(() {
+                        _findSessionEditData.title = value;
+                        _titleErrorText = null;
+                      });
                     }),
                 const SizedBox(
                   height: 30,
@@ -144,14 +209,38 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   content: SessionSelector(
                     selectedSessions: _findSessionEditData.sessions,
                     onChange: (session) {
-                      if (_findSessionEditData.sessions.contains(session)) {
-                        _findSessionEditData.sessions.remove(session);
-                      } else {
-                        _findSessionEditData.sessions.add(session);
-                      }
+                      setState(() {
+                        if (_findSessionEditData.sessions.contains(session)) {
+                          _findSessionEditData.sessions.remove(session);
+                        } else {
+                          _findSessionEditData.sessions.add(session);
+                        }
+                        _sessionError = false;
+                      });
                     },
                   ),
                 ),
+                if (_sessionError)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              width: 13.5,
+                              height: 13.5,
+                              child: Image.asset('assets/icons/info.png')),
+                          const SizedBox(width: 7),
+                          const Text(
+                            '세션을 최소 1개 이상 선택해주세요',
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -160,16 +249,43 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   content: RegionSelector(
                     selectedRegions: _findSessionEditData.regions,
                     onChange: (region) {
-                      if (_findSessionEditData.regions.contains(region)) {
-                        _findSessionEditData.regions.remove(region);
-                      } else {
-                        /** TODO: 3개 이상 선택 시도 시 알럿 */
-                        if (_findSessionEditData.regions.length >= 3) return;
-                        _findSessionEditData.regions.add(region);
-                      }
+                      setState(() {
+                        if (_findSessionEditData.regions.contains(region)) {
+                          _findSessionEditData.regions.remove(region);
+                          _regionError = false;
+                        } else {
+                          if (_findSessionEditData.regions.length >= 3) {
+                            _regionError = true;
+                            return;
+                          }
+                          _regionError = false;
+                          _findSessionEditData.regions.add(region);
+                        }
+                      });
                     },
                   ),
                 ),
+                if (_regionError)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              width: 13.5,
+                              height: 13.5,
+                              child: Image.asset('assets/icons/info.png')),
+                          const SizedBox(width: 7),
+                          const Text(
+                            '지역은 최대 3개까지 선택할 수 있어요',
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -215,9 +331,14 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   isRequired: true,
                   subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
                   content: TextInput(
+                    focusNode: _contactFocus,
+                    errorText: _contactErrorText,
                     initialValue: _findSessionEditData.contact,
                     onChanged: (value) {
-                      _findSessionEditData.contact = value ?? '';
+                      setState(() {
+                        _findSessionEditData.contact = value;
+                        _contactErrorText = null;
+                      });
                     },
                   ),
                 ),
@@ -229,7 +350,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                   content: TextInput(
                     initialValue: _findSessionEditData.description,
                     onChanged: (value) {
-                      _findSessionEditData.description = value ?? '';
+                      _findSessionEditData.description = value;
                     },
                     keyboardType: TextInputType.multiline,
                     height: 96,
@@ -240,9 +361,7 @@ class _EditPostScreenState extends State<EditPostScreen> {
                 ),
                 WideButton(
                   text: '수정하기',
-                  onPressed: () async {
-                    await _submit();
-                  },
+                  onPressed: _submit,
                 ),
               ],
             ),
