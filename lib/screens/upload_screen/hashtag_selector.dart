@@ -16,34 +16,15 @@ class HashTagSelector extends StatefulWidget {
 class _HashTagSelectorState extends State<HashTagSelector> {
   final TextEditingController _textEditingController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _textEditingController.text = "#";
-
-    _textEditingController.addListener(() {
-      String text = _textEditingController.text;
-      if (!text.startsWith('#') || text.isEmpty) {
-        _textEditingController.value = const TextEditingValue(
-          text: '#',
-          selection: TextSelection.collapsed(offset: 1),
-        );
-      }
-    });
-  }
-
   void _submit() {
     String value = _textEditingController.text;
-    if (value == '#' || value.trim().isEmpty) return;
+    if (value.trim().isEmpty) return;
 
     setState(() {
-      widget.onSelect(value);
+      widget.onSelect('#$value');
     });
 
-    _textEditingController.text = '#';
-    _textEditingController.selection = TextSelection.fromPosition(
-      TextPosition(offset: _textEditingController.text.length), // 커서를 맨 끝으로
-    );
+    _textEditingController.text = '';
   }
 
   void _onChanged(String value) {
@@ -83,6 +64,7 @@ class _HashTagSelectorState extends State<HashTagSelector> {
           controller: _textEditingController,
           onSubmit: _submit,
           onChanged: _onChanged,
+          prefixText: '#',
         ),
       ],
     );

@@ -17,7 +17,8 @@ class TextInput extends StatelessWidget {
       this.controller,
       this.hasSuffixButton,
       this.focusNode,
-      this.errorText});
+      this.errorText,
+      this.prefixText});
 
   final String? label;
   final String? initialValue;
@@ -32,6 +33,7 @@ class TextInput extends StatelessWidget {
   final bool? hasSuffixButton;
   final FocusNode? focusNode;
   final String? errorText;
+  final String? prefixText;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +72,7 @@ class TextInput extends StatelessWidget {
                     maxLines:
                         keyboardType == TextInputType.multiline ? null : 1,
                     decoration: InputDecoration(
+                      prefixText: prefixText,
                       hintText: placeholder,
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
