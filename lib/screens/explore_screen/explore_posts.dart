@@ -41,7 +41,7 @@ class _ExplorePostsState extends State<ExplorePosts> {
   Future<List<PostModel>> _fetchPosts() async {
     final response = await supabase
         .from('posts')
-        .select('*, comment_count:comments!inner(id)')
+        .select('*, comment_count:comments!left(id)')
         .order('created_at', ascending: false);
 
     return response.map<PostModel>((json) => PostModel.fromJson(json)).toList();
@@ -97,6 +97,7 @@ class _ExplorePostsState extends State<ExplorePosts> {
             .where((post) => post.postType == PostTypeEnum.findMember)
             .toList();
 
+        // TODO: '멤버 찾기' 새 게시글이 안보인당?
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Obx(() {
