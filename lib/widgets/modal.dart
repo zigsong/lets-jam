@@ -98,15 +98,21 @@ void showModal({
     barrierLabel: "다이얼로그 닫기",
     barrierColor: ColorSeed.organizedBlackMedium.color.withOpacity(0.7),
     transitionDuration: const Duration(milliseconds: 300),
-    pageBuilder: (_, __, ___) {
+    pageBuilder: (modalContext, __, ___) {
       return Center(
         child: Modal(
           title: title,
           desc: desc,
           cancelText: cancelText,
           confirmText: confirmText,
-          onConfirm: onConfirm,
-          onCancel: onCancel,
+          onConfirm: () {
+            Navigator.of(modalContext).pop();
+            onConfirm(); // 외부에서 액션 처리
+          },
+          onCancel: () {
+            Navigator.of(modalContext).pop();
+            onCancel?.call();
+          },
         ),
       );
     },

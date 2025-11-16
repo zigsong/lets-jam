@@ -10,6 +10,7 @@ import 'package:lets_jam/screens/post_detail_screen/reply_section/reply_section.
 import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
+import 'package:lets_jam/widgets/custom_snackbar.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/post_like_button.dart';
@@ -575,26 +576,30 @@ class PostDetailAuthorInfo extends StatelessWidget {
                 showModal(
                     context: context,
                     title: '연락처 복사하기',
-                    desc: GestureDetector(
-                      onTap: () {
-                        Clipboard.setData(ClipboardData(text: contact));
-                        // NOTE: 이거 넣을까?
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('연락처가 복사되었어요')),
+                    desc: Builder(
+                      builder: (modalcontext) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(modalcontext).pop();
+                            Clipboard.setData(ClipboardData(text: contact));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              CustomSnackbar(content: '연락처가 복사되었어요'),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Expanded(child: Text(contact)),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              SvgPicture.asset(
+                                'assets/icons/plus_copy.svg',
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ],
+                          ),
                         );
                       },
-                      child: Row(
-                        children: [
-                          Text(contact),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          SvgPicture.asset(
-                            'assets/icons/plus_copy.svg',
-                            fit: BoxFit.fitHeight,
-                          ),
-                        ],
-                      ),
                     ),
                     onConfirm: () {});
               },
