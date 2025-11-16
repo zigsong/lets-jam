@@ -29,6 +29,9 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
       widget.onSelect(XFile(pickedFile.path));
+      setState(() {
+        imageCount = widget.images.length;
+      });
     }
   }
 
@@ -46,15 +49,15 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
       children: [
         GestureDetector(
           child: Container(
-              width: 50,
-              height: 50,
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
                   border: Border.all(width: 1, color: const Color(0xff8F9098)),
                   borderRadius: BorderRadius.circular(8)),
               child: Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.only(top: 15),
                   child: Column(
                     children: [
                       SizedBox(
@@ -77,9 +80,6 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
               )),
           onTap: () {
             getImage(ImageSource.gallery);
-            setState(() {
-              imageCount = widget.images.length;
-            });
           },
         ),
         const SizedBox(
@@ -91,8 +91,8 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
                     padding: const EdgeInsets.only(right: 8),
                     child: Stack(children: [
                       Container(
-                        width: 50,
-                        height: 50,
+                        width: 60,
+                        height: 60,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8)),
                         clipBehavior: Clip.antiAlias,
@@ -106,8 +106,8 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
                             child: ClipOval(
                               child: InkWell(
                                 onTap: () {
-                                  widget.onSelect(XFile(image));
                                   setState(() {
+                                    widget.onSelect(XFile(image));
                                     imageCount = widget.images.length;
                                   });
                                 },
