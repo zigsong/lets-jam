@@ -45,7 +45,8 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Wrap(
+      runSpacing: 8,
       children: [
         GestureDetector(
           child: Container(
@@ -79,59 +80,59 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
                 ),
               )),
           onTap: () {
+            if (widget.images.length >= 5) {
+              return;
+            }
+
             getImage(ImageSource.gallery);
           },
         ),
         const SizedBox(
           width: 8,
         ),
-        Row(
-          children: widget.images
-              .map((image) => Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Stack(children: [
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8)),
-                        clipBehavior: Clip.antiAlias,
-                        child: buildImageFromString(image),
-                      ),
-                      Positioned(
-                          top: 2,
-                          right: 2,
-                          child: Material(
-                            color: Colors.transparent,
-                            child: ClipOval(
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    widget.onSelect(XFile(image));
-                                    imageCount = widget.images.length;
-                                  });
-                                },
-                                child: Container(
-                                  width: 16,
-                                  height: 16,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: ColorSeed.meticulousGrayMedium.color,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(
-                                    Icons.clear_rounded,
-                                    color: Colors.white,
-                                    size: 10.8,
-                                  ),
-                                ),
-                              ),
+        ...widget.images.map((image) => Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Stack(children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(8)),
+                  clipBehavior: Clip.antiAlias,
+                  child: buildImageFromString(image),
+                ),
+                Positioned(
+                    top: 2,
+                    right: 2,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: ClipOval(
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              widget.onSelect(XFile(image));
+                              imageCount = widget.images.length;
+                            });
+                          },
+                          child: Container(
+                            width: 16,
+                            height: 16,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: ColorSeed.meticulousGrayMedium.color,
+                              shape: BoxShape.circle,
                             ),
-                          ))
-                    ]),
-                  ))
-              .toList(),
-        )
+                            child: const Icon(
+                              Icons.clear_rounded,
+                              color: Colors.white,
+                              size: 10.8,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ))
+              ]),
+            ))
       ],
     );
   }
