@@ -356,7 +356,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                     ),
                     CustomForm(
                       label: '해시태그',
-                      subTitle: '자유롭게 작성해주세요 (최대 5개) #대학생밴드 #데이식스 #메탈',
+                      subTitle: '자유롭게 작성해주세요 (최대 5개) 예) #대학생밴드 #데이식스 #메탈',
                       content: HashTagSelector(
                         selectedTags: formData.tags,
                         onSelect: (tag) {
@@ -393,7 +393,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                     CustomForm(
                       label: '연락처',
                       isRequired: true,
-                      subTitle: '카톡 아이디 또는 오픈 카톡 프로필 링크',
+                      subTitle: '카카오톡 오픈채팅방 링크, SNS 계정 등 공개 가능한 연락처를 적어주세요',
                       content: TextInput(
                         focusNode: _contactFocus,
                         initialValue: formData.contact,
@@ -411,6 +411,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                     ),
                     CustomForm(
                       label: '자세한 글',
+                      subTitle: '함께 하고 싶은 음악 스타일, 연습 일정 등을 적어 주세요',
                       content: TextInput(
                         initialValue: formData.description,
                         onChanged: (value) {
