@@ -15,6 +15,7 @@ class HashTagSelector extends StatefulWidget {
 
 class _HashTagSelectorState extends State<HashTagSelector> {
   final TextEditingController _textEditingController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   void _submit() {
     String value = _textEditingController.text;
@@ -25,6 +26,8 @@ class _HashTagSelectorState extends State<HashTagSelector> {
     });
 
     _textEditingController.text = '';
+    // 포커스를 유지해 키보드가 내려가지 않게 함
+    _focusNode.requestFocus();
   }
 
   void _onChanged(String value) {
@@ -62,6 +65,7 @@ class _HashTagSelectorState extends State<HashTagSelector> {
         ),
         TextInput(
           controller: _textEditingController,
+          focusNode: _focusNode,
           onSubmit: _submit,
           onChanged: _onChanged,
           prefixText: '#',
