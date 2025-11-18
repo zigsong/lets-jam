@@ -491,7 +491,7 @@ class PostDetailInfo extends StatelessWidget {
                     spacing: 8,
                     children: tags
                         .map((tag) => Text(
-                              "#$tag",
+                              tag,
                               style: const TextStyle(
                                   color: Color(0xff7c7c7c),
                                   fontWeight: FontWeight.w500),

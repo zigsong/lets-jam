@@ -117,20 +117,14 @@ class PostThumbnail extends StatelessWidget {
                           height: 6,
                         ),
                         (post.tags != null && post.tags!.isNotEmpty)
-                            ? Row(
-                                children: post.tags!
-                                    .map((tag) => Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 6),
-                                          child: Text(
-                                            '#$tag',
-                                            style: TextStyle(
-                                                color: ColorSeed
-                                                    .organizedBlackLight.color,
-                                                fontSize: 12),
-                                          ),
-                                        ))
-                                    .toList(),
+                            ? Text(
+                                post.tags!.join("  "),
+                                style: TextStyle(
+                                  color: ColorSeed.organizedBlackLight.color,
+                                  fontSize: 12,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               )
                             : const SizedBox(height: 12),
                         const SizedBox(
