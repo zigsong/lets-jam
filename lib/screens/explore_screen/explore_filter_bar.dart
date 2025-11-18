@@ -100,33 +100,34 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                                           sessionFilters.isNotEmpty)),
                         ],
                       ),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _currentFilter = null;
-                                exploreFilterController.reset();
-                              });
-                            },
-                            child: Text(
-                              '초기화',
-                              style: TextStyle(
-                                  color: ColorSeed.boldOrangeRegular.color,
-                                  fontSize: 13,
-                                  height: 1.38),
+                      if (widget.isFilterSheetOpen == false)
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _currentFilter = null;
+                                  exploreFilterController.reset();
+                                });
+                              },
+                              child: Text(
+                                '초기화',
+                                style: TextStyle(
+                                    color: ColorSeed.boldOrangeRegular.color,
+                                    fontSize: 13,
+                                    height: 1.38),
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          Image.asset(
-                            width: 18,
-                            height: 18,
-                            'assets/icons/filter_reset.png',
-                          )
-                        ],
-                      ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            Image.asset(
+                              width: 18,
+                              height: 18,
+                              'assets/icons/filter_reset.png',
+                            )
+                          ],
+                        ),
                     ],
                   );
                 }),
