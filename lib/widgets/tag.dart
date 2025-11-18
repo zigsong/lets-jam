@@ -35,11 +35,11 @@ class Tag extends StatelessWidget {
               vertical:
                   selected == true && size == TagSizeEnum.medium ? 6.5 : 4.5),
           decoration: BoxDecoration(
-              color: selected == true ? ColorSeed.boldOrangeMedium.color : null,
+              color: selected == true ? ColorSeed.boldOrangeStrong.color : null,
               border: selected == true
                   ? null
                   : Border.all(
-                      color: ColorSeed.boldOrangeMedium.color, width: 2),
+                      color: ColorSeed.boldOrangeStrong.color, width: 2),
               borderRadius: BorderRadius.circular(20)),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -52,7 +52,7 @@ class Tag extends StatelessWidget {
                     height: 1,
                     color: selected == true
                         ? Colors.white
-                        : ColorSeed.boldOrangeMedium.color),
+                        : ColorSeed.boldOrangeStrong.color),
               ),
               if (withXIcon == true)
                 Row(

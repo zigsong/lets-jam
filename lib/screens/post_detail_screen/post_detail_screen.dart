@@ -565,7 +565,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
           ),
           ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorSeed.boldOrangeMedium.color,
+                backgroundColor: ColorSeed.boldOrangeStrong.color,
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
