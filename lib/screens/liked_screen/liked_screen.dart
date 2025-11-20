@@ -37,13 +37,17 @@ class _LikedScreenState extends State<LikedScreen> {
                             builder: (context) => const AlarmScreen()),
                       );
                     },
-                    child: SizedBox(
-                        width: 28,
-                        height: 28,
-                        child: Image.asset('assets/icons/bell_active.png')),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 0, vertical: 2),
+                      child: SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: Image.asset('assets/icons/bell_active.png')),
+                    ),
                   ),
                   const SizedBox(
-                    width: 10,
+                    width: 12,
                   ),
                   GestureDetector(
                     onTap: () {
@@ -52,10 +56,14 @@ class _LikedScreenState extends State<LikedScreen> {
                             builder: (context) => const SettingsScreen()),
                       );
                     },
-                    child: SizedBox(
-                        width: 28,
-                        height: 28,
-                        child: Image.asset('assets/icons/settings.png')),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 0, vertical: 2),
+                      child: SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: Image.asset('assets/icons/settings.png')),
+                    ),
                   ),
                 ],
               ),

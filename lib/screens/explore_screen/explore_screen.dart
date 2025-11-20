@@ -118,14 +118,18 @@ class _ExploreScreenState extends State<ExploreScreen>
                                   builder: (context) => const AlarmScreen()),
                             );
                           },
-                          child: SizedBox(
-                              width: 28,
-                              height: 28,
-                              child:
-                                  Image.asset('assets/icons/bell_orange.png')),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 2),
+                            child: SizedBox(
+                                width: 28,
+                                height: 28,
+                                child: Image.asset(
+                                    'assets/icons/bell_orange.png')),
+                          ),
                         ),
                         const SizedBox(
-                          width: 10,
+                          width: 12,
                         ),
                         GestureDetector(
                           onTap: () {
@@ -134,10 +138,15 @@ class _ExploreScreenState extends State<ExploreScreen>
                                   builder: (context) => const SettingsScreen()),
                             );
                           },
-                          child: SizedBox(
-                              width: 28,
-                              height: 28,
-                              child: Image.asset('assets/icons/settings.png')),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 2),
+                            child: SizedBox(
+                                width: 28,
+                                height: 28,
+                                child:
+                                    Image.asset('assets/icons/settings.png')),
+                          ),
                         ),
                       ],
                     ),
