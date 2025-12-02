@@ -33,7 +33,7 @@ class _LikedPostsState extends State<LikedPosts> {
 
     final response = await Supabase.instance.client
         .from('post_likes')
-        .select('posts(*)')
+        .select('posts(*, comment_count:comments!left(id))')
         .eq('user_id', user.id)
         .order('liked_at', ascending: false);
 
