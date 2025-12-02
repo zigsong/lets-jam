@@ -36,9 +36,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       {'title': '신고하기', 'route': '/privacy'},
       {'title': '서비스 이용약관', 'route': '/about'},
       {'title': '개인정보 처리방침', 'route': '/about'},
-      {'title': '앱 버전 정보', 'subtitle': _version, 'route': '/about'},
       {'title': '로그아웃', 'route': '/about'},
       {'title': '회원 탈퇴', 'route': '/about'},
+      {
+        'title': '앱 버전 정보',
+        'subtitle': _version,
+        'route': '/about',
+        // 'trailing': false
+      },
     ];
 
     return Scaffold(
@@ -80,6 +85,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   )
               ],
             ),
+            trailing: item['title'] != '앱 버전 정보'
+                ? Icon(
+                    Icons.arrow_forward_ios,
+                    size: 12,
+                    color: ColorSeed.organizedBlackLight.color,
+                  )
+                : null,
             onTap: () {
               Navigator.pushNamed(context, item['route']!);
             },
