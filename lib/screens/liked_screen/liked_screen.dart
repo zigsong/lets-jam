@@ -43,7 +43,7 @@ class _LikedScreenState extends State<LikedScreen> {
                       child: SizedBox(
                           width: 28,
                           height: 28,
-                          child: Image.asset('assets/icons/bell_active.png')),
+                          child: Image.asset('assets/icons/bell_orange.png')),
                     ),
                   ),
                   const SizedBox(
