@@ -223,14 +223,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           ),
                         ),
                       ),
-                      if (post.postType == PostTypeEnum.findBand)
-                        Padding(
-                            padding: const EdgeInsets.only(
-                                top: 24, left: 24, right: 24, bottom: 40),
-                            child: WideButton(
-                              text: '세션에게 연락하기',
-                              onPressed: () {},
-                            ))
                     ],
                   ),
                   Positioned(
