@@ -52,7 +52,6 @@ class Modal extends StatelessWidget {
                   ),
                   onPressed: () {
                     onCancel?.call();
-                    Navigator.of(context).pop();
                   },
                 ),
                 const SizedBox(width: 8),
@@ -71,7 +70,6 @@ class Modal extends StatelessWidget {
                   child: Text(confirmText ?? '확인'),
                   onPressed: () {
                     onConfirm();
-                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -89,7 +87,7 @@ void showModal({
   required dynamic desc,
   String? cancelText,
   String? confirmText,
-  required VoidCallback onConfirm,
+  VoidCallback? onConfirm,
   VoidCallback? onCancel,
 }) {
   showGeneralDialog(
@@ -107,7 +105,7 @@ void showModal({
           confirmText: confirmText,
           onConfirm: () {
             Navigator.of(modalContext).pop();
-            onConfirm(); // 외부에서 액션 처리
+            onConfirm?.call(); // 외부에서 액션 처리
           },
           onCancel: () {
             Navigator.of(modalContext).pop();

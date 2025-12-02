@@ -97,7 +97,6 @@ class _ExplorePostsState extends State<ExplorePosts> {
             .where((post) => post.postType == PostTypeEnum.findMember)
             .toList();
 
-        // TODO: '멤버 찾기' 새 게시글이 안보인당?
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Obx(() {

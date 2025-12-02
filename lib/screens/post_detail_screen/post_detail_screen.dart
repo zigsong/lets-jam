@@ -566,34 +566,34 @@ class PostDetailAuthorInfo extends StatelessWidget {
               ),
               onPressed: () {
                 showModal(
-                    context: context,
-                    title: '연락처 복사하기',
-                    desc: Builder(
-                      builder: (modalcontext) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.of(modalcontext).pop();
-                            Clipboard.setData(ClipboardData(text: contact));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              CustomSnackbar(content: '연락처가 복사되었어요'),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              Expanded(child: Text(contact)),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              SvgPicture.asset(
-                                'assets/icons/plus_copy.svg',
-                                fit: BoxFit.fitHeight,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    onConfirm: () {});
+                  context: context,
+                  title: '연락처 복사하기',
+                  desc: Builder(
+                    builder: (modalcontext) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(modalcontext).pop();
+                          Clipboard.setData(ClipboardData(text: contact));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            CustomSnackbar(content: '연락처가 복사되었어요'),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Expanded(child: Text(contact)),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            SvgPicture.asset(
+                              'assets/icons/plus_copy.svg',
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                );
               },
               child: const Text(
                 '문의하기',
