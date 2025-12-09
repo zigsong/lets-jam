@@ -26,7 +26,8 @@ class Modal extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         width: MediaQuery.of(context).size.width * 0.85,
-        padding: const EdgeInsets.all(24),
+        padding:
+            const EdgeInsets.only(top: 30, left: 24, right: 24, bottom: 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,37 +41,44 @@ class Modal extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
               ]),
-            if (desc is String) Text(desc) else desc,
+            if (desc is String) Center(child: Text(desc)) else desc,
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            Flex(
+              direction: Axis.horizontal,
               children: [
-                TextButton(
-                  child: Text(
-                    cancelText ?? '취소',
-                    style: TextStyle(color: ColorSeed.boldOrangeRegular.color),
+                Expanded(
+                  flex: 1,
+                  child: TextButton(
+                    child: Text(
+                      cancelText ?? '취소',
+                      style:
+                          TextStyle(color: ColorSeed.boldOrangeRegular.color),
+                    ),
+                    onPressed: () {
+                      onCancel?.call();
+                    },
                   ),
-                  onPressed: () {
-                    onCancel?.call();
-                  },
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: ColorSeed.boldOrangeStrong.color,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                      textStyle: const TextStyle(
-                          fontWeight: FontWeight.w500, inherit: false)),
-                  child: Text(confirmText ?? '확인'),
-                  onPressed: () {
-                    onConfirm();
-                  },
+                Expanded(
+                  flex: 1,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: ColorSeed.boldOrangeStrong.color,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
+                        textStyle: const TextStyle(
+                            fontWeight: FontWeight.w500, inherit: false)),
+                    child: Text(confirmText ?? '확인'),
+                    onPressed: () {
+                      onConfirm();
+                    },
+                  ),
                 ),
               ],
             ),

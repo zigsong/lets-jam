@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/session_controller.dart';
+import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/widgets/modal.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+typedef SettingAction = void Function();
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -11,6 +17,40 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   String _version = '';
+  final SessionController sessionController = Get.find<SessionController>();
+
+  late final settings = [
+    {'title': '문의하기', 'onClick': () {}},
+    {'title': '버그 제보하기', 'onClick': () {}},
+    {'title': '신고하기', 'onClick': () {}},
+    {'title': '서비스 이용약관', 'onClick': () {}},
+    {'title': '개인정보 처리방침', 'onClick': () {}},
+    {
+      'title': '로그아웃',
+      'onClick': () async {
+        await sessionController.signOut();
+        if (mounted) {
+          showModal(
+            context: context,
+            title: '로그아웃되었어요',
+            desc: 'JAM 메인으로 이동할게요',
+            onConfirm: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DefaultNavigation()));
+            },
+          );
+        }
+      }
+    },
+    {'title': '회원 탈퇴', 'onClick': () {}},
+    {
+      'title': '앱 버전 정보',
+      'subtitle': _version,
+      'onClick': () {},
+    },
+  ];
 
   @override
   void initState() {
@@ -29,23 +69,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: route 변경
-    final settings = [
-      {'title': '문의하기', 'route': '/account'},
-      {'title': '버그 제보하기', 'route': '/notifications'},
-      {'title': '신고하기', 'route': '/privacy'},
-      {'title': '서비스 이용약관', 'route': '/about'},
-      {'title': '개인정보 처리방침', 'route': '/about'},
-      {'title': '로그아웃', 'route': '/about'},
-      {'title': '회원 탈퇴', 'route': '/about'},
-      {
-        'title': '앱 버전 정보',
-        'subtitle': _version,
-        'route': '/about',
-        // 'trailing': false
-      },
-    ];
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -63,11 +86,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         itemCount: settings.length,
         itemBuilder: (context, index) {
           final item = settings[index];
+          final onClick = item['onClick'] as SettingAction?;
+
           return ListTile(
             title: Row(
               children: [
                 Text(
-                  item['title']!,
+                  item['title'] as String,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -78,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 if (item['subtitle'] != null)
                   Text(
-                    item['subtitle']!,
+                    item['subtitle'] as String,
                     style: TextStyle(
                         fontSize: 13,
                         color: ColorSeed.meticulousGrayMedium.color),
@@ -93,7 +118,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   )
                 : null,
             onTap: () {
-              Navigator.pushNamed(context, item['route']!);
+              if (onClick != null) {
+                onClick();
+              }
+              // Navigator.pushNamed(context, item['route']!);
             },
           );
         },

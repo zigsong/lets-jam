@@ -1,13 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:lets_jam/screens/band_screen.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/session_controller.dart';
+
 import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
 import 'package:lets_jam/screens/upload_screen/upload_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/bottom_app_bar_item.dart';
+import 'package:lets_jam/widgets/modal.dart';
 
 class DefaultNavigation extends StatefulWidget {
   final int? fromIndex;
@@ -20,6 +23,7 @@ class DefaultNavigation extends StatefulWidget {
 class _DefaultNavigationState extends State<DefaultNavigation> {
   int _selectedIndex = 0;
   final bool _isBottomSheetOpen = false;
+  final SessionController sessionController = Get.find<SessionController>();
 
   @override
   void initState() {
@@ -96,14 +100,6 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                             'assets/icons/bottom_nav/like_active.png'),
                         label: '찜',
                         onPressed: _onLikeButtonTapped),
-                    // BottomAppBarItem(
-                    //     isActive: _selectedIndex == 2,
-                    //     defaultIcon: Image.asset(
-                    //         'assets/icons/bottom_nav/band_default.png'),
-                    //     activeIcon: Image.asset(
-                    //         'assets/icons/bottom_nav/band_active.png'),
-                    //     label: '밴드',
-                    //     onPressed: _onBandButtonTapped),
                     BottomAppBarItem(
                         isActive: _selectedIndex == 2,
                         defaultIcon: Image.asset(
@@ -124,7 +120,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                             activeIcon: Image.asset(
                                 'assets/icons/bottom_nav/add_active.png'),
                             label: '글쓰기',
-                            onPressed: _onLikeButtonTapped),
+                            onPressed: () {}),
                       ),
                     ),
                   ],
@@ -142,11 +138,25 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent, // 빈
                       onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const UploadScreen(),
-                          ),
-                        );
+                        if (sessionController.isLoggedIn.value == false) {
+                          showModal(
+                              context: context,
+                              desc: '로그인 후에 이용할 수 있어요',
+                              confirmText: '로그인',
+                              onConfirm: () {
+                                sessionController.signIn();
+                              },
+                              cancelText: '다음에 할게요',
+                              onCancel: () {
+                                return;
+                              });
+                        } else {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const UploadScreen(),
+                            ),
+                          );
+                        }
                       },
                       child: Container(
                         decoration: BoxDecoration(
