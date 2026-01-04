@@ -35,93 +35,87 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   final LayerLink _layerLink = LayerLink();
   final GlobalKey _targetKey = GlobalKey();
 
+  @override
+  void dispose() {
+    _hideDropdown();
+    super.dispose();
+  }
+
   void _showDropdown() {
     final targetContext = _targetKey.currentContext;
-    if (targetContext == null) {
-      debugPrint("Target context is null. Widget might not be built yet.");
-      return;
-    }
+    if (targetContext == null) return;
 
     final renderBox = targetContext.findRenderObject() as RenderBox;
     final overlay = Overlay.of(context);
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => Stack(children: [
-        // MARK: 투명한 GestureDetector 추가 → 바깥쪽 클릭 감지
-        Positioned.fill(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: _hideDropdown,
+      builder: (context) => Stack(
+        children: [
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _hideDropdown,
+            ),
           ),
-        ),
-        Positioned(
-          width: renderBox.size.width,
-          child: CompositedTransformFollower(
-            link: _layerLink,
-            showWhenUnlinked: false,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border:
-                      Border.all(color: ColorSeed.meticulousGrayLight.color),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: widget.options.asMap().entries.map((entry) {
-                    final isDefaultValue = widget.defaultValue != null &&
-                        widget.options[entry.key].text == widget.defaultValue;
-                    return Material(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.vertical(
-                        top: entry.key == 0
-                            ? const Radius.circular(6)
-                            : Radius.zero,
-                        bottom: entry.key == widget.options.length - 1
-                            ? const Radius.circular(6)
-                            : Radius.zero,
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: InkWell(
-                        highlightColor: isDefaultValue
-                            ? Colors.transparent
-                            : ColorSeed.boldOrangeLight.color,
-                        onTap: isDefaultValue
-                            ? null
-                            : () {
-                                widget.onSelect(entry.value);
-                                _hideDropdown();
-                              },
-                        child: Ink(
-                          color: Colors.white,
+          Positioned(
+            width: renderBox.size.width,
+            child: CompositedTransformFollower(
+              link: _layerLink,
+              showWhenUnlinked: false,
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border:
+                        Border.all(color: ColorSeed.meticulousGrayLight.color),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: widget.options.asMap().entries.map((entry) {
+                        final option = entry.value;
+                        final isDefaultValue = widget.defaultValue != null &&
+                            option.text == widget.defaultValue;
+
+                        return InkWell(
+                          highlightColor: isDefaultValue
+                              ? Colors.transparent
+                              : ColorSeed.boldOrangeLight.color,
+                          onTap: isDefaultValue
+                              ? null
+                              : () {
+                                  widget.onSelect(option);
+                                  _hideDropdown();
+                                },
                           child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              width: double.infinity,
-                              height: 36,
-                              child: Text(
-                                widget.options[entry.key].text,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  height: 1.38,
-                                  color: isDefaultValue
-                                      ? ColorSeed.meticulousGrayMedium.color
-                                      : Colors.black,
-                                ),
-                              )),
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            width: double.infinity,
+                            height: 36,
+                            child: Text(
+                              option.text,
+                              style: TextStyle(
+                                fontSize: 13,
+                                height: 1.38,
+                                color: isDefaultValue
+                                    ? ColorSeed.meticulousGrayMedium.color
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
     overlay.insert(_overlayEntry!);
   }
@@ -133,18 +127,21 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
-    String displayValue = widget.currentValue?.text ?? widget.placeholder ?? '';
+    final displayValue = widget.currentValue?.text ?? widget.placeholder ?? '';
     final isDefaultValue =
         widget.defaultValue != null && displayValue == widget.defaultValue;
 
-    return Stack(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.label != null)
-          Positioned(
-              child: Text(
-            widget.label!,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          )),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              widget.label!,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
         GestureDetector(
           key: _targetKey,
           onTap: _showDropdown,
