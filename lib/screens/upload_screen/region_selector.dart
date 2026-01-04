@@ -25,8 +25,8 @@ class RegionSelector extends StatefulWidget {
 class _RegionSelectorState extends State<RegionSelector> {
   final supabase = Supabase.instance.client;
 
-  Province _selectedProvince = Province.seoul;
-  District _selectedRegion = District.seoulAll;
+  Province? _selectedProvince;
+  District? _selectedRegion;
 
   @override
   void initState() {
@@ -68,16 +68,20 @@ class _RegionSelectorState extends State<RegionSelector> {
           children: [
             Expanded(
               child: CustomDropdown(
-                currentValue: DropdownItem<Province>(
-                    value: _selectedProvince,
-                    text: _selectedProvince.displayName),
-                options: Province.values
-                    .map((province) => DropdownItem(
-                        value: province, text: province.displayName))
-                    .toList(),
+                defaultValue: '선택',
+                currentValue: _selectedProvince != null
+                    ? DropdownItem<Province>(
+                        value: _selectedProvince!,
+                        text: _selectedProvince!.displayName)
+                    : DropdownItem<Province?>(value: null, text: '선택'),
+                options: [
+                  DropdownItem<Province?>(value: null, text: '선택'),
+                  ...Province.values.map((province) => DropdownItem(
+                      value: province, text: province.displayName)),
+                ],
                 onSelect: (item) {
                   setState(() {
-                    _selectedProvince = item.value;
+                    _selectedProvince = item.value as Province?;
                   });
                 },
               ),
@@ -87,19 +91,30 @@ class _RegionSelectorState extends State<RegionSelector> {
             ),
             Expanded(
               child: CustomDropdown(
-                currentValue: DropdownItem<District>(
-                  value: _selectedRegion,
-                  text: _selectedRegion.displayName,
-                ),
-                options: District.getByProvince(_selectedProvince)
-                    .map((item) =>
-                        DropdownItem(value: item, text: item.displayName))
-                    .toList(),
+                defaultValue: '선택',
+                currentValue: _selectedRegion != null
+                    ? DropdownItem<District>(
+                        value: _selectedRegion!,
+                        text: _selectedRegion!.displayName,
+                      )
+                    : DropdownItem<District?>(value: null, text: '선택'),
+                options: _selectedProvince != null
+                    ? [
+                        DropdownItem<District?>(value: null, text: '선택'),
+                        ...District.getByProvince(_selectedProvince!).map(
+                            (item) => DropdownItem(
+                                value: item, text: item.displayName)),
+                      ]
+                    : [
+                        DropdownItem<District?>(value: null, text: '선택'),
+                      ],
                 onSelect: (item) {
                   setState(() {
-                    _selectedRegion = item.value;
+                    _selectedRegion = item.value as District?;
                   });
-                  widget.onChange(item.value);
+                  if (item.value != null) {
+                    widget.onChange(item.value);
+                  }
                 },
               ),
             )

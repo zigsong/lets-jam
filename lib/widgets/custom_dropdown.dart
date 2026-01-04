@@ -16,10 +16,12 @@ class CustomDropdown<T> extends StatefulWidget {
     required this.onSelect,
     this.label,
     this.placeholder,
+    this.defaultValue,
   });
 
   final String? label;
   final String? placeholder;
+  final String? defaultValue;
   final DropdownItem? currentValue;
   final List<DropdownItem> options;
   final Function(DropdownItem value) onSelect;
@@ -70,6 +72,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: widget.options.asMap().entries.map((entry) {
+                    final isDefaultValue = widget.defaultValue != null &&
+                        widget.options[entry.key].text == widget.defaultValue;
                     return Material(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.vertical(
@@ -82,7 +86,15 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: InkWell(
-                        highlightColor: ColorSeed.boldOrangeLight.color,
+                        highlightColor: isDefaultValue
+                            ? Colors.transparent
+                            : ColorSeed.boldOrangeLight.color,
+                        onTap: isDefaultValue
+                            ? null
+                            : () {
+                                widget.onSelect(entry.value);
+                                _hideDropdown();
+                              },
                         child: Ink(
                           color: Colors.white,
                           child: Container(
@@ -92,14 +104,15 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                               height: 36,
                               child: Text(
                                 widget.options[entry.key].text,
-                                style:
-                                    const TextStyle(fontSize: 13, height: 1.38),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  height: 1.38,
+                                  color: isDefaultValue
+                                      ? ColorSeed.meticulousGrayMedium.color
+                                      : Colors.black,
+                                ),
                               )),
                         ),
-                        onTap: () {
-                          widget.onSelect(entry.value);
-                          _hideDropdown();
-                        },
                       ),
                     );
                   }).toList(),
@@ -121,6 +134,8 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   @override
   Widget build(BuildContext context) {
     String displayValue = widget.currentValue?.text ?? widget.placeholder ?? '';
+    final isDefaultValue =
+        widget.defaultValue != null && displayValue == widget.defaultValue;
 
     return Stack(
       children: [
@@ -149,7 +164,13 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
                 children: [
                   Text(
                     displayValue,
-                    style: const TextStyle(fontSize: 13, height: 1.38),
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.38,
+                      color: isDefaultValue
+                          ? ColorSeed.meticulousGrayMedium.color
+                          : Colors.black,
+                    ),
                   ),
                   Image.asset(
                     'assets/icons/arrow_down.png',
