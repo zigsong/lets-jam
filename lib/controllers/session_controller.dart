@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/models/user_model.dart';
-import 'package:lets_jam/screens/welcome_screen.dart';
+import 'package:lets_jam/screens/terms_agreement_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionController extends GetxController {
@@ -16,20 +16,12 @@ class SessionController extends GetxController {
   var isLoggedIn = false.obs;
 
   /// 쨈 프로필 등록 여부
-  var hasRegisteredProfile = false.obs;
+  var hasProfile = false.obs;
 
   @override
   void onInit() async {
     super.onInit();
     await _loadUser();
-
-    /** NOTE: 회원가입 화면 확인용 */
-    everAll([isLoggedIn, user], (_) {
-      if (isLoggedIn.value && user.value != null) {
-        // 원하는 곳에서 navigation 가능
-        Get.to(WelcomeScreen(user: supabase.auth.currentUser!));
-      }
-    });
   }
 
   Future<void> _loadUser() async {
@@ -73,9 +65,14 @@ class SessionController extends GetxController {
           final jamUser =
               await supabase.from('users').select().eq('email', sbUser.email!);
 
-          if (jamUser.isNotEmpty) {
-            user.value = UserModel.fromJson(jamUser[0]);
-          }
+          /** TODO: 로직 원복 */
+          // if (jamUser.isNotEmpty) {
+          //   // 기존 유저
+          //   user.value = UserModel.fromJson(jamUser[0]);
+          // } else {
+          // 신규 유저 - 약관 동의 화면으로 이동
+          Get.to(() => TermsAgreementScreen(user: sbUser));
+          // }
         }
       });
     } on PlatformException catch (err) {

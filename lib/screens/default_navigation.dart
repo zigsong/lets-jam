@@ -147,9 +147,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                                 sessionController.signIn();
                               },
                               cancelText: '다음에 할게요',
-                              onCancel: () {
-                                return;
-                              });
+                              onCancel: null);
                         } else {
                           Navigator.of(context).push(
                             MaterialPageRoute(

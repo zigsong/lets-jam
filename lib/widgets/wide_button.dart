@@ -3,7 +3,7 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class WideButton extends StatelessWidget {
   final String text;
-  final Function() onPressed;
+  final VoidCallback? onPressed;
 
   const WideButton({super.key, required this.text, required this.onPressed});
 
@@ -17,6 +17,8 @@ class WideButton extends StatelessWidget {
           elevation: 0,
           backgroundColor: ColorSeed.boldOrangeStrong.color,
           foregroundColor: Colors.white,
+          disabledBackgroundColor: ColorSeed.meticulousGrayLight.color,
+          disabledForegroundColor: ColorSeed.meticulousGrayMedium.color,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
