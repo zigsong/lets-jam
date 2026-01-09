@@ -19,38 +19,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _version = '';
   final SessionController sessionController = Get.find<SessionController>();
 
-  late final settings = [
-    {'title': '문의하기', 'onClick': () {}},
-    {'title': '버그 제보하기', 'onClick': () {}},
-    {'title': '신고하기', 'onClick': () {}},
-    {'title': '서비스 이용약관', 'onClick': () {}},
-    {'title': '개인정보 처리방침', 'onClick': () {}},
-    {
-      'title': '로그아웃',
-      'onClick': () async {
-        await sessionController.signOut();
-        if (mounted) {
-          showModal(
-            context: context,
-            title: '로그아웃되었어요',
-            desc: 'JAM 메인으로 이동할게요',
-            onConfirm: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const DefaultNavigation()));
-            },
-          );
-        }
-      }
-    },
-    {'title': '회원 탈퇴', 'onClick': () {}},
-    {
-      'title': '앱 버전 정보',
-      'subtitle': _version,
-      'onClick': () {},
-    },
-  ];
+  List<Map<String, dynamic>> get settings => [
+        {'title': '문의하기', 'onClick': () {}},
+        {'title': '버그 제보하기', 'onClick': () {}},
+        {'title': '신고하기', 'onClick': () {}},
+        {'title': '서비스 이용약관', 'onClick': () {}},
+        {'title': '개인정보 처리방침', 'onClick': () {}},
+        {
+          'title': sessionController.isLoggedIn.value ? '로그아웃' : '로그인',
+          'onClick': () async {
+            if (sessionController.isLoggedIn.value) {
+              await sessionController.signOut();
+              if (mounted) {
+                showModal(
+                  context: context,
+                  title: '로그아웃되었어요',
+                  desc: 'JAM 메인으로 이동할게요',
+                  onConfirm: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const DefaultNavigation()));
+                  },
+                );
+              }
+            } else {
+              await sessionController.signIn();
+            }
+          }
+        },
+        {'title': '회원 탈퇴', 'onClick': () {}},
+        {
+          'title': '앱 버전 정보',
+          'subtitle': _version,
+          'onClick': () {},
+        },
+      ];
 
   @override
   void initState() {
@@ -81,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               TextStyle(fontSize: 18, color: ColorSeed.boldOrangeMedium.color),
         ),
       ),
-      body: ListView.separated(
+      body: Obx(() => ListView.separated(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: settings.length,
         itemBuilder: (context, index) {
@@ -133,7 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             color: Color(0xFFDDDDDD),
           ),
         ),
-      ),
+      )),
     );
   }
 }
