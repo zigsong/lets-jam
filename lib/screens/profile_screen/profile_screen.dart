@@ -40,49 +40,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Stack(children: [
       const GradientSplitScreen(),
       // TODO: 수정 삭제 버튼 - 내 게시글만
+      // Positioned(
+      //   top: 0,
+      //   left: 0,
+      //   right: 0,
+      //   child: Container(
+      //     height: MediaQuery.of(context).padding.top + 72,
+      //     decoration: const BoxDecoration(
+      //       gradient: LinearGradient(
+      //         begin: Alignment.topCenter,
+      //         end: Alignment.bottomCenter,
+      //         colors: [Color(0xFF222222), Colors.transparent],
+      //       ),
+      //     ),
+      //     child: Padding(
+      //       padding: EdgeInsets.only(
+      //           top: MediaQuery.of(context).padding.top, right: 20),
+      //       child: Row(
+      //         mainAxisAlignment: MainAxisAlignment.end,
+      //         children: [
+      //           UtilButton(
+      //               text: '수정',
+      //               color: ColorSeed.meticulousGrayLight.color,
+      //               onPressed: () async {}),
+      //           const SizedBox(
+      //             width: 8,
+      //           ),
+      //           UtilButton(
+      //               text: '삭제',
+      //               color: ColorSeed.meticulousGrayLight.color,
+      //               onPressed: () {}),
+      //         ],
+      //       ),
+      //     ),
+      //   ),
+      // ),
       Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        child: Container(
-          height: MediaQuery.of(context).padding.top + 72,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF222222), Colors.transparent],
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top, right: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                UtilButton(
-                    text: '수정',
-                    color: ColorSeed.meticulousGrayLight.color,
-                    onPressed: () async {}),
-                const SizedBox(
-                  width: 8,
-                ),
-                UtilButton(
-                    text: '삭제',
-                    color: ColorSeed.meticulousGrayLight.color,
-                    onPressed: () {}),
-              ],
-            ),
-          ),
-        ),
-      ),
-      Positioned(
-        top: MediaQuery.of(context).padding.top + 72,
+        top: MediaQuery.of(context).padding.top,
         left: 0,
         right: 0,
         bottom: 0,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.only(top: 120),
+            padding: const EdgeInsets.only(top: 240),
             child: Column(
               children: [
                 Container(

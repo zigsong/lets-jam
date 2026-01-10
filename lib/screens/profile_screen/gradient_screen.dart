@@ -10,18 +10,10 @@ class GradientSplitScreen extends StatelessWidget {
     final halfHeight = screenHeight / 2 * 1.1;
 
     return Scaffold(
+      backgroundColor: ColorSeed.organizedBlackMedium.color,
       body: Stack(
         children: [
-          // 1. 검정색 하단 배경 (절반 높이)
-          Positioned(
-            top: halfHeight,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(color: ColorSeed.organizedBlackMedium.color),
-          ),
-
-          // 2. 상단 이미지 (1:1 비율)
+          // 1. 상단 이미지
           Positioned(
             top: 0,
             left: 0,
@@ -33,12 +25,12 @@ class GradientSplitScreen extends StatelessWidget {
             ),
           ),
 
-          // 3. 이미지 위에 검정색 그라데이션 덮기 (블렌딩 효과)
+          // 2. 이미지 위에 검정색 그라데이션 덮기 (블렌딩 효과)
           Positioned(
-            top: 0,
+            top: halfHeight * 0.5,
             left: 0,
             right: 0,
-            height: halfHeight * 1.1,
+            height: halfHeight * 0.5,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
