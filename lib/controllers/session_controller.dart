@@ -66,13 +66,13 @@ class SessionController extends GetxController {
               await supabase.from('users').select().eq('email', sbUser.email!);
 
           /** TODO: 로직 원복 */
-          // if (jamUser.isNotEmpty) {
-          //   // 기존 유저
-          //   user.value = UserModel.fromJson(jamUser[0]);
-          // } else {
-          // 신규 유저 - 약관 동의 화면으로 이동
-          Get.to(() => TermsAgreementScreen(user: sbUser));
-          // }
+          if (jamUser.isNotEmpty) {
+            // 기존 유저
+            user.value = UserModel.fromJson(jamUser[0]);
+          } else {
+            // 신규 유저 - 약관 동의 화면으로 이동
+            Get.to(() => TermsAgreementScreen(user: sbUser));
+          }
         }
       });
     } on PlatformException catch (err) {

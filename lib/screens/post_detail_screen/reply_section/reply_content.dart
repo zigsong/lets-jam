@@ -152,16 +152,24 @@ class _ReplyContentState extends State<ReplyContent> {
                                   children: [
                                     AccessoryButton(
                                         text: '수정',
+                                        leftIcon: Image.asset(
+                                          'assets/icons/reply_edit.png',
+                                          width: 15,
+                                          height: 15,
+                                        ),
                                         onPressed: () {
                                           setState(() {
                                             isEditing = true;
                                           });
                                         }),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
+                                    const SizedBox(width: 10),
                                     AccessoryButton(
                                         text: '삭제',
+                                        leftIcon: Image.asset(
+                                          'assets/icons/reply_delete.png',
+                                          width: 15,
+                                          height: 15,
+                                        ),
                                         onPressed: () {
                                           showModal(
                                             context: context,
@@ -229,37 +237,43 @@ class AccessoryButton extends StatelessWidget {
   final String text;
   final Function() onPressed;
   final bool? isReversed;
+  final Widget? leftIcon;
 
   const AccessoryButton(
       {super.key,
       required this.text,
       required this.onPressed,
-      this.isReversed = false});
+      this.isReversed = false,
+      this.leftIcon});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 13.5, vertical: 8.5),
+        padding: const EdgeInsets.symmetric(vertical: 8.5),
         decoration: BoxDecoration(
           color: isReversed == false
               ? Colors.white
               : ColorSeed.organizedBlackMedium.color,
-          border: Border.all(
-              color: isReversed == false
-                  ? ColorSeed.meticulousGrayMedium.color
-                  : ColorSeed.organizedBlackMedium.color),
-          borderRadius: BorderRadius.circular(6),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-              color: isReversed == false
-                  ? ColorSeed.meticulousGrayMedium.color
-                  : Colors.white,
-              height: 1,
-              fontWeight: FontWeight.w500),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (leftIcon != null) ...[
+              leftIcon!,
+              const SizedBox(width: 4),
+            ],
+            Text(
+              text,
+              style: TextStyle(
+                  color: isReversed == false
+                      ? ColorSeed.meticulousGrayMedium.color
+                      : Colors.white,
+                  height: 1,
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
         ),
       ),
     );
