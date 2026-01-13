@@ -42,14 +42,16 @@ class _PostFormScreenState extends State<PostFormScreen> {
   final SessionController sessionController = Get.find<SessionController>();
 
   late FindSessionUploadModel formData;
-  late PostTypeEnum postType;
+  PostTypeEnum? postType;
 
   // validation용
   String? _titleErrorText;
   String? _contactErrorText;
+  bool _postTypeError = false;
   bool _sessionError = false;
   bool _regionError = false;
 
+  final _postTypeKey = GlobalKey();
   final _sessionKey = GlobalKey();
 
   @override
@@ -60,7 +62,6 @@ class _PostFormScreenState extends State<PostFormScreen> {
       postType = widget.post!.postType;
       formData = FindSessionUploadModel.fromPost(widget.post!);
     } else {
-      postType = PostTypeEnum.findMember; // 기본값
       formData = FindSessionUploadModel.init();
     }
   }
@@ -68,6 +69,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
   void _selectUploadType(PostTypeEnum type) {
     setState(() {
       postType = type;
+      _postTypeError = false;
     });
   }
 
@@ -75,12 +77,17 @@ class _PostFormScreenState extends State<PostFormScreen> {
     setState(() {
       _titleErrorText = null;
       _contactErrorText = null;
+      _postTypeError = false;
       _sessionError = false;
       _regionError = false;
     });
 
     bool hasError = false;
 
+    if (widget.mode == PostFormMode.create && postType == null) {
+      _postTypeError = true;
+      hasError = true;
+    }
     if (formData.title.trim().isEmpty) {
       _titleErrorText = '제목을 입력해주세요';
       hasError = true;
@@ -100,7 +107,10 @@ class _PostFormScreenState extends State<PostFormScreen> {
 
     if (hasError) {
       setState(() {});
-      if (formData.title.isEmpty) {
+      if (_postTypeError) {
+        Scrollable.ensureVisible(_postTypeKey.currentContext!,
+            duration: const Duration(milliseconds: 300));
+      } else if (formData.title.isEmpty) {
         FocusScope.of(context).requestFocus(_titleFocus);
       } else if (formData.sessions.isEmpty) {
         Scrollable.ensureVisible(_sessionKey.currentContext!,
@@ -137,6 +147,8 @@ class _PostFormScreenState extends State<PostFormScreen> {
 
     final imageUrls = await _uploadImages(formData.images);
 
+    if (postType == null) return;
+
     await supabase.from('posts').insert({
       'user_id': userId,
       'title': formData.title,
@@ -148,7 +160,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
       'description': formData.description,
       'tags': formData.tags,
       'images': imageUrls,
-      'post_type': postType.name,
+      'post_type': postType!.name,
     });
   }
 
@@ -230,7 +242,10 @@ class _PostFormScreenState extends State<PostFormScreen> {
                 Column(
                   children: [
                     UploadTypeToggler(
-                        onSelect: _selectUploadType, selectedType: postType),
+                        key: _postTypeKey,
+                        onSelect: _selectUploadType,
+                        selectedType: postType,
+                        showError: _postTypeError),
                     const SizedBox(
                       height: 30,
                     ),

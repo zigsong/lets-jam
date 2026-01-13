@@ -4,10 +4,15 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class UploadTypeToggler extends StatelessWidget {
   final void Function(PostTypeEnum) onSelect;
-  final PostTypeEnum selectedType;
+  final PostTypeEnum? selectedType;
+  final bool showError;
 
-  const UploadTypeToggler(
-      {super.key, required this.onSelect, required this.selectedType});
+  const UploadTypeToggler({
+    super.key,
+    required this.onSelect,
+    required this.selectedType,
+    this.showError = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +175,27 @@ class UploadTypeToggler extends StatelessWidget {
             ),
           ],
         ),
+        if (showError)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      width: 13.5,
+                      height: 13.5,
+                      child: Image.asset('assets/icons/info.png')),
+                  const SizedBox(width: 7),
+                  const Text(
+                    '글의 유형을 선택해주세요',
+                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
