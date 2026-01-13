@@ -258,7 +258,9 @@ class _PostFormScreenState extends State<PostFormScreen> {
                     ),
                     CustomForm(
                       label: '세션',
-                      subTitle: '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
+                      subTitle: postType == PostTypeEnum.findBand
+                          ? '밴드에서 하고 싶은 세션을 선택해주세요 (최대 2개)'
+                          : '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
                       isRequired: true,
                       content: SessionSelector(
                         selectedSessions: formData.sessions,
@@ -366,7 +368,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                     ),
                     CustomForm(
                       label: '사진',
-                      subTitle: '밴드를 소개할 수 있는 사진을 올려주세요! (최대 5장)',
+                      subTitle: '나를 소개할 수 있는 사진을 올려주세요 (최대 5장)',
                       content: MultipleImagePicker(
                           onSelect: (file) {
                             setState(() {

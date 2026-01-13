@@ -11,142 +11,164 @@ class UploadTypeToggler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () => onSelect(PostTypeEnum.findBand),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: selectedType == PostTypeEnum.findBand
-                        ? ColorSeed.boldOrangeStrong.color
-                        : ColorSeed.meticulousGrayMedium.color,
-                  ),
-                  color: selectedType == PostTypeEnum.findBand
-                      ? ColorSeed.boldOrangeLight.color
-                      : Colors.transparent),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '밴드 들어가기',
-                          style: TextStyle(
-                            color: selectedType == PostTypeEnum.findBand
-                                ? ColorSeed.boldOrangeStrong.color
-                                : ColorSeed.meticulousGrayMedium.color,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          '내가 들어갈 밴드를 찾아요',
-                          style: TextStyle(
-                              color: selectedType == PostTypeEnum.findBand
-                                  ? ColorSeed.boldOrangeStrong.color
-                                  : ColorSeed.meticulousGrayMedium.color,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 10),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: selectedType == PostTypeEnum.findBand
-                            ? ColorSeed.boldOrangeStrong.color
-                            : ColorSeed.meticulousGrayMedium.color),
-                    width: 24,
-                    height: 24,
-                    child: Center(
-                      child: Image.asset(
-                        'assets/icons/check.png',
-                        width: 11.5,
-                      ),
-                    ),
-                  )
-                ],
-              ),
+        Row(
+          children: [
+            Text(
+              '어떤 글인가요?',
+              style: TextStyle(
+                  fontSize: 13, color: ColorSeed.organizedBlackMedium.color),
             ),
-          ),
+            const SizedBox(
+              width: 2,
+            ),
+            Text('*', style: TextStyle(color: ColorSeed.boldOrangeStrong.color))
+          ],
         ),
         const SizedBox(
-          width: 8,
+          height: 8,
         ),
-        Expanded(
-          child: GestureDetector(
-            onTap: () => onSelect(PostTypeEnum.findMember),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: selectedType == PostTypeEnum.findMember
-                        ? ColorSeed.boldOrangeStrong.color
-                        : ColorSeed.meticulousGrayMedium.color,
-                  ),
-                  color: selectedType == PostTypeEnum.findMember
-                      ? ColorSeed.boldOrangeLight.color
-                      : Colors.transparent),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '멤버 구하기',
-                          style: TextStyle(
-                            color: selectedType == PostTypeEnum.findMember
+        Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () => onSelect(PostTypeEnum.findBand),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: selectedType == PostTypeEnum.findBand
+                            ? ColorSeed.boldOrangeStrong.color
+                            : ColorSeed.meticulousGrayMedium.color,
+                      ),
+                      color: selectedType == PostTypeEnum.findBand
+                          ? ColorSeed.boldOrangeLight.color
+                          : Colors.transparent),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '밴드 들어가기',
+                              style: TextStyle(
+                                color: selectedType == PostTypeEnum.findBand
+                                    ? ColorSeed.boldOrangeStrong.color
+                                    : ColorSeed.meticulousGrayMedium.color,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              '내가 들어갈 밴드를 찾아요',
+                              style: TextStyle(
+                                  color: selectedType == PostTypeEnum.findBand
+                                      ? ColorSeed.boldOrangeStrong.color
+                                      : ColorSeed.meticulousGrayMedium.color,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 10),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: selectedType == PostTypeEnum.findBand
                                 ? ColorSeed.boldOrangeStrong.color
-                                : ColorSeed.meticulousGrayMedium.color,
-                            fontWeight: FontWeight.w700,
+                                : ColorSeed.meticulousGrayMedium.color),
+                        width: 24,
+                        height: 24,
+                        child: Center(
+                          child: Image.asset(
+                            'assets/icons/check.png',
+                            width: 11.5,
                           ),
                         ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          '함께할 멤버를 구해요',
-                          style: TextStyle(
-                              color: selectedType == PostTypeEnum.findMember
-                                  ? ColorSeed.boldOrangeStrong.color
-                                  : ColorSeed.meticulousGrayMedium.color,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 10),
-                        ),
-                      ],
-                    ),
+                      )
+                    ],
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: selectedType == PostTypeEnum.findMember
-                            ? ColorSeed.boldOrangeStrong.color
-                            : ColorSeed.meticulousGrayMedium.color),
-                    width: 24,
-                    height: 24,
-                    child: Center(
-                      child: Image.asset(
-                        'assets/icons/check.png',
-                        width: 11.5,
-                      ),
-                    ),
-                  )
-                ],
+                ),
               ),
             ),
-          ),
+            const SizedBox(
+              width: 8,
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: () => onSelect(PostTypeEnum.findMember),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: selectedType == PostTypeEnum.findMember
+                            ? ColorSeed.boldOrangeStrong.color
+                            : ColorSeed.meticulousGrayMedium.color,
+                      ),
+                      color: selectedType == PostTypeEnum.findMember
+                          ? ColorSeed.boldOrangeLight.color
+                          : Colors.transparent),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '멤버 구하기',
+                              style: TextStyle(
+                                color: selectedType == PostTypeEnum.findMember
+                                    ? ColorSeed.boldOrangeStrong.color
+                                    : ColorSeed.meticulousGrayMedium.color,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              '함께할 멤버를 구해요',
+                              style: TextStyle(
+                                  color: selectedType == PostTypeEnum.findMember
+                                      ? ColorSeed.boldOrangeStrong.color
+                                      : ColorSeed.meticulousGrayMedium.color,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 10),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: selectedType == PostTypeEnum.findMember
+                                ? ColorSeed.boldOrangeStrong.color
+                                : ColorSeed.meticulousGrayMedium.color),
+                        width: 24,
+                        height: 24,
+                        child: Center(
+                          child: Image.asset(
+                            'assets/icons/check.png',
+                            width: 11.5,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
