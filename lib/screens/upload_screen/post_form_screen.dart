@@ -65,16 +65,10 @@ class _PostFormScreenState extends State<PostFormScreen> {
     }
   }
 
-  void _toggleUploadType() {
-    if (postType == PostTypeEnum.findMember) {
-      setState(() {
-        postType = PostTypeEnum.findBand;
-      });
-    } else {
-      setState(() {
-        postType = PostTypeEnum.findMember;
-      });
-    }
+  void _selectUploadType(PostTypeEnum type) {
+    setState(() {
+      postType = type;
+    });
   }
 
   Future<void> _submit() async {
@@ -236,9 +230,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                 Column(
                   children: [
                     UploadTypeToggler(
-                        onTap: _toggleUploadType,
-                        selectedIndex:
-                            postType == PostTypeEnum.findMember ? 0 : 1),
+                        onSelect: _selectUploadType, selectedType: postType),
                     const SizedBox(
                       height: 30,
                     ),
