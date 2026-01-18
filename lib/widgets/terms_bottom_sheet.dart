@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lets_jam/screens/terms_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 
@@ -20,24 +21,22 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
   bool _allAgreed = false;
   bool _termsOfService = false;
   bool _privacyPolicy = false;
-  bool _ageVerification = false;
 
   void _toggleAll(bool? value) {
     setState(() {
       _allAgreed = value ?? false;
       _termsOfService = _allAgreed;
       _privacyPolicy = _allAgreed;
-      _ageVerification = _allAgreed;
     });
   }
 
   void _updateAllAgreed() {
     setState(() {
-      _allAgreed = _termsOfService && _privacyPolicy && _ageVerification;
+      _allAgreed = _termsOfService && _privacyPolicy;
     });
   }
 
-  bool get _canProceed => _termsOfService && _privacyPolicy && _ageVerification;
+  bool get _canProceed => _termsOfService && _privacyPolicy;
 
   @override
   Widget build(BuildContext context) {
@@ -57,23 +56,23 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    '서비스 이용약관 동의',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: widget.onClose,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ),
+              const Center(
+                child: Text(
+                  'JAM 서비스 이용약관 동의',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: widget.onClose,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                ],
+                ),
               ),
               const SizedBox(height: 24),
               _CheckboxItem(
@@ -84,7 +83,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
               ),
               const Divider(height: 24),
               _CheckboxItem(
-                title: '(필수) 서비스 이용약관',
+                title: '이용약관(필수)',
                 value: _termsOfService,
                 onChanged: (value) {
                   setState(() {
@@ -93,12 +92,18 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                   });
                 },
                 onDetailTap: () {
-                  // TODO: 서비스 이용약관 상세 페이지
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TermsDetailScreen(
+                        type: TermsType.termsOfService,
+                      ),
+                    ),
+                  );
                 },
               ),
-              const SizedBox(height: 16),
               _CheckboxItem(
-                title: '(필수) 개인정보 처리방침',
+                title: '개인정보 수집 및 이용동의(필수)',
                 value: _privacyPolicy,
                 onChanged: (value) {
                   setState(() {
@@ -107,23 +112,19 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                   });
                 },
                 onDetailTap: () {
-                  // TODO: 개인정보 처리방침 상세 페이지
-                },
-              ),
-              const SizedBox(height: 16),
-              _CheckboxItem(
-                title: '(필수) 만 14세 이상입니다',
-                value: _ageVerification,
-                onChanged: (value) {
-                  setState(() {
-                    _ageVerification = value ?? false;
-                    _updateAllAgreed();
-                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TermsDetailScreen(
+                        type: TermsType.privacyPolicy,
+                      ),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 24),
               WideButton(
-                text: '동의하고 시작하기',
+                text: 'JAM 시작하기',
                 onPressed: _canProceed ? widget.onAgree : null,
               ),
             ],
@@ -153,16 +154,27 @@ class _CheckboxItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: Checkbox(
-            value: value,
-            onChanged: onChanged,
-            activeColor: ColorSeed.boldOrangeMedium.color,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
+        GestureDetector(
+          onTap: () => onChanged?.call(!value),
+          child: Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: value
+                    ? ColorSeed.boldOrangeMedium.color
+                    : ColorSeed.meticulousGrayMedium.color,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(2),
             ),
+            child: value
+                ? Icon(
+                    Icons.check_rounded,
+                    size: 16,
+                    color: ColorSeed.boldOrangeMedium.color,
+                  )
+                : null,
           ),
         ),
         const SizedBox(width: 12),
@@ -171,7 +183,7 @@ class _CheckboxItem extends StatelessWidget {
             title,
             style: TextStyle(
               fontSize: isMain ? 16 : 14,
-              fontWeight: isMain ? FontWeight.w600 : FontWeight.normal,
+              fontWeight: FontWeight.normal,
               color:
                   isMain ? Colors.black : ColorSeed.organizedBlackMedium.color,
             ),
