@@ -150,7 +150,7 @@ class _ReplyContentState extends State<ReplyContent> {
                           !isEditing
                               ? Row(
                                   children: [
-                                    AccessoryButton(
+                                    IconButton(
                                         text: '수정',
                                         leftIcon: Image.asset(
                                           'assets/icons/reply_edit.png',
@@ -163,7 +163,7 @@ class _ReplyContentState extends State<ReplyContent> {
                                           });
                                         }),
                                     const SizedBox(width: 10),
-                                    AccessoryButton(
+                                    IconButton(
                                         text: '삭제',
                                         leftIcon: Image.asset(
                                           'assets/icons/reply_delete.png',
@@ -182,7 +182,7 @@ class _ReplyContentState extends State<ReplyContent> {
                                 )
                               : Row(
                                   children: [
-                                    AccessoryButton(
+                                    BorderButton(
                                         text: '취소',
                                         onPressed: () {
                                           setState(() {
@@ -192,7 +192,7 @@ class _ReplyContentState extends State<ReplyContent> {
                                     const SizedBox(
                                       width: 8,
                                     ),
-                                    AccessoryButton(
+                                    BorderButton(
                                         text: '저장',
                                         isReversed: true,
                                         onPressed: () {
@@ -233,13 +233,13 @@ class _ReplyContentState extends State<ReplyContent> {
   }
 }
 
-class AccessoryButton extends StatelessWidget {
+class IconButton extends StatelessWidget {
   final String text;
   final Function() onPressed;
   final bool? isReversed;
   final Widget? leftIcon;
 
-  const AccessoryButton(
+  const IconButton(
       {super.key,
       required this.text,
       required this.onPressed,
@@ -270,10 +270,48 @@ class AccessoryButton extends StatelessWidget {
                   color: isReversed == false
                       ? ColorSeed.meticulousGrayMedium.color
                       : Colors.white,
-                  height: 1,
                   fontWeight: FontWeight.w500),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class BorderButton extends StatelessWidget {
+  final String text;
+  final Function() onPressed;
+  final bool isReversed;
+
+  const BorderButton(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.isReversed = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        decoration: BoxDecoration(
+            color: isReversed
+                ? ColorSeed.meticulousGrayMedium.color
+                : Colors.white,
+            borderRadius: BorderRadius.circular(4),
+            border: isReversed
+                ? null
+                : Border.all(color: ColorSeed.meticulousGrayMedium.color)),
+        child: Text(
+          text,
+          style: TextStyle(
+              color: isReversed
+                  ? Colors.white
+                  : ColorSeed.meticulousGrayMedium.color,
+              height: 1,
+              fontWeight: FontWeight.w500),
         ),
       ),
     );
