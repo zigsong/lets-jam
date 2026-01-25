@@ -189,7 +189,7 @@ class UploadTypeToggler extends StatelessWidget {
                       child: Image.asset('assets/icons/info.png')),
                   const SizedBox(width: 7),
                   const Text(
-                    '글의 유형을 선택해주세요',
+                    '어떤 글인지 선택해주세요',
                     style: TextStyle(color: Colors.red, fontSize: 12),
                   ),
                 ],

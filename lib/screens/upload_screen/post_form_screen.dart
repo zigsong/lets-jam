@@ -15,6 +15,7 @@ import 'package:lets_jam/models/find_session_upload_model.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:lets_jam/widgets/session_selector.dart';
+import 'package:lets_jam/widgets/form_error_message.dart';
 
 enum PostFormMode { create, edit }
 
@@ -304,27 +305,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                       ),
                     ),
                     if (_sessionError)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  width: 13.5,
-                                  height: 13.5,
-                                  child: Image.asset('assets/icons/info.png')),
-                              const SizedBox(width: 7),
-                              const Text(
-                                '1개 이상 선택해주세요',
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      const FormErrorMessage(message: '1개 이상 선택해주세요'),
                     const SizedBox(
                       height: 30,
                     ),
@@ -351,27 +332,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                       ),
                     ),
                     if (_regionError)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  width: 13.5,
-                                  height: 13.5,
-                                  child: Image.asset('assets/icons/info.png')),
-                              const SizedBox(width: 7),
-                              const Text(
-                                '3개까지 선택할 수 있어요',
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      const FormErrorMessage(message: '3개까지 선택할 수 있어요'),
                     const SizedBox(
                       height: 30,
                     ),
@@ -398,27 +359,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                       ),
                     ),
                     if (_hashtagError)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  width: 13.5,
-                                  height: 13.5,
-                                  child: Image.asset('assets/icons/info.png')),
-                              const SizedBox(width: 7),
-                              const Text(
-                                '5개까지 입력할 수 있어요',
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      const FormErrorMessage(message: '5개까지 입력할 수 있어요'),
                     const SizedBox(
                       height: 30,
                     ),
