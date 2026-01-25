@@ -86,11 +86,11 @@ class TextInput extends StatelessWidget {
                             width: 1),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      contentPadding: const EdgeInsets.only(
+                      contentPadding: EdgeInsets.only(
                         left: 16,
                         top: 10,
                         bottom: 10,
-                        right: 48, // 충분히 넓게 잡아서 아이콘 침범 방지
+                        right: suffixButton != null ? 48 : 16,
                       ),
                     ),
                     cursorColor: ColorSeed.meticulousGrayLight.color,
