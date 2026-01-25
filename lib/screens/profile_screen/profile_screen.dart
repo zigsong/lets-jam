@@ -30,6 +30,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     SessionEnum.keyboard
   ];
 
+  bool isMyProfile = false;
+
   void onClickShareCourtUrl() {
     // TODO: webview_flutter로 현재 링크 가져오기
     SharePlus.instance.share(ShareParams(text: 'JAM에서 공유하기'));
@@ -39,42 +41,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Stack(children: [
       const GradientSplitScreen(),
-      // TODO: 수정 삭제 버튼 - 내 게시글만
-      // Positioned(
-      //   top: 0,
-      //   left: 0,
-      //   right: 0,
-      //   child: Container(
-      //     height: MediaQuery.of(context).padding.top + 72,
-      //     decoration: const BoxDecoration(
-      //       gradient: LinearGradient(
-      //         begin: Alignment.topCenter,
-      //         end: Alignment.bottomCenter,
-      //         colors: [Color(0xFF222222), Colors.transparent],
-      //       ),
-      //     ),
-      //     child: Padding(
-      //       padding: EdgeInsets.only(
-      //           top: MediaQuery.of(context).padding.top, right: 20),
-      //       child: Row(
-      //         mainAxisAlignment: MainAxisAlignment.end,
-      //         children: [
-      //           UtilButton(
-      //               text: '수정',
-      //               color: ColorSeed.meticulousGrayLight.color,
-      //               onPressed: () async {}),
-      //           const SizedBox(
-      //             width: 8,
-      //           ),
-      //           UtilButton(
-      //               text: '삭제',
-      //               color: ColorSeed.meticulousGrayLight.color,
-      //               onPressed: () {}),
-      //         ],
-      //       ),
-      //     ),
-      //   ),
-      // ),
       Positioned(
         top: MediaQuery.of(context).padding.top,
         left: 0,
@@ -117,14 +83,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: 96.5,
-                      height: 36,
-                      child: ElevatedButton(
+                    if (!isMyProfile)
+                      ElevatedButton(
                         onPressed: () {
                           onClickShareCourtUrl();
                         },
                         style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 25),
+                          minimumSize: const Size(0, 35),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           elevation: 0,
                           backgroundColor: Colors.transparent,
                           foregroundColor: Colors.white,
@@ -136,37 +104,113 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         child: Text(
-                          '공유하기',
+                          '연락하기',
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 13,
                               color: ColorSeed.boldOrangeStrong.color),
                         ),
                       ),
+                    if (!isMyProfile)
+                      const SizedBox(
+                        width: 10,
+                      ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 25),
+                        minimumSize: const Size(0, 35),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        elevation: 0,
+                        backgroundColor: ColorSeed.boldOrangeStrong.color,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        '공유하기',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 13),
+                      ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 96.5,
-                      height: 36,
-                      child: ElevatedButton(
+                    if (isMyProfile) ...[
+                      const SizedBox(width: 10),
+                      ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 10),
+                          minimumSize: const Size(0, 35),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           elevation: 0,
-                          backgroundColor: ColorSeed.boldOrangeStrong.color,
+                          backgroundColor: Colors.transparent,
                           foregroundColor: Colors.white,
+                          side: BorderSide(
+                              color: ColorSeed.boldOrangeStrong.color),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: const Text(
-                          '연락하기',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 13),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              'assets/icons/reply_edit.png',
+                              width: 15,
+                              height: 15,
+                              color: ColorSeed.boldOrangeStrong.color,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '수정',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  color: ColorSeed.boldOrangeStrong.color),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 10),
+                          minimumSize: const Size(0, 35),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.white,
+                          side: BorderSide(
+                              color: ColorSeed.boldOrangeStrong.color),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              'assets/icons/reply_delete.png',
+                              width: 15,
+                              height: 15,
+                              color: ColorSeed.boldOrangeStrong.color,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '삭제',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  color: ColorSeed.boldOrangeStrong.color),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
                 const SizedBox(
@@ -282,6 +326,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 )
               ],
+            ),
+          ),
+        ),
+      ),
+      Positioned(
+        top: MediaQuery.of(context).padding.top + 10,
+        right: 16,
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              isMyProfile = !isMyProfile;
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              isMyProfile ? '다른 사람 프로필로 전환(테스트)' : '내 프로필로 전환(테스트)',
+              style: const TextStyle(
+                fontSize: 12,
+              ),
             ),
           ),
         ),

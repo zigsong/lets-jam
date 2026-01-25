@@ -56,8 +56,28 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           scaffoldBackgroundColor: Colors.white,
           fontFamily: 'Pretendard',
-          colorScheme:
-              ColorScheme.fromSeed(seedColor: const Color(0xffFC784F))),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffFC784F)),
+          // MARK: 버튼 높이 맞추기
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+          iconButtonTheme: IconButtonThemeData(
+            style: IconButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          )),
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
