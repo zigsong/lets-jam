@@ -15,7 +15,7 @@ class TextInput extends StatelessWidget {
       this.height,
       this.isRequired,
       this.controller,
-      this.hasSuffixButton,
+      this.suffixButton,
       this.focusNode,
       this.errorText,
       this.prefixText});
@@ -30,7 +30,7 @@ class TextInput extends StatelessWidget {
   final double? height;
   final bool? isRequired;
   final TextEditingController? controller;
-  final bool? hasSuffixButton;
+  final Widget? suffixButton;
   final FocusNode? focusNode;
   final String? errorText;
   final String? prefixText;
@@ -103,14 +103,12 @@ class TextInput extends StatelessWidget {
                       FocusManager.instance.primaryFocus?.unfocus();
                     },
                   ),
-                  if (hasSuffixButton == true)
+                  if (suffixButton != null)
                     Positioned(
-                      right: 4,
+                      right: 16,
+                      bottom: 16,
                       child: IconButton(
-                        icon: Image.asset(
-                          'assets/icons/send.png',
-                          width: 20,
-                        ),
+                        icon: suffixButton!,
                         onPressed: () {
                           onSubmit?.call();
                           FocusScope.of(context).unfocus(); // 키보드 닫기
