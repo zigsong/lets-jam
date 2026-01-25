@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/splash_screen.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
@@ -56,7 +57,9 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           scaffoldBackgroundColor: Colors.white,
           fontFamily: 'Pretendard',
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffFC784F)),
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: ColorSeed.boldOrangeMedium.color)
+                  .copyWith(surfaceTint: Colors.transparent),
           // MARK: 버튼 높이 맞추기
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
