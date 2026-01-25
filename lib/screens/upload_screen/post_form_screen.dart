@@ -50,6 +50,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
   bool _postTypeError = false;
   bool _sessionError = false;
   bool _regionError = false;
+  bool _hashtagError = false;
 
   final _postTypeKey = GlobalKey();
   final _sessionKey = GlobalKey();
@@ -84,6 +85,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
       _postTypeError = false;
       _sessionError = false;
       _regionError = false;
+      _hashtagError = false;
     });
 
     bool hasError = false;
@@ -315,7 +317,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                                   child: Image.asset('assets/icons/info.png')),
                               const SizedBox(width: 7),
                               const Text(
-                                '세션을 최소 1개 이상 선택해주세요',
+                                '1개 이상 선택해주세요',
                                 style:
                                     TextStyle(color: Colors.red, fontSize: 12),
                               ),
@@ -362,7 +364,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                                   child: Image.asset('assets/icons/info.png')),
                               const SizedBox(width: 7),
                               const Text(
-                                '지역은 최대 3개까지 선택할 수 있어요',
+                                '3개까지 선택할 수 있어요',
                                 style:
                                     TextStyle(color: Colors.red, fontSize: 12),
                               ),
@@ -379,15 +381,44 @@ class _PostFormScreenState extends State<PostFormScreen> {
                       content: HashTagSelector(
                         selectedTags: formData.tags,
                         onSelect: (tag) {
-                          if (formData.tags.contains(tag)) {
-                            formData.tags.remove(tag);
-                          } else {
-                            if (formData.tags.length >= 5) return;
-                            formData.tags.add(tag);
-                          }
+                          setState(() {
+                            if (formData.tags.contains(tag)) {
+                              formData.tags.remove(tag);
+                              _hashtagError = false;
+                            } else {
+                              if (formData.tags.length >= 5) {
+                                _hashtagError = true;
+                                return;
+                              }
+                              _hashtagError = false;
+                              formData.tags.add(tag);
+                            }
+                          });
                         },
                       ),
                     ),
+                    if (_hashtagError)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 13.5,
+                                  height: 13.5,
+                                  child: Image.asset('assets/icons/info.png')),
+                              const SizedBox(width: 7),
+                              const Text(
+                                '5개까지 입력할 수 있어요',
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     const SizedBox(
                       height: 30,
                     ),
