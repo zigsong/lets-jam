@@ -70,6 +70,10 @@ class _PostFormScreenState extends State<PostFormScreen> {
     setState(() {
       postType = type;
       _postTypeError = false;
+
+      if (type == PostTypeEnum.findBand) {
+        formData.sessions.clear();
+      }
     });
   }
 
@@ -107,12 +111,13 @@ class _PostFormScreenState extends State<PostFormScreen> {
 
     if (hasError) {
       setState(() {});
-      if (_postTypeError) {
+      if (_postTypeError && _postTypeKey.currentContext != null) {
         Scrollable.ensureVisible(_postTypeKey.currentContext!,
             duration: const Duration(milliseconds: 300));
       } else if (formData.title.isEmpty) {
         FocusScope.of(context).requestFocus(_titleFocus);
-      } else if (formData.sessions.isEmpty) {
+      } else if (formData.sessions.isEmpty &&
+          _sessionKey.currentContext != null) {
         Scrollable.ensureVisible(_sessionKey.currentContext!,
             duration: const Duration(milliseconds: 300));
       } else if (formData.contact.isEmpty) {
@@ -272,6 +277,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                       height: 30,
                     ),
                     CustomForm(
+                      key: _sessionKey,
                       label: '세션',
                       subTitle: postType == PostTypeEnum.findBand
                           ? '밴드에서 하고 싶은 세션을 선택해주세요 (최대 2개)'
@@ -284,6 +290,10 @@ class _PostFormScreenState extends State<PostFormScreen> {
                             if (formData.sessions.contains(session)) {
                               formData.sessions.remove(session);
                             } else {
+                              if (postType == PostTypeEnum.findBand &&
+                                  formData.sessions.length >= 2) {
+                                return;
+                              }
                               formData.sessions.add(session);
                             }
                             _sessionError = false;
