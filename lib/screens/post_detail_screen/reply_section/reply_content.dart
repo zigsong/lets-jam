@@ -162,7 +162,7 @@ class _ReplyContentState extends State<ReplyContent> {
                                             isEditing = true;
                                           });
                                         }),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 12),
                                     IconButton(
                                         text: '삭제',
                                         leftIcon: Image.asset(
@@ -190,7 +190,7 @@ class _ReplyContentState extends State<ReplyContent> {
                                           });
                                         }),
                                     const SizedBox(
-                                      width: 8,
+                                      width: 12,
                                     ),
                                     BorderButton(
                                         text: '저장',
@@ -295,15 +295,13 @@ class BorderButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 7),
         decoration: BoxDecoration(
             color: isReversed
                 ? ColorSeed.meticulousGrayMedium.color
                 : Colors.white,
             borderRadius: BorderRadius.circular(4),
-            border: isReversed
-                ? null
-                : Border.all(color: ColorSeed.meticulousGrayMedium.color)),
+            border: Border.all(color: ColorSeed.meticulousGrayMedium.color)),
         child: Text(
           text,
           style: TextStyle(

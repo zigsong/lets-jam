@@ -92,7 +92,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 25),
                           minimumSize: const Size(0, 35),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           elevation: 0,
                           backgroundColor: Colors.transparent,
                           foregroundColor: Colors.white,
@@ -121,7 +120,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 25),
                         minimumSize: const Size(0, 35),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         elevation: 0,
                         backgroundColor: ColorSeed.boldOrangeStrong.color,
                         foregroundColor: Colors.white,
@@ -143,7 +141,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 10),
                           minimumSize: const Size(0, 35),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           elevation: 0,
                           backgroundColor: Colors.transparent,
                           foregroundColor: Colors.white,
@@ -180,7 +177,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 10),
                           minimumSize: const Size(0, 35),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           elevation: 0,
                           backgroundColor: Colors.transparent,
                           foregroundColor: Colors.white,
