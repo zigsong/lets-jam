@@ -81,7 +81,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 showModal(
                   context: context,
                   title: '로그아웃되었어요',
-                  desc: 'JAM 메인으로 이동할게요',
+                  desc: 'JAM 홈으로 이동할게요',
                   onConfirm: () {
                     Navigator.pushReplacement(
                         context,

@@ -579,8 +579,9 @@ class PostDetailAuthorInfo extends StatelessWidget {
                           );
                         },
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Expanded(child: Text(contact)),
+                            Text(contact),
                             const SizedBox(
                               width: 8,
                             ),

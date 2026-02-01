@@ -27,36 +27,55 @@ class Modal extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width * 0.85,
         padding:
-            const EdgeInsets.only(top: 30, left: 24, right: 24, bottom: 20),
+            const EdgeInsets.only(top: 30, left: 24, right: 24, bottom: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (title != null)
               Column(children: [
-                Text(
-                  title!,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w500),
+                Center(
+                  child: Text(
+                    title!,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
                 ),
                 const SizedBox(height: 16),
               ]),
-            if (desc is String) Center(child: Text(desc)) else desc,
+            if (desc is String)
+              Center(
+                  child: Text(
+                desc,
+                style: const TextStyle(fontSize: 15),
+              ))
+            else
+              Center(child: desc),
             const SizedBox(height: 24),
             Flex(
               direction: Axis.horizontal,
               children: [
                 Expanded(
                   flex: 1,
-                  child: TextButton(
-                    child: Text(
-                      cancelText ?? '취소',
-                      style:
-                          TextStyle(color: ColorSeed.boldOrangeRegular.color),
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: ColorSeed.boldOrangeRegular.color,
+                      side: BorderSide(
+                          color: ColorSeed.boldOrangeRegular.color, width: 0.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
+                      textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          inherit: false),
                     ),
                     onPressed: () {
                       onCancel?.call();
                     },
+                    child: Text(cancelText ?? '취소'),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -68,16 +87,18 @@ class Modal extends StatelessWidget {
                         backgroundColor: ColorSeed.boldOrangeStrong.color,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 12),
                         textStyle: const TextStyle(
-                            fontWeight: FontWeight.w500, inherit: false)),
-                    child: Text(confirmText ?? '확인'),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            inherit: false)),
                     onPressed: () {
                       onConfirm();
                     },
+                    child: Text(confirmText ?? '확인'),
                   ),
                 ),
               ],

@@ -116,7 +116,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             )));
                   },
                   child: const Text(
-                    "프로필 다음에 작성하기",
+                    "다음에 작성하기",
                     style: TextStyle(
                         color: Color(0xffA0A0A0),
                         decoration: TextDecoration.underline,
