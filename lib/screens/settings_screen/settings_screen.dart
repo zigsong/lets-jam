@@ -2,11 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
+import 'package:lets_jam/screens/terms_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-typedef SettingAction = void Function();
+class SettingItem {
+  final String title;
+  final String? subtitle;
+  final String? url;
+  final VoidCallback? onClick;
+  final bool showArrow;
+
+  const SettingItem({
+    required this.title,
+    this.subtitle,
+    this.url,
+    this.onClick,
+    this.showArrow = true,
+  });
+}
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -19,15 +35,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _version = '';
   final SessionController sessionController = Get.find<SessionController>();
 
-  List<Map<String, dynamic>> get settings => [
-        {'title': '문의하기', 'onClick': () {}},
-        {'title': '버그 제보하기', 'onClick': () {}},
-        {'title': '신고하기', 'onClick': () {}},
-        {'title': '서비스 이용약관', 'onClick': () {}},
-        {'title': '개인정보 처리방침', 'onClick': () {}},
-        {
-          'title': sessionController.isLoggedIn.value ? '로그아웃' : '로그인',
-          'onClick': () async {
+  List<SettingItem> get settings => [
+        const SettingItem(
+          title: '문의하기',
+          url: 'https://forms.gle/6JcnqBmy8Aaim5qv6',
+        ),
+        const SettingItem(
+          title: '버그 제보하기',
+          url: 'forms.gle/9MV6DvcKfCKQTxbXA',
+        ),
+        const SettingItem(
+          title: '신고하기',
+          url: 'https://forms.gle/bim3Q77MpJZY8X6h6',
+        ),
+        SettingItem(
+          title: '서비스 이용약관',
+          onClick: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    const TermsDetailScreen(type: TermsType.termsOfService),
+              ),
+            );
+          },
+        ),
+        SettingItem(
+          title: '개인정보 처리방침',
+          onClick: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    const TermsDetailScreen(type: TermsType.privacyPolicy),
+              ),
+            );
+          },
+        ),
+        SettingItem(
+          title: sessionController.isLoggedIn.value ? '로그아웃' : '로그인',
+          onClick: () async {
             if (sessionController.isLoggedIn.value) {
               await sessionController.signOut();
               if (mounted) {
@@ -46,15 +93,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
             } else {
               await sessionController.signIn();
             }
-          }
-        },
-        {'title': '회원 탈퇴', 'onClick': () {}},
-        {
-          'title': '앱 버전 정보',
-          'subtitle': _version,
-          'onClick': () {},
-        },
+          },
+        ),
+        // TODO: 어딘가로 연결 혹은 알럿
+        const SettingItem(
+          title: '회원 탈퇴',
+        ),
+        SettingItem(
+          title: '앱 버전 정보',
+          subtitle: _version,
+          showArrow: false,
+        ),
       ];
+
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 
   @override
   void initState() {
@@ -86,58 +143,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
       body: Obx(() => ListView.separated(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: settings.length,
-        itemBuilder: (context, index) {
-          final item = settings[index];
-          final onClick = item['onClick'] as SettingAction?;
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            itemCount: settings.length,
+            itemBuilder: (context, index) {
+              final item = settings[index];
 
-          return ListTile(
-            title: Row(
-              children: [
-                Text(
-                  item['title'] as String,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+              return ListTile(
+                title: Row(
+                  children: [
+                    Text(
+                      item.title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    if (item.subtitle != null)
+                      Text(
+                        item.subtitle!,
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: ColorSeed.meticulousGrayMedium.color),
+                      )
+                  ],
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
-                if (item['subtitle'] != null)
-                  Text(
-                    item['subtitle'] as String,
-                    style: TextStyle(
-                        fontSize: 13,
-                        color: ColorSeed.meticulousGrayMedium.color),
-                  )
-              ],
-            ),
-            trailing: item['title'] != '앱 버전 정보'
-                ? Icon(
-                    Icons.arrow_forward_ios,
-                    size: 12,
-                    color: ColorSeed.organizedBlackLight.color,
-                  )
-                : null,
-            onTap: () {
-              if (onClick != null) {
-                onClick();
-              }
-              // Navigator.pushNamed(context, item['route']!);
+                trailing: item.showArrow
+                    ? Icon(
+                        Icons.arrow_forward_ios,
+                        size: 12,
+                        color: ColorSeed.organizedBlackLight.color,
+                      )
+                    : null,
+                onTap: () {
+                  if (item.url != null) {
+                    _launchUrl(item.url!);
+                  } else if (item.onClick != null) {
+                    item.onClick!();
+                  }
+                },
+              );
             },
-          );
-        },
-        separatorBuilder: (context, index) => const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Divider(
-            height: 1,
-            thickness: 0.5,
-            color: Color(0xFFDDDDDD),
-          ),
-        ),
-      )),
+            separatorBuilder: (context, index) => const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Divider(
+                height: 1,
+                thickness: 0.5,
+                color: Color(0xFFDDDDDD),
+              ),
+            ),
+          )),
     );
   }
 }
