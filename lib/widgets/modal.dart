@@ -30,7 +30,6 @@ class Modal extends StatelessWidget {
             const EdgeInsets.only(top: 30, left: 24, right: 24, bottom: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (title != null)
               Column(children: [
@@ -44,11 +43,11 @@ class Modal extends StatelessWidget {
                 const SizedBox(height: 16),
               ]),
             if (desc is String)
-              Center(
-                  child: Text(
+              Text(
                 desc,
+                textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 15),
-              ))
+              )
             else
               Center(child: desc),
             const SizedBox(height: 24),
