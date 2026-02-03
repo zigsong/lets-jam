@@ -160,9 +160,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
     await supabase.from('posts').insert({
       'user_id': userId,
       'title': formData.title,
-      'levels': formData.levels.map((e) => e.name).toList(),
       'sessions': formData.sessions.map((e) => e.name).toList(),
-      'ages': formData.ages.map((e) => e.name).toList(),
       'regions': formData.regions.map((e) => e.displayName).toList(),
       'contact': formData.contact,
       'description': formData.description,
@@ -191,9 +189,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
     await supabase.from('posts').update({
       'user_id': userId,
       'title': formData.title,
-      'levels': formData.levels.map((e) => e.name).toList(),
       'sessions': formData.sessions.map((e) => e.name).toList(),
-      'ages': formData.ages.map((e) => e.name).toList(),
       'regions': formData.regions.map((e) => e.displayName).toList(),
       'contact': formData.contact,
       'description': formData.description,

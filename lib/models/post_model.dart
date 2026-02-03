@@ -1,5 +1,3 @@
-import 'package:lets_jam/models/age_enum.dart';
-import 'package:lets_jam/models/level_enum.dart';
 import 'package:lets_jam/models/region_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 
@@ -12,9 +10,7 @@ class PostModel {
   String userId;
   PostTypeEnum postType;
   String title;
-  List<LevelEnum> levels;
   List<SessionEnum> sessions;
-  List<AgeEnum>? ages;
   List<District>? regions;
   String contact;
   String description;
@@ -29,11 +25,9 @@ class PostModel {
       required this.userId,
       required this.postType,
       required this.title,
-      required this.levels,
       required this.sessions,
       required this.contact,
       required this.description,
-      this.ages,
       this.regions,
       this.tags,
       this.images,
@@ -46,9 +40,7 @@ class PostModel {
       userId: json['user_id'],
       postType: _postTypeFromString(json['post_type']),
       title: json['title'],
-      levels: _levelsFromJson(json['levels']),
       sessions: _sesssionsFromJson(json['sessions']),
-      ages: _agesFromJson(json['ages']),
       regions: _regionsFromJson(json['regions']),
       contact: json['contact'],
       description: json['description'],
@@ -66,9 +58,7 @@ class PostModel {
       'userId': userId,
       'postType': postType,
       'title': title,
-      'levels': levels,
       'sessions': sessions,
-      'ages': ages,
       'regions': regions,
       'contact': contact,
       'description': description,
@@ -86,27 +76,6 @@ class PostModel {
         return PostTypeEnum.findMember;
       default:
         throw Exception('Invalid postType value: $postType');
-    }
-  }
-
-  static List<LevelEnum> _levelsFromJson(List<dynamic> levelsJson) {
-    return levelsJson
-        .map((level) => _levelFromString(level as String))
-        .toList();
-  }
-
-  static LevelEnum _levelFromString(String level) {
-    switch (level) {
-      case 'lv1':
-        return LevelEnum.lv1;
-      case 'lv2':
-        return LevelEnum.lv2;
-      case 'lv3':
-        return LevelEnum.lv3;
-      case 'lv4':
-        return LevelEnum.lv4;
-      default:
-        throw Exception('Invalid level value: $level');
     }
   }
 
@@ -142,24 +111,5 @@ class PostModel {
         .map((regionName) => District.values.firstWhere(
             (district) => district.displayName == regionName as String))
         .toList();
-  }
-
-  static List<AgeEnum> _agesFromJson(List<dynamic> agesJson) {
-    return agesJson.map((age) => _ageFromString(age as String)).toList();
-  }
-
-  static AgeEnum _ageFromString(String age) {
-    switch (age) {
-      case 'lt20':
-        return AgeEnum.lt20;
-      case 'eq20s':
-        return AgeEnum.eq20s;
-      case 'eq30s':
-        return AgeEnum.eq30s;
-      case 'gt40':
-        return AgeEnum.gt40;
-      default:
-        throw Exception('Invalid age value: $age');
-    }
   }
 }
