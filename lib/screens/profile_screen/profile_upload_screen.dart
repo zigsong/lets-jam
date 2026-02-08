@@ -1,181 +1,258 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:lets_jam/models/session_enum.dart';
-import 'package:lets_jam/screens/default_navigation.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/models/profile_upload_model.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
-import 'package:lets_jam/widgets/session_selector.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-
-enum ProfileRequiredEnum { nickname, sessions }
+import 'package:lets_jam/widgets/session_selector.dart';
+import 'package:lets_jam/widgets/form_error_message.dart';
 
 class ProfileUploadScreen extends StatefulWidget {
-  const ProfileUploadScreen({super.key});
+  const ProfileUploadScreen({
+    super.key,
+  });
 
   @override
   State<ProfileUploadScreen> createState() => _ProfileUploadScreenState();
 }
 
 class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
+  // final ProfileModel? _profile;
   final _formKey = GlobalKey<FormState>();
-  final Map<ProfileRequiredEnum, bool> _validators = {};
 
-  String _nickname = '';
-  final List<SessionEnum> _sessions = [];
-  String? _contact;
-  String? _bio;
+  final FocusNode nickname = FocusNode();
+  final FocusNode _contactFocus = FocusNode();
 
-  bool _validate() {
-    if (_nickname.isEmpty) {
-      setState(() {
-        _validators[ProfileRequiredEnum.nickname] = false;
-      });
-    }
-    if (_sessions.isEmpty) {
-      setState(() {
-        _validators[ProfileRequiredEnum.sessions] = false;
-      });
-    }
-    return _validators.values.every((value) => value == true);
+  final supabase = Supabase.instance.client;
+  final SessionController sessionController = Get.find<SessionController>();
+
+  late ProfileUploadModel formData;
+
+  // validation용
+  String? _nicknameErrorText;
+  String? _contactErrorText;
+  bool _sessionError = false;
+
+  final _sessionKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+
+    formData = ProfileUploadModel.init();
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate() && _validate()) {
-      _formKey.currentState!.save();
-      _saveProfileToSupabase();
-    }
-  }
+  Future<void> _submit() async {
+    setState(() {
+      _nicknameErrorText = null;
+      _contactErrorText = null;
+      _sessionError = false;
+    });
 
-  Future<void> _saveProfileToSupabase() async {
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user == null) return;
+    bool hasError = false;
+
+    /** TODO: 닉네임 중복 검사 추가 */
+    if (formData.nickname.trim().isEmpty) {
+      _nicknameErrorText = '닉네임을 입력해주세요';
+      hasError = true;
+    }
+    if (formData.sessions.isEmpty) {
+      _sessionError = true;
+      hasError = true;
+    }
+    if (formData.contact.trim().isEmpty) {
+      _contactErrorText = '연락처를 입력해주세요';
+      hasError = true;
+    }
+
+    if (hasError) {
+      setState(() {});
+      if (formData.nickname.isEmpty) {
+        FocusScope.of(context).requestFocus(nickname);
+      } else if (formData.sessions.isEmpty &&
+          _sessionKey.currentContext != null) {
+        Scrollable.ensureVisible(_sessionKey.currentContext!,
+            duration: const Duration(milliseconds: 300));
+      } else if (formData.contact.isEmpty) {
+        FocusScope.of(context).requestFocus(_contactFocus);
+      }
+      return;
+    }
 
     try {
-      await Supabase.instance.client.from('profiles').insert({
-        'email': user.email,
-        'nickname': _nickname,
-        'sessions': _sessions.map((el) => el.name).toList(),
-        'contact': _contact,
-        'bio': _bio,
-        // TODO: 사진도 넣기
-      });
+      await _createProfile();
 
       if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('프로필을 등록했어요')),
+        customSnackbar('프로필 작성을 완료했습니다'),
       );
-
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const DefaultNavigation(fromIndex: 2),
-      ));
-    } catch (err) {
-      print('프로필 등록 에러: $err');
+      Navigator.pop(context, true);
+    } catch (e) {
+      print('프로필 저장 에러: $e');
+      ScaffoldMessenger.of(context).showSnackBar(customSnackbar('저장 실패: $e'));
     }
+  }
+
+  Future<void> _createProfile() async {
+    final user = sessionController.user.value;
+    final userId = user!.id;
+
+    final backgroundImageUrls = await _uploadImages(formData.backgroundImages);
+
+    await supabase.from('profiles').insert({
+      'user_id': userId,
+      'nickname': formData.nickname,
+      'sessions': formData.sessions.map((e) => e.name).toList(),
+      'contact': formData.contact,
+      'bio': formData.bio,
+      'profile_image': formData.profileImage,
+      'background_images': backgroundImageUrls,
+    });
+  }
+
+  Future<List<String>> _uploadImages(List<String> paths) async {
+    const bucket = 'images';
+    final urls = <String>[];
+
+    for (final image in paths) {
+      if (image.startsWith('http')) {
+        urls.add(image);
+        continue;
+      }
+
+      final path =
+          'profile_uploads/${DateTime.now().millisecondsSinceEpoch}-${image.split('/').last}';
+      final res = await supabase.storage.from(bucket).upload(path, File(image));
+      final filePath = res.replaceFirst('$bucket/', '');
+      final url = supabase.storage.from(bucket).getPublicUrl(filePath);
+
+      urls.add(url);
+    }
+
+    return urls;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme:
-            IconThemeData(color: ColorSeed.boldOrangeStrong.color, size: 20),
-        shape: Border(
-            bottom:
-                BorderSide(color: ColorSeed.boldOrangeStrong.color, width: 1)),
         title: Text(
-          '프로필 작성',
+          '프로필 작성하기',
           style: TextStyle(
               fontSize: 16,
               color: ColorSeed.boldOrangeStrong.color,
               fontWeight: FontWeight.w500),
         ),
-        backgroundColor: const Color(0xffF2F2F2),
+        backgroundColor: ColorSeed.boldOrangeLight.color,
+        elevation: 0,
+        iconTheme:
+            IconThemeData(color: ColorSeed.boldOrangeStrong.color, size: 20),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: TextInput(
-                    label: '닉네임',
-                    isRequired: true,
-                    placeholder: '닉네임을 입력하세요',
-                    onChanged: (value) {
-                      _validators[ProfileRequiredEnum.nickname] = true;
-                      _nickname = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '닉네임을 입력하세요';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const CustomForm(
-                        label: '세션',
-                        isRequired: true,
-                        subTitle: '다룰 수 있는 세션을 모두 선택해주세요!'),
-                    if (_validators[ProfileRequiredEnum.sessions] == false)
-                      const Text(
-                        '세션을 선택해주세요',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                  ],
-                ),
-                SessionSelector(
-                  selectedSessions: _sessions,
-                  onChange: (session) {
-                    setState(() {
-                      if (_sessions.contains(session)) {
-                        _sessions.remove(session);
-                      } else {
-                        _sessions.add(session);
-                      }
-                      _validators[ProfileRequiredEnum.sessions] = true;
-                    });
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: TextInput(
-                    label: '연락처',
-                    placeholder: '연락처를 입력하세요',
-                    onChanged: (value) {
-                      _contact = value;
-                    },
-                    keyboardType: TextInputType.phone,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextInput(
-                  label: '자기소개',
-                  onChanged: (value) {
-                    _bio = value;
-                  },
-                  keyboardType: TextInputType.multiline,
-                  height: 96,
-                ),
-                const SizedBox(height: 30),
-                WideButton(
-                  // TODO: 처음 온 건지, 나중에 온 건지에 따라 cta text 구분하기
-                  text: 'JAM 시작하기!',
-                  onPressed: _submit,
-                ),
-              ],
+        child: Column(
+          children: [
+            Container(
+              height: 483 - kToolbarHeight - MediaQuery.of(context).padding.top,
+              color: ColorSeed.boldOrangeLight.color,
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
+              child: Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextInput(
+                          label: '닉네임',
+                          focusNode: nickname,
+                          initialValue: formData.nickname,
+                          isRequired: true,
+                          errorText: _nicknameErrorText,
+                          onChanged: (value) {
+                            setState(() {
+                              formData.nickname = value;
+                              _nicknameErrorText = null;
+                            });
+                          },
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        CustomForm(
+                          key: _sessionKey,
+                          label: '세션',
+                          subTitle: '다룰 수 있는 세션을 모두 선택해주세요',
+                          isRequired: true,
+                          content: SessionSelector(
+                            selectedSessions: formData.sessions,
+                            onChange: (session) {
+                              setState(() {
+                                if (formData.sessions.contains(session)) {
+                                  formData.sessions.remove(session);
+                                } else {
+                                  formData.sessions.add(session);
+                                }
+                                _sessionError = false;
+                              });
+                            },
+                          ),
+                        ),
+                        if (_sessionError)
+                          const FormErrorMessage(message: '1개 이상 선택해주세요'),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        CustomForm(
+                          label: '연락처',
+                          isRequired: true,
+                          subTitle: '카카오톡 오픈채팅방 링크, SNS 계정 등 공개 가능한 연락처를 적어주세요',
+                          content: TextInput(
+                            focusNode: _contactFocus,
+                            initialValue: formData.contact,
+                            errorText: _contactErrorText,
+                            onChanged: (value) {
+                              setState(() {
+                                formData.contact = value;
+                                _contactErrorText = null;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        CustomForm(
+                          label: '자기소개',
+                          subTitle: '50자 이내로 작성해주세요',
+                          content: TextInput(
+                            initialValue: formData.bio,
+                            onChanged: (value) {
+                              formData.bio = value;
+                            },
+                            keyboardType: TextInputType.multiline,
+                            height: 96,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        WideButton(
+                          text: '작성하기',
+                          onPressed: _submit,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
