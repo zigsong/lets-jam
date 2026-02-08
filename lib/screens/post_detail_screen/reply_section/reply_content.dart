@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/reply_model.dart';
-import 'package:lets_jam/models/user_model.dart';
+import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/date_parser.dart';
@@ -24,7 +24,7 @@ class _ReplyContentState extends State<ReplyContent> {
   final supabase = Supabase.instance.client;
 
   final SessionController sessionController = Get.find<SessionController>();
-  late Future<UserModel> _author;
+  late Future<ProfileModel> _author;
   late String _editingValue;
 
   bool? isMyReply;
@@ -37,15 +37,15 @@ class _ReplyContentState extends State<ReplyContent> {
     _editingValue = widget.reply.content;
   }
 
-  Future<UserModel> _fetchUserById() async {
+  Future<ProfileModel> _fetchUserById() async {
     try {
       final response = await supabase
-          .from('users')
+          .from('profiles')
           .select('*')
           .eq('id', widget.reply.userId)
           .single();
 
-      final author = UserModel.fromJson(response);
+      final author = ProfileModel.fromJson(response);
 
       setState(() {
         isMyReply = author == sessionController.user.value;

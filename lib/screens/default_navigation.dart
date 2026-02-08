@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lets_jam/controllers/profile_controller.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 
 import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
+import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
 import 'package:lets_jam/screens/upload_screen/upload_screen.dart';
@@ -25,7 +25,6 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
   int _selectedIndex = 0;
   final bool _isBottomSheetOpen = false;
   final SessionController sessionController = Get.find<SessionController>();
-  final ProfileController profileController = Get.find<ProfileController>();
 
   @override
   void initState() {
@@ -54,12 +53,16 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
   }
 
   void _onProfileButtonTapped() {
-    if (profileController.hasProfile.value == false) {
+    if (sessionController.hasProfile.value == false) {
       showModal(
         context: context,
         desc: '프로필 작성 후에 이용할 수 있어요.\n프로필을 작성하러 갈까요?',
         confirmText: '작성하기',
-        onConfirm: () {},
+        onConfirm: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const ProfileUploadScreen(),
+          ));
+        },
         cancelText: '다음에 할게요',
       );
     } else {

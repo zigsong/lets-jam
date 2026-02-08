@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
-import 'package:lets_jam/screens/signup_screen/signup_screen.dart';
+import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -105,8 +105,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     text: '프로필 작성하고 시작하기',
                     onPressed: () {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) =>
-                              SignupScreen(user: widget.user)));
+                          builder: (context) => const ProfileUploadScreen()));
                     }),
                 TextButton(
                   onPressed: () {

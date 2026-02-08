@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
-import 'package:lets_jam/models/user_model.dart';
+import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/post_detail_screen/reply_section/reply_section.dart';
 import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
@@ -16,7 +16,6 @@ import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/post_like_button.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/util_button.dart';
-import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PostDetailScreen extends StatefulWidget {
@@ -35,7 +34,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   late Future<PostModel> _post;
 
   final SessionController sessionController = Get.find<SessionController>();
-  late Future<UserModel> _author;
+  late Future<ProfileModel> _author;
 
   bool? isMyPost;
   bool _scrolledPastThreshold = false;
@@ -54,15 +53,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     super.dispose();
   }
 
-  Future<UserModel> _fetchUserById() async {
+  Future<ProfileModel> _fetchUserById() async {
     try {
       final response = await supabase
-          .from('users')
+          .from('profiles')
           .select('*')
           .eq('id', widget.userId)
           .single();
 
-      final author = UserModel.fromJson(response);
+      final author = ProfileModel.fromJson(response);
 
       setState(() {
         isMyPost = author == sessionController.user.value;
@@ -501,7 +500,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
   const PostDetailAuthorInfo(
       {super.key, required this.user, required this.contact});
 
-  final UserModel user;
+  final ProfileModel user;
   final String contact;
 
   @override
