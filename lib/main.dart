@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:lets_jam/controllers/profile_controller.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/splash_screen.dart';
@@ -33,7 +32,6 @@ Future<void> main() async {
 
   /** ExploreFilterController도 이곳에서 initialize하기 */
   Get.put(SessionController());
-  Get.put(ProfileController());
 
   WidgetsFlutterBinding.ensureInitialized();
 
