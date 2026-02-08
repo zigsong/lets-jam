@@ -180,7 +180,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState ==
                                             ConnectionState.waiting) {
-                                          return const CircularProgressIndicator();
+                                          return const SizedBox.shrink();
                                         } else if (snapshot.hasError ||
                                             !snapshot.hasData) {
                                           return const Text(

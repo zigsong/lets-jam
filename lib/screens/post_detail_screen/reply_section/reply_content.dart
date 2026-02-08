@@ -95,7 +95,7 @@ class _ReplyContentState extends State<ReplyContent> {
       future: _author,
       builder: (context, snapshot) {
         if (snapshot.hasError || !snapshot.hasData) {
-          return const CircularProgressIndicator();
+          return const SizedBox.shrink();
         }
 
         final author = snapshot.data!;

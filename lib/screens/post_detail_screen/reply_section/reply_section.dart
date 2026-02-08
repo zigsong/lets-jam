@@ -49,7 +49,7 @@ class _ReplySectionState extends State<ReplySection> {
       future: _replys,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const SizedBox.shrink();
         }
 
         final replys = snapshot.data!;
