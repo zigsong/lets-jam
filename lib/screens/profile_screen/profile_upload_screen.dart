@@ -108,6 +108,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
 
     try {
       await _createProfile();
+      sessionController.hasProfile.value = true;
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -123,6 +124,9 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   Future<void> _createProfile() async {
     final userId = supabase.auth.currentUser!.id;
 
+    final profileImageUrl = formData.profileImage.isNotEmpty
+        ? (await _uploadImages([formData.profileImage])).first
+        : '';
     final backgroundImageUrls = await _uploadImages(formData.backgroundImages);
 
     await supabase.from('profiles').insert({
@@ -131,7 +135,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       'sessions': formData.sessions.map((e) => e.name).toList(),
       'contact': formData.contact,
       'bio': formData.bio,
-      'profile_image': formData.profileImage,
+      'profile_image': profileImageUrl,
       'background_images': backgroundImageUrls,
     });
   }

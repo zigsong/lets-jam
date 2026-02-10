@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/post_model.dart';
+import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/screens/profile_screen/gradient_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
@@ -24,13 +27,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final List<SessionEnum> mockSessions = [
-    SessionEnum.vocalF,
-    SessionEnum.drum,
-    SessionEnum.keyboard
-  ];
+  final SessionController sessionController = Get.find<SessionController>();
 
   bool isMyProfile = false;
+
+  ProfileModel? get profile => sessionController.user.value;
 
   void onClickShareCourtUrl() {
     // TODO: webview_flutter로 현재 링크 가져오기
@@ -40,7 +41,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      const GradientSplitScreen(),
+      GradientSplitScreen(
+        backgroundImageUrl: profile?.backgroundImages?.isNotEmpty == true
+            ? profile!.backgroundImages!.first.path
+            : null,
+      ),
       Positioned(
         top: MediaQuery.of(context).padding.top,
         left: 0,
@@ -57,14 +62,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(100)),
                   clipBehavior: Clip.antiAlias,
-                  child: Image.asset('assets/images/profile_avatar.png'),
+                  child: profile?.profileImage != null
+                      ? Image.network(profile!.profileImage!.path,
+                          fit: BoxFit.cover)
+                      : Image.asset('assets/images/profile_avatar.png'),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                const Text(
-                  '독창적인 딸기',
-                  style: TextStyle(
+                Text(
+                  profile?.nickname ?? '',
+                  style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
                       fontSize: 20),
@@ -72,11 +80,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Text('안녕하세요! 데이식스, 터치드 좋아하는 직밴 입니다\n📞 공연문의 환영!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
+                if (profile?.bio != null && profile!.bio!.isNotEmpty)
+                  Text(profile!.bio!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                      )),
                 const SizedBox(
                   height: 20,
                 ),
@@ -228,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 10,
                       ),
                       Row(
-                          children: mockSessions
+                          children: (profile?.sessions ?? [])
                               .map((session) => Padding(
                                   padding: const EdgeInsets.only(right: 8),
                                   child: Container(
@@ -266,7 +275,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 16,
                       ),
                       const Text(
-                        '작성한 글(2)',
+                        '작성한 글',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
@@ -276,48 +285,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 10,
                       ),
                       Container(height: 0.5, color: Colors.white),
-                      Column(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 13.5),
-                            child: Row(
-                              children: [
-                                PostTypeBadge(
-                                  postType: PostTypeEnum.findBand,
-                                ),
-                                SizedBox(
-                                  width: 13,
-                                ),
-                                Text(
-                                  '밴드가 로망인 1년차 베이시스트 구합니다...',
-                                  style: TextStyle(
-                                      color: Colors.white, height: 13 / 18),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(height: 0.5, color: Colors.white),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 13.5),
-                            child: Row(
-                              children: [
-                                PostTypeBadge(
-                                  postType: PostTypeEnum.findMember,
-                                ),
-                                SizedBox(
-                                  width: 13,
-                                ),
-                                Text(
-                                  '두탕뛸 수 있는 밴드 구해요 열씨미 할께영',
-                                  style: TextStyle(
-                                      color: Colors.white, height: 13 / 18),
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
+                      const SizedBox(
+                        height: 10,
                       ),
-                      Container(height: 0.5, color: Colors.white),
+                      const Text(
+                        '준비중...',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            height: 18 / 13),
+                      ),
+                      // Column(
+                      //   children: [
+                      //     const Padding(
+                      //       padding: EdgeInsets.symmetric(vertical: 13.5),
+                      //       child: Row(
+                      //         children: [
+                      //           PostTypeBadge(
+                      //             postType: PostTypeEnum.findBand,
+                      //           ),
+                      //           SizedBox(
+                      //             width: 13,
+                      //           ),
+                      //           Text(
+                      //             '밴드가 로망인 1년차 베이시스트 구합니다...',
+                      //             style: TextStyle(
+                      //                 color: Colors.white, height: 13 / 18),
+                      //           )
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     Container(height: 0.5, color: Colors.white),
+                      //     const Padding(
+                      //       padding: EdgeInsets.symmetric(vertical: 13.5),
+                      //       child: Row(
+                      //         children: [
+                      //           PostTypeBadge(
+                      //             postType: PostTypeEnum.findMember,
+                      //           ),
+                      //           SizedBox(
+                      //             width: 13,
+                      //           ),
+                      //           Text(
+                      //             '두탕뛸 수 있는 밴드 구해요 열씨미 할께영',
+                      //             style: TextStyle(
+                      //                 color: Colors.white, height: 13 / 18),
+                      //           )
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // Container(height: 0.5, color: Colors.white),
                     ],
                   ),
                 )

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class GradientSplitScreen extends StatelessWidget {
-  const GradientSplitScreen({super.key});
+  final String? backgroundImageUrl;
+
+  const GradientSplitScreen({super.key, this.backgroundImageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +21,15 @@ class GradientSplitScreen extends StatelessWidget {
             left: 0,
             right: 0,
             height: halfHeight,
-            child: Image.asset(
-              'assets/images/asdf.jpg',
-              fit: BoxFit.cover,
-            ),
+            child: backgroundImageUrl != null && backgroundImageUrl!.isNotEmpty
+                ? Image.network(
+                    backgroundImageUrl!,
+                    fit: BoxFit.cover,
+                  )
+                : Image.asset(
+                    'assets/images/asdf.jpg',
+                    fit: BoxFit.cover,
+                  ),
           ),
 
           // 2. 이미지 위에 검정색 그라데이션 덮기 (블렌딩 효과)
