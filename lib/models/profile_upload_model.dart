@@ -15,4 +15,9 @@ class ProfileUploadModel {
         bio = '',
         profileImage = '',
         backgroundImages = [];
+
+  @override
+  String toString() {
+    return '{"nickname": "$nickname", "sessions": $sessions, "contact": "$contact", "bio": "$bio", "profileImage": "$profileImage", "backgroundImages": $backgroundImages}';
+  }
 }

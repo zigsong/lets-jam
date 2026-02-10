@@ -4,7 +4,6 @@ import 'package:lets_jam/models/session_enum.dart';
 class ProfileModel {
   /// Required Fields
   late String id;
-  late String email;
   late String nickname;
   late List<SessionEnum> sessions = [];
   late String contact;
@@ -16,7 +15,6 @@ class ProfileModel {
 
   ProfileModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        email = json['email'],
         nickname = json['nickname'],
         sessions = (json['sessions'] as List<dynamic>?)
                 ?.map((e) => SessionEnum.values
@@ -34,9 +32,6 @@ class ProfileModel {
 
   @override
   bool operator ==(Object other) {
-    return other is ProfileModel && other.id == id && other.email == email;
+    return other is ProfileModel && other.id == id;
   }
-
-  @override
-  int get hashCode => id.hashCode ^ email.hashCode;
 }

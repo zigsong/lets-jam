@@ -121,8 +121,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   }
 
   Future<void> _createProfile() async {
-    final user = sessionController.user.value;
-    final userId = user!.id;
+    final userId = supabase.auth.currentUser!.id;
 
     final backgroundImageUrls = await _uploadImages(formData.backgroundImages);
 

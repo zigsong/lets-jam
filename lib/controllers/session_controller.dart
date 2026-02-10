@@ -30,10 +30,8 @@ class SessionController extends GetxController {
       if (session == null) return;
 
       final sessionUser = session.user;
-      final data = await supabase
-          .from('profiles')
-          .select()
-          .eq('email', sessionUser.email!);
+      final data =
+          await supabase.from('profiles').select().eq('id', sessionUser.id);
 
       if (data.isNotEmpty) {
         user.value = ProfileModel.fromJson(data[0]);
@@ -64,10 +62,8 @@ class SessionController extends GetxController {
         if (event == AuthChangeEvent.signedIn) {
           isLoggedIn.value = true;
 
-          final jamUser = await supabase
-              .from('profiles')
-              .select()
-              .eq('email', sbUser.email!);
+          final jamUser =
+              await supabase.from('profiles').select().eq('id', sbUser.id);
 
           if (jamUser.isNotEmpty) {
             user.value = ProfileModel.fromJson(jamUser[0]);
