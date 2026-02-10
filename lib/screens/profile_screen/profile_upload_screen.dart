@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/models/profile_upload_model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
@@ -39,6 +40,27 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   bool _sessionError = false;
 
   final _sessionKey = GlobalKey();
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickProfileImage() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        formData.profileImage = pickedFile.path;
+      });
+    }
+  }
+
+  Future<void> _pickBackgroundImage() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        formData.backgroundImages = [pickedFile.path];
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -105,7 +127,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
     final backgroundImageUrls = await _uploadImages(formData.backgroundImages);
 
     await supabase.from('profiles').insert({
-      'user_id': userId,
+      'id': userId,
       'nickname': formData.nickname,
       'sessions': formData.sessions.map((e) => e.name).toList(),
       'contact': formData.contact,
@@ -140,6 +162,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
           '프로필 작성하기',
@@ -148,7 +171,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
               color: ColorSeed.boldOrangeStrong.color,
               fontWeight: FontWeight.w500),
         ),
-        backgroundColor: ColorSeed.boldOrangeLight.color,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme:
             IconThemeData(color: ColorSeed.boldOrangeStrong.color, size: 20),
@@ -157,8 +180,83 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
         child: Column(
           children: [
             Container(
-              height: 483 - kToolbarHeight - MediaQuery.of(context).padding.top,
-              color: ColorSeed.boldOrangeLight.color,
+              height: 483,
+              decoration: BoxDecoration(
+                color: ColorSeed.boldOrangeLight.color,
+                image: formData.backgroundImages.isNotEmpty
+                    ? DecorationImage(
+                        image: FileImage(File(formData.backgroundImages.first)),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: GestureDetector(
+                        onTap: _pickProfileImage,
+                        child: SizedBox(
+                          width: 102,
+                          height: 102,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              formData.profileImage.isEmpty
+                                  ? Image.asset(
+                                      'assets/images/profile_avatar.png',
+                                      width: 102,
+                                      height: 102,
+                                    )
+                                  : ClipOval(
+                                      child: Image.file(
+                                        File(formData.profileImage),
+                                        width: 102,
+                                        height: 102,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: Image.asset(
+                                  'assets/icons/profile_image_edit.png',
+                                  width: 32,
+                                  height: 32,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 20,
+                    right: 26,
+                    child: GestureDetector(
+                      onTap: _pickBackgroundImage,
+                      child: Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: ColorSeed.boldOrangeRegular.color,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            'assets/icons/white_camera.png',
+                            width: 26,
+                            height: 26,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),

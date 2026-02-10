@@ -65,7 +65,7 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
                         width: 20,
                         height: 20,
                         child: Image.asset(
-                          'assets/icons/upload_camera.png',
+                          'assets/icons/grey_camera.png',
                         ),
                       ),
                       Text(
