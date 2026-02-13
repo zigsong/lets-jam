@@ -1,4 +1,3 @@
-import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/models/session_enum.dart';
 
 class ProfileModel {
@@ -10,8 +9,8 @@ class ProfileModel {
 
   /// Optional Fields
   late String? bio;
-  late XFile? profileImage;
-  late List<XFile>? backgroundImages = [];
+  late String? profileImage;
+  late List<String>? backgroundImages = [];
 
   ProfileModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -22,16 +21,11 @@ class ProfileModel {
                 .toList() ??
             [],
         contact = json['contact'] ?? '',
-        profileImage =
-            json['profile_image'] != null ? XFile(json['profile_image']) : null,
+        profileImage = json['profile_image'] as String?,
         backgroundImages = (json['background_images'] as List<dynamic>?)
-                ?.map((image) => XFile(image as String))
+                ?.map((image) => image as String)
                 .toList() ??
             [],
         bio = json['bio'];
 
-  @override
-  bool operator ==(Object other) {
-    return other is ProfileModel && other.id == id;
-  }
 }

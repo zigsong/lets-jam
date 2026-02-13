@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
-import 'package:lets_jam/models/post_model.dart';
-import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/profile_screen/gradient_screen.dart';
+import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
-import 'package:lets_jam/widgets/post_type_badge.dart';
-import 'package:lets_jam/widgets/util_button.dart';
+import 'package:lets_jam/utils/custom_snackbar.dart';
+import 'package:lets_jam/widgets/modal.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 Map<SessionEnum, String> sessionImagesActive = {
   SessionEnum.vocalM: 'assets/images/session_selector/vocal_m_active.png',
@@ -28,22 +29,39 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final SessionController sessionController = Get.find<SessionController>();
+  final supabase = Supabase.instance.client;
 
-  bool isMyProfile = false;
-
-  ProfileModel? get profile => sessionController.user.value;
+  bool isMyProfile = true;
 
   void onClickShareCourtUrl() {
     // TODO: webview_flutter로 현재 링크 가져오기
     SharePlus.instance.share(ShareParams(text: 'JAM에서 공유하기'));
   }
 
+  Future<void> _deleteProfile(String id) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    try {
+      await supabase.from('profiles').delete().eq('id', id);
+      await sessionController.loadUser();
+
+      scaffoldMessenger.showSnackBar(customSnackbar("프로필을 삭제했어요"));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const DefaultNavigation()));
+    } catch (error) {
+      print('프로필 삭제 에러 : $error');
+      scaffoldMessenger.showSnackBar(customSnackbar('프로필 삭제에 실패했어요'));
+      throw Error;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
+    final profile = sessionController.user.value;
+
+    return (Stack(children: [
       GradientSplitScreen(
         backgroundImageUrl: profile?.backgroundImages?.isNotEmpty == true
-            ? profile!.backgroundImages!.first.path
+            ? profile!.backgroundImages!.first
             : null,
       ),
       Positioned(
@@ -63,8 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       BoxDecoration(borderRadius: BorderRadius.circular(100)),
                   clipBehavior: Clip.antiAlias,
                   child: profile?.profileImage != null
-                      ? Image.network(profile!.profileImage!.path,
-                          fit: BoxFit.cover)
+                      ? Image.network(profile!.profileImage!, fit: BoxFit.cover)
                       : Image.asset('assets/images/profile_avatar.png'),
                 ),
                 const SizedBox(
@@ -81,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 10,
                 ),
                 if (profile?.bio != null && profile!.bio!.isNotEmpty)
-                  Text(profile!.bio!,
+                  Text(profile.bio!,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
@@ -144,75 +161,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     if (isMyProfile) ...[
                       const SizedBox(width: 10),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 10),
-                          minimumSize: const Size(0, 35),
-                          elevation: 0,
-                          backgroundColor: Colors.transparent,
-                          foregroundColor: Colors.white,
-                          side: BorderSide(
-                              color: ColorSeed.boldOrangeStrong.color),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                      GestureDetector(
+                        onTap: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  ProfileUploadScreen(profile: profile),
+                            ),
+                          );
+                          if (result == true) {
+                            setState(() {});
+                          }
+                        },
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color: ColorSeed.boldOrangeStrong.color),
                           ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.asset(
-                              'assets/icons/reply_edit.png',
+                          child: Center(
+                            child: Image.asset(
+                              'assets/icons/edit_orange.png',
                               width: 15,
                               height: 15,
-                              color: ColorSeed.boldOrangeStrong.color,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '수정',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 13,
-                                  color: ColorSeed.boldOrangeStrong.color),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                       const SizedBox(width: 10),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 10),
-                          minimumSize: const Size(0, 35),
-                          elevation: 0,
-                          backgroundColor: Colors.transparent,
-                          foregroundColor: Colors.white,
-                          side: BorderSide(
-                              color: ColorSeed.boldOrangeStrong.color),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                      GestureDetector(
+                        onTap: () {
+                          showModal(
+                              context: context,
+                              title: '프로필을 삭제할까요?',
+                              desc: '프로필이 없으면 글과 댓글을 쓸 수 없어요',
+                              confirmText: '삭제',
+                              onConfirm: () {
+                                _deleteProfile(profile!.id);
+                              },
+                              cancelText: '취소',
+                              onCancel: null);
+                        },
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color: ColorSeed.boldOrangeStrong.color),
                           ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.asset(
-                              'assets/icons/reply_delete.png',
+                          child: Center(
+                            child: Image.asset(
+                              'assets/icons/delete_orange.png',
                               width: 15,
                               height: 15,
-                              color: ColorSeed.boldOrangeStrong.color,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '삭제',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 13,
-                                  color: ColorSeed.boldOrangeStrong.color),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ],
@@ -345,30 +352,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-      Positioned(
-        top: MediaQuery.of(context).padding.top + 10,
-        right: 16,
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              isMyProfile = !isMyProfile;
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.8),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              isMyProfile ? '다른 사람 프로필로 전환(테스트)' : '내 프로필로 전환(테스트)',
-              style: const TextStyle(
-                fontSize: 12,
-              ),
-            ),
-          ),
-        ),
-      ),
-    ]);
+    ]));
   }
 }

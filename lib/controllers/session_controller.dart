@@ -21,10 +21,10 @@ class SessionController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await _loadUser();
+    await loadUser();
   }
 
-  Future<void> _loadUser() async {
+  Future<void> loadUser() async {
     try {
       final session = supabase.auth.currentSession;
       if (session == null) return;
@@ -35,7 +35,11 @@ class SessionController extends GetxController {
 
       if (data.isNotEmpty) {
         user.value = ProfileModel.fromJson(data[0]);
+        user.refresh();
         hasProfile.value = true;
+      } else {
+        user.refresh();
+        hasProfile.value = false;
       }
 
       /** TODO: 로컬 저장 */

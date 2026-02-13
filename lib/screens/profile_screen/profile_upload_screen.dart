@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/models/profile_upload_model.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lets_jam/models/profile_model.dart';
+import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
@@ -14,8 +16,11 @@ import 'package:lets_jam/widgets/session_selector.dart';
 import 'package:lets_jam/widgets/form_error_message.dart';
 
 class ProfileUploadScreen extends StatefulWidget {
+  final ProfileModel? profile;
+
   const ProfileUploadScreen({
     super.key,
+    this.profile,
   });
 
   @override
@@ -62,11 +67,24 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
     }
   }
 
+  bool get isEditMode => widget.profile != null;
+
   @override
   void initState() {
     super.initState();
 
-    formData = ProfileUploadModel.init();
+    if (widget.profile != null) {
+      final p = widget.profile!;
+      formData = ProfileUploadModel.init()
+        ..nickname = p.nickname
+        ..sessions = List.from(p.sessions)
+        ..contact = p.contact
+        ..bio = p.bio ?? ''
+        ..profileImage = p.profileImage ?? ''
+        ..backgroundImages = List.from(p.backgroundImages ?? []);
+    } else {
+      formData = ProfileUploadModel.init();
+    }
   }
 
   Future<void> _submit() async {
@@ -107,14 +125,20 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
     }
 
     try {
-      await _createProfile();
-      sessionController.hasProfile.value = true;
+      if (isEditMode) {
+        await _updateProfile();
+      } else {
+        await _createProfile();
+      }
+      await sessionController.loadUser();
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        customSnackbar('프로필 작성을 완료했습니다'),
+        customSnackbar(isEditMode ? '프로필을 수정했습니다' : '프로필 작성을 완료했습니다'),
       );
-      Navigator.pop(context, true);
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const ProfileScreen(),
+      ));
     } catch (e) {
       print('프로필 저장 에러: $e');
       ScaffoldMessenger.of(context).showSnackBar(customSnackbar('저장 실패: $e'));
@@ -138,6 +162,22 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       'profile_image': profileImageUrl,
       'background_images': backgroundImageUrls,
     });
+  }
+
+  Future<void> _updateProfile() async {
+    final profileImageUrl = formData.profileImage.isNotEmpty
+        ? (await _uploadImages([formData.profileImage])).first
+        : '';
+    final backgroundImageUrls = await _uploadImages(formData.backgroundImages);
+
+    await supabase.from('profiles').update({
+      'nickname': formData.nickname,
+      'sessions': formData.sessions.map((e) => e.name).toList(),
+      'contact': formData.contact,
+      'bio': formData.bio,
+      'profile_image': profileImageUrl,
+      'background_images': backgroundImageUrls,
+    }).eq('id', widget.profile!.id);
   }
 
   Future<List<String>> _uploadImages(List<String> paths) async {
@@ -168,7 +208,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
-          '프로필 작성하기',
+          isEditMode ? '프로필 수정하기' : '프로필 작성하기',
           style: TextStyle(
               fontSize: 16,
               color: ColorSeed.boldOrangeStrong.color,
@@ -188,7 +228,10 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                 color: ColorSeed.boldOrangeLight.color,
                 image: formData.backgroundImages.isNotEmpty
                     ? DecorationImage(
-                        image: FileImage(File(formData.backgroundImages.first)),
+                        image: formData.backgroundImages.first
+                                .startsWith('http')
+                            ? NetworkImage(formData.backgroundImages.first)
+                            : FileImage(File(formData.backgroundImages.first)),
                         fit: BoxFit.cover,
                       )
                     : null,
@@ -214,12 +257,20 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                                       height: 102,
                                     )
                                   : ClipOval(
-                                      child: Image.file(
-                                        File(formData.profileImage),
-                                        width: 102,
-                                        height: 102,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      child: formData.profileImage
+                                              .startsWith('http')
+                                          ? Image.network(
+                                              formData.profileImage,
+                                              width: 102,
+                                              height: 102,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.file(
+                                              File(formData.profileImage),
+                                              width: 102,
+                                              height: 102,
+                                              fit: BoxFit.cover,
+                                            ),
                                     ),
                               Positioned(
                                 top: 0,
@@ -344,7 +395,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                           height: 30,
                         ),
                         WideButton(
-                          text: '작성하기',
+                          text: isEditMode ? '수정하기' : '작성하기',
                           onPressed: _submit,
                         ),
                       ],

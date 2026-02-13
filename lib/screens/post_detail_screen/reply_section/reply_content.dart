@@ -114,7 +114,7 @@ class _ReplyContentState extends State<ReplyContent> {
                 clipBehavior: Clip.antiAlias,
                 child: author.profileImage != null
                     ? Image.network(
-                        author.profileImage!.path,
+                        author.profileImage!,
                         width: MediaQuery.of(context).size.width,
                         fit: BoxFit.cover,
                       )
@@ -153,7 +153,7 @@ class _ReplyContentState extends State<ReplyContent> {
                                     IconButton(
                                         text: '수정',
                                         leftIcon: Image.asset(
-                                          'assets/icons/reply_edit.png',
+                                          'assets/icons/edit_grey.png',
                                           width: 15,
                                           height: 15,
                                         ),

@@ -8,7 +8,7 @@ import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
-import 'package:lets_jam/screens/upload_screen/upload_screen.dart';
+import 'package:lets_jam/screens/upload_screen/upload_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/bottom_app_bar_item.dart';
 import 'package:lets_jam/widgets/modal.dart';
@@ -166,7 +166,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                         } else {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const UploadScreen(),
+                              builder: (context) => const UploadPostScreen(),
                             ),
                           );
                         }

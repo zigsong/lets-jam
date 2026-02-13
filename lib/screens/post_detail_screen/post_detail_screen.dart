@@ -527,7 +527,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
                   ),
                   child: user.profileImage != null
                       ? Image.network(
-                          user.profileImage!.path,
+                          user.profileImage!,
                           width: MediaQuery.of(context).size.width,
                           fit: BoxFit.cover,
                         )
