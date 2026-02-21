@@ -64,7 +64,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       final author = ProfileModel.fromJson(response);
 
       setState(() {
-        isMyPost = author == sessionController.user.value;
+        isMyPost = author.id == sessionController.user.value?.id;
       });
 
       return author;
@@ -200,7 +200,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    PostDetailInfo(post: post),
+                                    if ((post.postType ==
+                                                PostTypeEnum.findMember &&
+                                            post.sessions.isNotEmpty) ||
+                                        (post.regions?.isNotEmpty ?? false) ||
+                                        (post.tags?.isNotEmpty ?? false))
+                                      PostDetailInfo(post: post),
                                     const SizedBox(
                                       height: 20,
                                     ),
@@ -301,7 +306,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                             onPressed: () {
                                               showModal(
                                                 context: context,
-                                                title: '게시글 삭제',
+                                                title: '게시글을 삭제할까요?',
                                                 desc:
                                                     '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
                                                 confirmText: '삭제',

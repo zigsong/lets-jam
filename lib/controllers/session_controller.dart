@@ -33,6 +33,8 @@ class SessionController extends GetxController {
       final data =
           await supabase.from('profiles').select().eq('id', sessionUser.id);
 
+      isLoggedIn.value = true;
+
       if (data.isNotEmpty) {
         user.value = ProfileModel.fromJson(data[0]);
         user.refresh();

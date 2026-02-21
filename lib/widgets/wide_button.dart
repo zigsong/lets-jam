@@ -4,15 +4,20 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 class WideButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
+  final bool disabled;
 
-  const WideButton({super.key, required this.text, required this.onPressed});
+  const WideButton(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.disabled = false});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: disabled ? null : onPressed,
         style: ElevatedButton.styleFrom(
           elevation: 0,
           backgroundColor: ColorSeed.boldOrangeStrong.color,

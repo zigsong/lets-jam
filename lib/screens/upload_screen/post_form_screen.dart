@@ -44,6 +44,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
 
   late FindSessionUploadModel formData;
   PostTypeEnum? postType;
+  bool _postTypeSelected = false;
 
   // validation용
   String? _titleErrorText;
@@ -56,6 +57,12 @@ class _PostFormScreenState extends State<PostFormScreen> {
   final _postTypeKey = GlobalKey();
   final _sessionKey = GlobalKey();
 
+  bool get _isSubmitDisabled =>
+      !_postTypeSelected ||
+      formData.title.trim().isEmpty ||
+      formData.sessions.isEmpty ||
+      formData.contact.trim().isEmpty;
+
   @override
   void initState() {
     super.initState();
@@ -63,14 +70,17 @@ class _PostFormScreenState extends State<PostFormScreen> {
     if (widget.mode == PostFormMode.edit && widget.post != null) {
       postType = widget.post!.postType;
       formData = FindSessionUploadModel.fromPost(widget.post!);
+      _postTypeSelected = true;
     } else {
       formData = FindSessionUploadModel.init();
+      _postTypeSelected = false;
     }
   }
 
   void _selectUploadType(PostTypeEnum type) {
     setState(() {
       postType = type;
+      _postTypeSelected = true;
       _postTypeError = false;
 
       if (type == PostTypeEnum.findBand) {
@@ -101,10 +111,6 @@ class _PostFormScreenState extends State<PostFormScreen> {
     }
     if (formData.sessions.isEmpty) {
       _sessionError = true;
-      hasError = true;
-    }
-    if (formData.regions.isEmpty) {
-      _regionError = true;
       hasError = true;
     }
     if (formData.contact.trim().isEmpty) {
@@ -225,7 +231,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.mode == PostFormMode.create ? '글쓰기' : '게시글 수정',
+          widget.mode == PostFormMode.create ? '글쓰기' : '수정하기',
           style: TextStyle(
               fontSize: 16,
               color: ColorSeed.boldOrangeStrong.color,
@@ -412,8 +418,10 @@ class _PostFormScreenState extends State<PostFormScreen> {
                       height: 30,
                     ),
                     WideButton(
-                      text: '게시하기',
+                      text:
+                          widget.mode == PostFormMode.create ? '게시하기' : '수정하기',
                       onPressed: _submit,
+                      disabled: _isSubmitDisabled,
                     ),
                   ],
                 ),
