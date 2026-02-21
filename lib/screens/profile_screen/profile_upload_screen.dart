@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -43,6 +44,8 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   String? _nicknameErrorText;
   String? _contactErrorText;
   bool _sessionError = false;
+  bool _nicknameDuplicated = false;
+  Timer? _nicknameDebounce;
 
   final _sessionKey = GlobalKey();
   final ImagePicker _picker = ImagePicker();
@@ -70,6 +73,34 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   bool get isEditMode => widget.profile != null;
 
   @override
+  void dispose() {
+    _nicknameDebounce?.cancel();
+    nickname.dispose();
+    _contactFocus.dispose();
+    super.dispose();
+  }
+
+  void _onNicknameChanged(String value) {
+    setState(() {
+      formData.nickname = value;
+      _nicknameErrorText = null;
+      _nicknameDuplicated = false;
+    });
+
+    if (value.trim().isEmpty) return;
+
+    _nicknameDebounce?.cancel();
+    _nicknameDebounce = Timer(const Duration(milliseconds: 500), () async {
+      final isDuplicate = await _isNicknameDuplicate(value);
+      if (!mounted) return;
+      setState(() {
+        _nicknameDuplicated = isDuplicate;
+        _nicknameErrorText = isDuplicate ? '사용중인 닉네임이에요' : null;
+      });
+    });
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -91,6 +122,18 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
     }
   }
 
+  Future<bool> _isNicknameDuplicate(String nickname) async {
+    var query =
+        supabase.from('profiles').select('id').eq('nickname', nickname.trim());
+
+    if (isEditMode) {
+      query = query.neq('id', widget.profile!.id);
+    }
+
+    final result = await query;
+    return (result as List).isNotEmpty;
+  }
+
   Future<void> _submit() async {
     setState(() {
       _nicknameErrorText = null;
@@ -100,9 +143,11 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
 
     bool hasError = false;
 
-    /** TODO: 닉네임 중복 검사 추가 */
     if (formData.nickname.trim().isEmpty) {
       _nicknameErrorText = '닉네임을 입력해주세요';
+      hasError = true;
+    } else if (_nicknameDuplicated) {
+      _nicknameErrorText = '사용중인 닉네임이에요';
       hasError = true;
     }
     if (formData.sessions.isEmpty) {
@@ -116,6 +161,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
 
     if (hasError) {
       setState(() {});
+      if (!mounted) return;
       if (formData.nickname.isEmpty) {
         FocusScope.of(context).requestFocus(nickname);
       } else if (formData.sessions.isEmpty &&
@@ -149,6 +195,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       }
     } catch (e) {
       print('프로필 저장 에러: $e');
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(customSnackbar('저장 실패: $e'));
     }
   }
@@ -336,12 +383,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                           initialValue: formData.nickname,
                           isRequired: true,
                           errorText: _nicknameErrorText,
-                          onChanged: (value) {
-                            setState(() {
-                              formData.nickname = value;
-                              _nicknameErrorText = null;
-                            });
-                          },
+                          onChanged: _onNicknameChanged,
                         ),
                         const SizedBox(
                           height: 30,
