@@ -11,16 +11,24 @@ import 'package:url_launcher/url_launcher.dart';
 class SettingItem {
   final String title;
   final String? subtitle;
+  final String? info;
   final String? url;
   final VoidCallback? onClick;
   final bool showArrow;
+  final Color? textColor;
+  final Color? arrowColor;
+  final FontWeight? titleFontWeight;
 
   const SettingItem({
     required this.title,
     this.subtitle,
+    this.info,
     this.url,
     this.onClick,
     this.showArrow = true,
+    this.textColor,
+    this.arrowColor,
+    this.titleFontWeight,
   });
 }
 
@@ -34,8 +42,20 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   String _version = '';
   final SessionController sessionController = Get.find<SessionController>();
+  late Worker _loginWorker;
 
   List<SettingItem> get settings => [
+        if (!sessionController.isLoggedIn.value)
+          SettingItem(
+            title: '로그인/회원가입하기',
+            subtitle: '로그인하고 JAM의 기능을 모두 즐겨보세요!',
+            textColor: ColorSeed.boldOrangeStrong.color,
+            arrowColor: ColorSeed.boldOrangeStrong.color,
+            titleFontWeight: FontWeight.w700,
+            onClick: () async {
+              await sessionController.signIn();
+            },
+          ),
         const SettingItem(
           title: '문의하기',
           url: 'https://forms.gle/6JcnqBmy8Aaim5qv6',
@@ -101,7 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         SettingItem(
           title: '앱 버전 정보',
-          subtitle: _version,
+          info: _version,
           showArrow: false,
         ),
       ];
@@ -117,6 +137,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     _loadVersion();
+    _loginWorker = ever(sessionController.isLoggedIn, (bool loggedIn) {
+      if (loggedIn && mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/home', (route) => false);
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _loginWorker.dispose();
+    super.dispose();
   }
 
   Future<void> _loadVersion() async {
@@ -149,32 +185,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
               final item = settings[index];
 
               return ListTile(
-                title: Row(
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          item.title,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: item.titleFontWeight ?? FontWeight.w500,
+                            color: item.textColor,
+                          ),
+                        ),
+                        if (item.info != null) ...[
+                          const SizedBox(width: 10),
+                          Text(
+                            item.info!,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: ColorSeed.meticulousGrayMedium.color,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    if (item.subtitle != null)
+                    if (item.subtitle != null) ...[
+                      const SizedBox(height: 4),
                       Text(
                         item.subtitle!,
                         style: TextStyle(
-                            fontSize: 13,
-                            color: ColorSeed.meticulousGrayMedium.color),
-                      )
+                          fontSize: 13,
+                          color: item.textColor != null
+                              ? item.textColor!.withOpacity(0.7)
+                              : ColorSeed.meticulousGrayMedium.color,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
                 trailing: item.showArrow
                     ? Icon(
                         Icons.arrow_forward_ios,
                         size: 12,
-                        color: ColorSeed.organizedBlackLight.color,
+                        color: item.arrowColor ??
+                            ColorSeed.organizedBlackLight.color,
                       )
                     : null,
                 onTap: () {

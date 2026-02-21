@@ -308,7 +308,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                                 context: context,
                                                 title: '게시글을 삭제할까요?',
                                                 desc:
-                                                    '삭제된 게시글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
+                                                    '삭제된 글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
                                                 confirmText: '삭제',
                                                 onConfirm: () {
                                                   _deletePost(post.id);
