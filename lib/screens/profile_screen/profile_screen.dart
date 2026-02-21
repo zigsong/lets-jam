@@ -80,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(100)),
                   clipBehavior: Clip.antiAlias,
-                  child: profile?.profileImage != null
+                  child: profile?.profileImage?.isNotEmpty == true
                       ? Image.network(profile!.profileImage!, fit: BoxFit.cover)
                       : Image.asset('assets/images/profile_avatar.png'),
                 ),
@@ -172,6 +172,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                           if (result == true) {
                             setState(() {});
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                customSnackbar('프로필을 수정했습니다'),
+                              );
+                            }
                           }
                         },
                         child: Container(
@@ -234,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        '가능한 세션',
+                        '세션',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,

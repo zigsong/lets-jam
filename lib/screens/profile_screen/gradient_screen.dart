@@ -26,10 +26,7 @@ class GradientSplitScreen extends StatelessWidget {
                     backgroundImageUrl!,
                     fit: BoxFit.cover,
                   )
-                : Image.asset(
-                    'assets/images/asdf.jpg',
-                    fit: BoxFit.cover,
-                  ),
+                : const ColoredBox(color: Colors.white),
           ),
 
           // 2. 이미지 위에 검정색 그라데이션 덮기 (블렌딩 효과)

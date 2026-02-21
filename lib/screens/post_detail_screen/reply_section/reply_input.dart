@@ -66,7 +66,7 @@ class _ReplyInputState extends State<ReplyInput> {
           height: 40,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
           clipBehavior: Clip.antiAlias,
-          child: currentUser?.profileImage != null
+          child: currentUser?.profileImage?.isNotEmpty == true
               ? Image.network(
                   currentUser!.profileImage!,
                   width: MediaQuery.of(context).size.width,

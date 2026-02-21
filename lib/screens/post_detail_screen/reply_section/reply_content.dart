@@ -112,7 +112,7 @@ class _ReplyContentState extends State<ReplyContent> {
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(100)),
                 clipBehavior: Clip.antiAlias,
-                child: author.profileImage != null
+                child: author.profileImage?.isNotEmpty == true
                     ? Image.network(
                         author.profileImage!,
                         width: MediaQuery.of(context).size.width,

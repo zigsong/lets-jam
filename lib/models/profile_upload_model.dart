@@ -5,16 +5,16 @@ class ProfileUploadModel {
   List<SessionEnum> sessions;
   String contact;
   String bio;
-  String profileImage;
-  List<String> backgroundImages;
+  String? profileImage;
+  List<String>? backgroundImages;
 
   ProfileUploadModel.init()
       : nickname = '',
         sessions = [],
         contact = '',
         bio = '',
-        profileImage = '',
-        backgroundImages = [];
+        profileImage = null,
+        backgroundImages = null;
 
   @override
   String toString() {

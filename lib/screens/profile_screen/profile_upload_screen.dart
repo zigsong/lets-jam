@@ -80,8 +80,12 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
         ..sessions = List.from(p.sessions)
         ..contact = p.contact
         ..bio = p.bio ?? ''
-        ..profileImage = p.profileImage ?? ''
-        ..backgroundImages = List.from(p.backgroundImages ?? []);
+        ..profileImage =
+            p.profileImage?.isNotEmpty == true ? p.profileImage : null
+        ..backgroundImages = () {
+          final list = p.backgroundImages?.where((e) => e.isNotEmpty).toList();
+          return (list?.isNotEmpty == true) ? list : null;
+        }();
     } else {
       formData = ProfileUploadModel.init();
     }
@@ -133,12 +137,16 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       await sessionController.loadUser();
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        customSnackbar(isEditMode ? '프로필을 수정했습니다' : '프로필 작성을 완료했습니다'),
-      );
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const ProfileScreen(),
-      ));
+      if (isEditMode) {
+        Navigator.of(context).pop(true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar('프로필 작성을 완료했습니다'),
+        );
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const ProfileScreen(),
+        ));
+      }
     } catch (e) {
       print('프로필 저장 에러: $e');
       ScaffoldMessenger.of(context).showSnackBar(customSnackbar('저장 실패: $e'));
@@ -148,10 +156,11 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   Future<void> _createProfile() async {
     final userId = supabase.auth.currentUser!.id;
 
-    final profileImageUrl = formData.profileImage.isNotEmpty
-        ? (await _uploadImages([formData.profileImage])).first
-        : '';
-    final backgroundImageUrls = await _uploadImages(formData.backgroundImages);
+    final profileImageUrl = formData.profileImage != null
+        ? (await _uploadImages([formData.profileImage!])).first
+        : null;
+    final backgroundImageUrls =
+        await _uploadImages(formData.backgroundImages ?? []);
 
     await supabase.from('profiles').insert({
       'id': userId,
@@ -165,10 +174,11 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   }
 
   Future<void> _updateProfile() async {
-    final profileImageUrl = formData.profileImage.isNotEmpty
-        ? (await _uploadImages([formData.profileImage])).first
-        : '';
-    final backgroundImageUrls = await _uploadImages(formData.backgroundImages);
+    final profileImageUrl = formData.profileImage != null
+        ? (await _uploadImages([formData.profileImage!])).first
+        : null;
+    final backgroundImageUrls =
+        await _uploadImages(formData.backgroundImages ?? []);
 
     await supabase.from('profiles').update({
       'nickname': formData.nickname,
@@ -226,12 +236,12 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
               height: 483,
               decoration: BoxDecoration(
                 color: ColorSeed.boldOrangeLight.color,
-                image: formData.backgroundImages.isNotEmpty
+                image: formData.backgroundImages?.isNotEmpty == true
                     ? DecorationImage(
-                        image: formData.backgroundImages.first
+                        image: formData.backgroundImages!.first
                                 .startsWith('http')
-                            ? NetworkImage(formData.backgroundImages.first)
-                            : FileImage(File(formData.backgroundImages.first)),
+                            ? NetworkImage(formData.backgroundImages!.first)
+                            : FileImage(File(formData.backgroundImages!.first)),
                         fit: BoxFit.cover,
                       )
                     : null,
@@ -250,23 +260,23 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                           child: Stack(
                             clipBehavior: Clip.none,
                             children: [
-                              formData.profileImage.isEmpty
+                              formData.profileImage?.isNotEmpty != true
                                   ? Image.asset(
-                                      'assets/images/profile_avatar.png',
+                                      'assets/images/profile_empty_avatar.png',
                                       width: 102,
                                       height: 102,
                                     )
                                   : ClipOval(
-                                      child: formData.profileImage
+                                      child: formData.profileImage!
                                               .startsWith('http')
                                           ? Image.network(
-                                              formData.profileImage,
+                                              formData.profileImage!,
                                               width: 102,
                                               height: 102,
                                               fit: BoxFit.cover,
                                             )
                                           : Image.file(
-                                              File(formData.profileImage),
+                                              File(formData.profileImage!),
                                               width: 102,
                                               height: 102,
                                               fit: BoxFit.cover,

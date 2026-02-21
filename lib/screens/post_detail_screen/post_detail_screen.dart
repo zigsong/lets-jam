@@ -525,7 +525,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
                   ),
-                  child: user.profileImage != null
+                  child: user.profileImage?.isNotEmpty == true
                       ? Image.network(
                           user.profileImage!,
                           width: MediaQuery.of(context).size.width,
