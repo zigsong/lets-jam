@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
+import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/profile_screen/gradient_screen.dart';
@@ -30,12 +31,15 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final SessionController sessionController = Get.find<SessionController>();
   final supabase = Supabase.instance.client;
+  ProfileModel? get profile => sessionController.user.value;
 
   bool isMyProfile = true;
 
   void onClickShareCourtUrl() {
     // TODO: webview_flutter로 현재 링크 가져오기
-    SharePlus.instance.share(ShareParams(text: 'JAM에서 공유하기'));
+    // TODO: 앱 아이콘 확인
+    SharePlus.instance.share(
+        ShareParams(text: 'JAM! 째미난 밴드 라이프 커뮤니티 | ${profile?.nickname}님의 프로필'));
   }
 
   Future<void> _deleteProfile(String id) async {
@@ -56,8 +60,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final profile = sessionController.user.value;
-
     return (Stack(children: [
       GradientSplitScreen(
         backgroundImageUrl: profile?.backgroundImages?.isNotEmpty == true
@@ -98,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 10,
                 ),
                 if (profile?.bio != null && profile!.bio!.isNotEmpty)
-                  Text(profile.bio!,
+                  Text(profile!.bio!,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
@@ -112,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     if (!isMyProfile)
                       ElevatedButton(
                         onPressed: () {
-                          onClickShareCourtUrl();
+                          // TODO: 연락 모달
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
@@ -141,7 +143,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: 10,
                       ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        onClickShareCourtUrl();
+                      },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 25),
