@@ -11,9 +11,10 @@ class GradientSplitScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final halfHeight = screenHeight / 2 * 1.1;
 
-    return Scaffold(
-      backgroundColor: ColorSeed.organizedBlackMedium.color,
-      body: Stack(
+    return ColoredBox(
+      color: ColorSeed.organizedBlackMedium.color,
+      child: Stack(
+        fit: StackFit.expand,
         children: [
           // 1. 상단 이미지
           Positioned(

@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 import 'package:lets_jam/models/profile_upload_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/models/profile_model.dart';
-import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
+import 'package:lets_jam/screens/default_navigation.dart';
+
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
@@ -190,7 +191,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
           customSnackbar('프로필 작성을 완료했습니다'),
         );
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const ProfileScreen(),
+          builder: (context) => const DefaultNavigation(fromIndex: 2),
         ));
       }
     } catch (e) {
