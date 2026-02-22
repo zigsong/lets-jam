@@ -48,7 +48,7 @@ class _ReplyContentState extends State<ReplyContent> {
       final author = ProfileModel.fromJson(response);
 
       setState(() {
-        isMyReply = author == sessionController.user.value;
+        isMyReply = author.id == sessionController.user.value?.id;
       });
 
       return author;
@@ -162,7 +162,7 @@ class _ReplyContentState extends State<ReplyContent> {
                                             isEditing = true;
                                           });
                                         }),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: 8),
                                     IconButton(
                                         text: '삭제',
                                         leftIcon: Image.asset(
@@ -190,7 +190,7 @@ class _ReplyContentState extends State<ReplyContent> {
                                           });
                                         }),
                                     const SizedBox(
-                                      width: 12,
+                                      width: 6,
                                     ),
                                     BorderButton(
                                         text: '저장',
@@ -262,7 +262,7 @@ class IconButton extends StatelessWidget {
           children: [
             if (leftIcon != null) ...[
               leftIcon!,
-              const SizedBox(width: 4),
+              const SizedBox(width: 2),
             ],
             Text(
               text,
@@ -295,7 +295,7 @@ class BorderButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 7),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 7),
         decoration: BoxDecoration(
             color: isReversed
                 ? ColorSeed.meticulousGrayMedium.color
