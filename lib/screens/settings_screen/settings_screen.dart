@@ -62,7 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         const SettingItem(
           title: '버그 제보하기',
-          url: 'forms.gle/9MV6DvcKfCKQTxbXA',
+          url: 'https://forms.gle/9MV6DvcKfCKQTxbXA',
         ),
         const SettingItem(
           title: '신고하기',
@@ -92,10 +92,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             );
           },
         ),
-        SettingItem(
-          title: sessionController.isLoggedIn.value ? '로그아웃' : '로그인',
-          onClick: () async {
-            if (sessionController.isLoggedIn.value) {
+        if (sessionController.isLoggedIn.value)
+          SettingItem(
+            title: '로그아웃',
+            onClick: () async {
               await sessionController.signOut();
               if (mounted) {
                 showModal(
@@ -110,11 +110,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 );
               }
-            } else {
-              await sessionController.signIn();
-            }
-          },
-        ),
+            },
+          ),
         // TODO: 어딘가로 연결 혹은 알럿
         const SettingItem(
           title: '회원 탈퇴',
