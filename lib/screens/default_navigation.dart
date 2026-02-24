@@ -56,7 +56,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
     if (sessionController.hasProfile.value == false) {
       showModal(
         context: context,
-        desc: '프로필 작성 후에 이용할 수 있어요.\n프로필을 작성하러 갈까요?',
+        desc: '프로필이 없어요.\n프로필을 작성할까요?',
         confirmText: '작성하기',
         onConfirm: () {
           Navigator.of(context).push(MaterialPageRoute(
@@ -163,6 +163,20 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                               },
                               cancelText: '다음에 할게요',
                               onCancel: null);
+                        } else if (sessionController.hasProfile.value ==
+                            false) {
+                          showModal(
+                            context: context,
+                            desc: '프로필이 없어요.\n프로필을 작성할까요?',
+                            confirmText: '작성하기',
+                            onConfirm: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const ProfileUploadScreen(),
+                              ));
+                            },
+                            cancelText: '다음에 할게요',
+                          );
                         } else {
                           Navigator.of(context).push(
                             MaterialPageRoute(

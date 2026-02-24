@@ -40,7 +40,7 @@ class SessionController extends GetxController {
         user.refresh();
         hasProfile.value = true;
       } else {
-        user.refresh();
+        user.value = null;
         hasProfile.value = false;
       }
 

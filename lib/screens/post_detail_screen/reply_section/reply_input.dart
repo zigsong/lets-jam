@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
+import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
+import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -82,9 +84,23 @@ class _ReplyInputState extends State<ReplyInput> {
             controller: _textEditingController,
             placeholder: '댓글을 작성해 주세요',
             onChanged: (value) {
-              setState(() {
-                _value = value;
-              });
+              if (sessionController.hasProfile.value == false) {
+                showModal(
+                  context: context,
+                  desc: '프로필이 없어요.\n프로필을 작성할까요?',
+                  confirmText: '작성하기',
+                  onConfirm: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ProfileUploadScreen(),
+                    ));
+                  },
+                  cancelText: '다음에 할게요',
+                );
+              } else {
+                setState(() {
+                  _value = value;
+                });
+              }
             },
             suffixButton: Image.asset(
               'assets/icons/send.png',
