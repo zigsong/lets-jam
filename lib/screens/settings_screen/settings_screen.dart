@@ -4,7 +4,7 @@ import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/terms_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
-import 'package:lets_jam/widgets/modal.dart';
+import 'package:lets_jam/widgets/custom_snackbar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -98,17 +98,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onClick: () async {
               await sessionController.signOut();
               if (mounted) {
-                showModal(
-                  context: context,
-                  title: '로그아웃되었어요',
-                  desc: 'JAM 홈으로 이동할게요',
-                  onConfirm: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const DefaultNavigation()));
-                  },
+                ScaffoldMessenger.of(context).showSnackBar(
+                  CustomSnackbar(content: '로그아웃되었어요'),
                 );
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const DefaultNavigation()));
               }
             },
           ),

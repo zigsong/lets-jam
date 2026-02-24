@@ -53,7 +53,17 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
   }
 
   void _onProfileButtonTapped() {
-    if (sessionController.hasProfile.value == false) {
+    if (sessionController.isLoggedIn.value == false) {
+      showModal(
+          context: context,
+          desc: '로그인 후에 이용할 수 있어요',
+          confirmText: '로그인',
+          onConfirm: () {
+            sessionController.signIn();
+          },
+          cancelText: '다음에 할게요',
+          onCancel: null);
+    } else if (sessionController.hasProfile.value == false) {
       showModal(
         context: context,
         desc: '프로필이 없어요.\n프로필을 작성할까요?',
@@ -167,7 +177,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                             false) {
                           showModal(
                             context: context,
-                            desc: '프로필이 없어요.\n프로필을 작성할까요?',
+                            desc: '프로필 작성 후에 이용할 수 있어요.\n프로필을 작성할까요?',
                             confirmText: '작성하기',
                             onConfirm: () {
                               Navigator.of(context).push(MaterialPageRoute(
