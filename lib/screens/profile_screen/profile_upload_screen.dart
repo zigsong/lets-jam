@@ -451,6 +451,9 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                           text: isEditMode ? '수정하기' : '작성하기',
                           onPressed: _submit,
                         ),
+                        const SizedBox(
+                          height: 20,
+                        )
                       ],
                     ),
                   ),

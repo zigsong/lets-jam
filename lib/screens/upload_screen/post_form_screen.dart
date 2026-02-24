@@ -423,6 +423,9 @@ class _PostFormScreenState extends State<PostFormScreen> {
                       onPressed: _submit,
                       disabled: _isSubmitDisabled,
                     ),
+                    const SizedBox(
+                      height: 20,
+                    )
                   ],
                 ),
               ),
