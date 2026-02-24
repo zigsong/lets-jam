@@ -181,7 +181,7 @@ class PostThumbnail extends StatelessWidget {
                             alignment: Alignment.center,
                           )
                         : Image.asset(
-                            'assets/images/jam_temp_filled.png',
+                            'assets/images/thumbnail_default.png',
                             fit: BoxFit.cover,
                             alignment: Alignment.center,
                           ),
