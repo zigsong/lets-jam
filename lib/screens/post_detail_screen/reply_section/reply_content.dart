@@ -8,6 +8,7 @@ import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/date_parser.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/text_input.dart';
+import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ReplyContent extends StatefulWidget {
@@ -106,19 +107,29 @@ class _ReplyContentState extends State<ReplyContent> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                clipBehavior: Clip.antiAlias,
-                child: author.profileImage?.isNotEmpty == true
-                    ? Image.network(
-                        author.profileImage!,
-                        width: MediaQuery.of(context).size.width,
-                        fit: BoxFit.cover,
-                      )
-                    : Image.asset('assets/images/profile_avatar.png'),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ProfileScreen(targetUser: author),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(100)),
+                  clipBehavior: Clip.antiAlias,
+                  child: author.profileImage?.isNotEmpty == true
+                      ? Image.network(
+                          author.profileImage!,
+                          width: MediaQuery.of(context).size.width,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset('assets/images/profile_avatar.png'),
+                ),
               ),
               const SizedBox(
                 width: 16,

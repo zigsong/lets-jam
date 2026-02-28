@@ -7,6 +7,7 @@ import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/post_detail_screen/reply_section/reply_section.dart';
+import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
@@ -521,42 +522,52 @@ class PostDetailAuthorInfo extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProfileScreen(targetUser: user),
                   ),
-                  child: user.profileImage?.isNotEmpty == true
-                      ? Image.network(
-                          user.profileImage!,
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.cover,
-                        )
-                      : Image.asset('assets/images/profile_avatar.png'),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user.nickname,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
+                );
+              },
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
                     ),
-                    Text(
-                      user.sessions
-                          .map((session) => sessionMap[session])
-                          .join(','),
-                      style: const TextStyle(color: Color(0xff838589)),
-                    )
-                  ],
-                ),
-              ],
+                    child: user.profileImage?.isNotEmpty == true
+                        ? Image.network(
+                            user.profileImage!,
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.asset('assets/images/profile_avatar.png'),
+                  ),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user.nickname,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        user.sessions
+                            .map((session) => sessionMap[session])
+                            .join(','),
+                        style: const TextStyle(color: Color(0xff838589)),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           ElevatedButton(
