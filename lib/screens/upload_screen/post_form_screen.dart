@@ -22,11 +22,13 @@ enum PostFormMode { create, edit }
 class PostFormScreen extends StatefulWidget {
   final PostFormMode mode;
   final PostModel? post;
+  final PostTypeEnum? initialPostType;
 
   const PostFormScreen({
     super.key,
     required this.mode,
     this.post,
+    this.initialPostType,
   });
 
   @override
@@ -67,6 +69,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
       postType = widget.post!.postType;
       formData = FindSessionUploadModel.fromPost(widget.post!);
     } else {
+      postType = widget.initialPostType ?? PostTypeEnum.findBand;
       formData = FindSessionUploadModel.init();
     }
   }

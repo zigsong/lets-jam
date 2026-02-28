@@ -8,6 +8,7 @@ import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
+import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/upload_screen/upload_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/bottom_app_bar_item.dart';
@@ -25,20 +26,24 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
   int _selectedIndex = 0;
   final bool _isBottomSheetOpen = false;
   final SessionController sessionController = Get.find<SessionController>();
+  PostTypeEnum _writePostType = PostTypeEnum.findBand;
+
+  late final List<Widget> _widgetOptions;
 
   @override
   void initState() {
     super.initState();
 
     _selectedIndex = widget.fromIndex ?? 0;
+    _widgetOptions = <Widget>[
+      ExploreScreen(onTabChanged: (type) {
+        _writePostType = type;
+      }),
+      const LikedScreen(),
+      // const BandScreen(),
+      const ProfileScreen(),
+    ];
   }
-
-  final List<Widget> _widgetOptions = <Widget>[
-    const ExploreScreen(),
-    const LikedScreen(),
-    // const BandScreen(),
-    const ProfileScreen(),
-  ];
 
   void _onHomeButtonTapped() {
     setState(() {
@@ -190,7 +195,8 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                         } else {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const UploadPostScreen(),
+                              builder: (context) =>
+                                  UploadPostScreen(postType: _writePostType),
                             ),
                           );
                         }

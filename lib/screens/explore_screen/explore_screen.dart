@@ -11,8 +11,11 @@ import 'package:lets_jam/screens/settings_screen/settings_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class ExploreScreen extends StatefulWidget {
+  final void Function(PostTypeEnum)? onTabChanged;
+
   const ExploreScreen({
     super.key,
+    this.onTabChanged,
   });
 
   @override
@@ -20,7 +23,7 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen>
-    with SingleTickerProviderStateMixin, RouteAware {
+    with TickerProviderStateMixin, RouteAware {
   final ExploreFilterController exploreFilterController =
       Get.put(ExploreFilterController());
 
@@ -28,6 +31,7 @@ class _ExploreScreenState extends State<ExploreScreen>
 
   late AnimationController _controller;
   late Animation<double> _animation;
+  late TabController _tabController;
 
   bool _isFilterSheetOpen = false;
   FilterEnum _currentFilterType = FilterEnum.region;
@@ -35,6 +39,17 @@ class _ExploreScreenState extends State<ExploreScreen>
   @override
   void initState() {
     super.initState();
+
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        widget.onTabChanged?.call(
+          _tabController.index == 0
+              ? PostTypeEnum.findBand
+              : PostTypeEnum.findMember,
+        );
+      }
+    });
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -55,6 +70,7 @@ class _ExploreScreenState extends State<ExploreScreen>
 
   @override
   void dispose() {
+    _tabController.dispose();
     _controller.dispose();
     routeObserver.unsubscribe(this);
     super.dispose();
@@ -93,153 +109,150 @@ class _ExploreScreenState extends State<ExploreScreen>
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 0,
-      length: 2,
-      child: SafeArea(
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                        height: 28,
-                        child: Image.asset('assets/icons/jam_logo.png')),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => const AlarmScreen()),
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 0, vertical: 2),
-                            child: SizedBox(
-                                width: 28,
-                                height: 28,
-                                child: Image.asset(
-                                    'assets/icons/bell_orange.png')),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => const SettingsScreen()),
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 0, vertical: 2),
-                            child: SizedBox(
-                                width: 28,
-                                height: 28,
-                                child:
-                                    Image.asset('assets/icons/settings.png')),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            PreferredSize(
-              preferredSize: const Size.fromHeight(36),
-              child: TabBar(
-                labelColor: ColorSeed.boldOrangeMedium.color,
-                unselectedLabelColor: ColorSeed.meticulousGrayMedium.color,
-                indicatorColor: ColorSeed.boldOrangeMedium.color,
-                indicatorWeight: 2.0,
-                indicatorSize: TabBarIndicatorSize.tab,
-                // labelPadding: EdgeInsets.zero,
-                tabs: [
-                  Container(
-                    height: 36,
-                    alignment: Alignment.center,
-                    child: const Text(
-                      '밴드 들어가기',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Container(
-                    height: 36,
-                    alignment: Alignment.center,
-                    child: const Text(
-                      '멤버 구하기',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // 포스팅 필터 및 선택된 태그
-            ExploreFilterBar(
-              isFilterSheetOpen: _isFilterSheetOpen,
-              onToggleFilter: (filterType) {
-                if (!_isFilterSheetOpen) {
-                  _toggleExploreFilter();
-                }
-                setState(() {
-                  _currentFilterType = filterType;
-                });
-              },
-            ),
-            // 포스팅 목록
-            Expanded(
-              child: Stack(
+    return SafeArea(
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TabBarView(
+                  SizedBox(
+                      height: 28,
+                      child: Image.asset('assets/icons/jam_logo.png')),
+                  Row(
                     children: [
-                      ExplorePosts(
-                        postType: PostTypeEnum.findBand,
-                        onReloadRegister: (reloadFn) {
-                          _reloadItems = reloadFn;
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const AlarmScreen()),
+                          );
                         },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 0, vertical: 2),
+                          child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child:
+                                  Image.asset('assets/icons/bell_orange.png')),
+                        ),
                       ),
-                      ExplorePosts(
-                        postType: PostTypeEnum.findMember,
-                        onReloadRegister: (reloadFn) {
-                          _reloadItems = reloadFn;
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => const SettingsScreen()),
+                          );
                         },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 0, vertical: 2),
+                          child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: Image.asset('assets/icons/settings.png')),
+                        ),
                       ),
                     ],
                   ),
-                  // dimmed 배경
-                  if (_isFilterSheetOpen)
-                    GestureDetector(
-                      onTap: _toggleExploreFilter,
-                      child: AnimatedOpacity(
-                        opacity: _isFilterSheetOpen ? 0.5 : 0.0,
-                        duration: const Duration(milliseconds: 300),
-                        child: Container(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  if (_isFilterSheetOpen)
-                    SizeTransition(
-                        sizeFactor: _animation,
-                        axis: Axis.vertical,
-                        child: ExploreFilterSheet(
-                          applyFilter: _applyFilter,
-                          type: _currentFilterType,
-                        )),
                 ],
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+          PreferredSize(
+            preferredSize: const Size.fromHeight(36),
+            child: TabBar(
+              controller: _tabController,
+              labelColor: ColorSeed.boldOrangeMedium.color,
+              unselectedLabelColor: ColorSeed.meticulousGrayMedium.color,
+              indicatorColor: ColorSeed.boldOrangeMedium.color,
+              indicatorWeight: 2.0,
+              indicatorSize: TabBarIndicatorSize.tab,
+              // labelPadding: EdgeInsets.zero,
+              tabs: [
+                Container(
+                  height: 36,
+                  alignment: Alignment.center,
+                  child: const Text(
+                    '밴드 들어가기',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+                Container(
+                  height: 36,
+                  alignment: Alignment.center,
+                  child: const Text(
+                    '멤버 구하기',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // 포스팅 필터 및 선택된 태그
+          ExploreFilterBar(
+            isFilterSheetOpen: _isFilterSheetOpen,
+            onToggleFilter: (filterType) {
+              if (!_isFilterSheetOpen) {
+                _toggleExploreFilter();
+              }
+              setState(() {
+                _currentFilterType = filterType;
+              });
+            },
+          ),
+          // 포스팅 목록
+          Expanded(
+            child: Stack(
+              children: [
+                TabBarView(
+                  controller: _tabController,
+                  children: [
+                    ExplorePosts(
+                      postType: PostTypeEnum.findBand,
+                      onReloadRegister: (reloadFn) {
+                        _reloadItems = reloadFn;
+                      },
+                    ),
+                    ExplorePosts(
+                      postType: PostTypeEnum.findMember,
+                      onReloadRegister: (reloadFn) {
+                        _reloadItems = reloadFn;
+                      },
+                    ),
+                  ],
+                ),
+                // dimmed 배경
+                if (_isFilterSheetOpen)
+                  GestureDetector(
+                    onTap: _toggleExploreFilter,
+                    child: AnimatedOpacity(
+                      opacity: _isFilterSheetOpen ? 0.5 : 0.0,
+                      duration: const Duration(milliseconds: 300),
+                      child: Container(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                if (_isFilterSheetOpen)
+                  SizeTransition(
+                      sizeFactor: _animation,
+                      axis: Axis.vertical,
+                      child: ExploreFilterSheet(
+                        applyFilter: _applyFilter,
+                        type: _currentFilterType,
+                      )),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
