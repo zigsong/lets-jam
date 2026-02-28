@@ -250,16 +250,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            '세션',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                height: 18 / 13),
-                          ),
                           const SizedBox(
-                            height: 10,
+                            height: 32,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                '세션',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
                           ),
+                          const SizedBox(height: 10),
                           Row(
                               children: (profile?.sessions ?? [])
                                   .map((session) => Padding(
@@ -301,69 +305,116 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(
                             height: 16,
                           ),
-                          const Text(
-                            '작성한 글',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                height: 18 / 13),
-                          ),
                           const SizedBox(
-                            height: 10,
+                            height: 32,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                '작성한 글',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
                           ),
-                          Container(height: 0.5, color: Colors.white),
-                          const SizedBox(
-                            height: 10,
+                          const SizedBox(height: 10),
+                          Container(
+                            width: double.infinity,
+                            height: 48,
+                            padding: const EdgeInsets.only(left: 10, right: 16),
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 0.5),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 13.5, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    '멤버',
+                                    style: TextStyle(
+                                        color: ColorSeed
+                                            .organizedBlackMedium.color,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Expanded(
+                                  child: Text(
+                                    '게시글 제목이 여기에 표시됩니다 아주 긴 제목도 ellipsis 처리됩니다',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                const SizedBox(width: 24),
+                                const Icon(Icons.arrow_forward_ios,
+                                    color: Colors.white, size: 12),
+                              ],
+                            ),
                           ),
-                          const Text(
-                            '준비중...',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                height: 18 / 13),
+                          const SizedBox(height: 16),
+                          Container(
+                            width: double.infinity,
+                            height: 48,
+                            padding: const EdgeInsets.only(left: 10, right: 16),
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.white, width: 0.5),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 13.5, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    '밴드',
+                                    style: TextStyle(
+                                        color: ColorSeed
+                                            .organizedBlackMedium.color,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Expanded(
+                                  child: Text(
+                                    '게시글 제목이 여기에 표시됩니다 아주 긴 제목도 ellipsis 처리됩니다',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                const SizedBox(width: 24),
+                                const Icon(Icons.arrow_forward_ios,
+                                    color: Colors.white, size: 12),
+                              ],
+                            ),
                           ),
-                          // Column(
-                          //   children: [
-                          //     const Padding(
-                          //       padding: EdgeInsets.symmetric(vertical: 13.5),
-                          //       child: Row(
-                          //         children: [
-                          //           PostTypeBadge(
-                          //             postType: PostTypeEnum.findBand,
-                          //           ),
-                          //           SizedBox(
-                          //             width: 13,
-                          //           ),
-                          //           Text(
-                          //             '밴드가 로망인 1년차 베이시스트 구합니다...',
-                          //             style: TextStyle(
-                          //                 color: Colors.white, height: 13 / 18),
-                          //           )
-                          //         ],
-                          //       ),
-                          //     ),
-                          //     Container(height: 0.5, color: Colors.white),
-                          //     const Padding(
-                          //       padding: EdgeInsets.symmetric(vertical: 13.5),
-                          //       child: Row(
-                          //         children: [
-                          //           PostTypeBadge(
-                          //             postType: PostTypeEnum.findMember,
-                          //           ),
-                          //           SizedBox(
-                          //             width: 13,
-                          //           ),
-                          //           Text(
-                          //             '두탕뛸 수 있는 밴드 구해요 열씨미 할께영',
-                          //             style: TextStyle(
-                          //                 color: Colors.white, height: 13 / 18),
-                          //           )
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          // Container(height: 0.5, color: Colors.white),
+                          const SizedBox(height: 64),
                         ],
                       ),
                     )
