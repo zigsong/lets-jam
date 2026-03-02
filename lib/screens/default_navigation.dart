@@ -27,6 +27,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
   final bool _isBottomSheetOpen = false;
   final SessionController sessionController = Get.find<SessionController>();
   PostTypeEnum _writePostType = PostTypeEnum.findBand;
+  void Function(PostTypeEnum)? _switchExploreTab;
 
   late final List<Widget> _widgetOptions;
 
@@ -36,9 +37,14 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
 
     _selectedIndex = widget.fromIndex ?? 0;
     _widgetOptions = <Widget>[
-      ExploreScreen(onTabChanged: (type) {
-        _writePostType = type;
-      }),
+      ExploreScreen(
+        onSwitchTabRegister: (fn) {
+          _switchExploreTab = fn;
+        },
+        onTabChanged: (type) {
+          _writePostType = type;
+        },
+      ),
       const LikedScreen(),
     ];
   }
@@ -83,6 +89,11 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
         MaterialPageRoute(builder: (_) => const ProfileScreen()),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -191,12 +202,18 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                             cancelText: '다음에 할게요',
                           );
                         } else {
-                          Navigator.of(context).push(
+                          Navigator.of(context)
+                              .push(
                             MaterialPageRoute(
                               builder: (context) =>
                                   UploadPostScreen(postType: _writePostType),
                             ),
-                          );
+                          )
+                              .then((result) {
+                            if (result is PostTypeEnum) {
+                              _switchExploreTab?.call(result);
+                            }
+                          });
                         }
                       },
                       child: Container(

@@ -135,7 +135,8 @@ class _PostFormScreenState extends State<PostFormScreen> {
             ? '게시글을 작성했습니다.'
             : '게시글을 수정했습니다.'),
       );
-      Navigator.pop(context, true);
+      Navigator.pop(
+          context, widget.mode == PostFormMode.create ? postType : true);
     } catch (e) {
       print('저장 에러: $e');
       ScaffoldMessenger.of(context).showSnackBar(customSnackbar('저장 실패: $e'));

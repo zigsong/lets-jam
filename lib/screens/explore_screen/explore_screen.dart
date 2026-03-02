@@ -12,10 +12,12 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class ExploreScreen extends StatefulWidget {
   final void Function(PostTypeEnum)? onTabChanged;
+  final void Function(void Function(PostTypeEnum))? onSwitchTabRegister;
 
   const ExploreScreen({
     super.key,
     this.onTabChanged,
+    this.onSwitchTabRegister,
   });
 
   @override
@@ -51,6 +53,8 @@ class _ExploreScreenState extends State<ExploreScreen>
       }
     });
 
+    widget.onSwitchTabRegister?.call(_switchToTab);
+
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -66,6 +70,10 @@ class _ExploreScreenState extends State<ExploreScreen>
   void didChangeDependencies() {
     super.didChangeDependencies();
     routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  void _switchToTab(PostTypeEnum type) {
+    _tabController.index = type == PostTypeEnum.findBand ? 1 : 0;
   }
 
   @override
