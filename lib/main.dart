@@ -1,8 +1,11 @@
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
+import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
+import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/splash_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,6 +13,8 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   /** splash screen 시간 */
@@ -38,12 +43,40 @@ Future<void> main() async {
   runApp(const GetMaterialApp(home: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _appLinks = AppLinks();
+
+  @override
+  void initState() {
+    super.initState();
+    _appLinks.uriLinkStream.listen((uri) async {
+      final segments = uri.pathSegments;
+      if (segments.length >= 2 && segments[0] == 'profile') {
+        final userId = segments[1];
+        final response = await Supabase.instance.client
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+        final profile = ProfileModel.fromJson(response);
+        navigatorKey.currentState?.push(MaterialPageRoute(
+          builder: (_) => ProfileScreen(targetUser: profile),
+        ));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       navigatorObservers: [routeObserver],
       // NOTE: 디바이스의 설정과 무관하게 폰트 사이즈를 고정시킴
       builder: (context, child) {
