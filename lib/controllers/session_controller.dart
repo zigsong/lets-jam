@@ -57,6 +57,7 @@ class SessionController extends GetxController {
       await supabase.auth.signInWithOAuth(
         OAuthProvider.kakao,
         authScreenLaunchMode: LaunchMode.externalApplication,
+        redirectTo: 'io.supabase.letsjam://login-callback/',
       );
 
       supabase.auth.onAuthStateChange.listen((data) async {
