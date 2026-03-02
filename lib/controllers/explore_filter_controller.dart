@@ -78,5 +78,7 @@ class ExploreFilterController extends GetxController {
   void reset() {
     sessions.clear();
     regions.clear();
+    tempSessions.clear();
+    tempRegions.clear();
   }
 }

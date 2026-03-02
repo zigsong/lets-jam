@@ -19,7 +19,7 @@ class ExploreFilterSheet extends StatefulWidget {
 
 class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
   final ExploreFilterController filterController =
-      Get.put(ExploreFilterController());
+      Get.find<ExploreFilterController>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,31 +39,36 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
               widget.type == FilterEnum.session
                   ? Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Obx(() => Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: SessionEnum.values.map((session) {
-                              final sessions = filterController.tempSessions;
-
-                              return Tag(
-                                text: sessionMap[session] ?? '',
-                                color: TagColorEnum.black,
-                                selected: sessions.contains(session),
-                                onToggle: () {
-                                  filterController.toggleSession(session);
-                                },
-                              );
-                            }).toList(),
-                          )))
-                  : Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 11, horizontal: 16),
-                      child: RegionFilter(
-                        selectedRegions: filterController.tempRegions,
-                        toggleRegion: (region) {
-                          filterController.toggleRegion(region);
-                        },
-                      )),
+                      child: Obx(() {
+                        final sessions =
+                            filterController.tempSessions.toList();
+                        return Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: SessionEnum.values.map((session) {
+                            return Tag(
+                              text: sessionMap[session] ?? '',
+                              color: TagColorEnum.black,
+                              selected: sessions.contains(session),
+                              onToggle: () {
+                                filterController.toggleSession(session);
+                              },
+                            );
+                          }).toList(),
+                        );
+                      }))
+                  : Obx(() {
+                      final regions = filterController.tempRegions.toList();
+                      return Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 11, horizontal: 16),
+                          child: RegionFilter(
+                            selectedRegions: regions,
+                            toggleRegion: (region) {
+                              filterController.toggleRegion(region);
+                            },
+                          ));
+                    }),
               Padding(
                 padding: const EdgeInsets.only(
                     top: 20, right: 16, bottom: 20, left: 16),
