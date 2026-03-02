@@ -51,40 +51,21 @@ class Modal extends StatelessWidget {
             else
               Center(child: desc),
             const SizedBox(height: 24),
-            Flex(
-              direction: Axis.horizontal,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: ColorSeed.boldOrangeRegular.color,
-                      side: BorderSide(
-                          color: ColorSeed.boldOrangeRegular.color, width: 0.5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
-                      textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          inherit: false),
-                    ),
-                    onPressed: () {
-                      onCancel?.call();
-                    },
-                    child: Text(cancelText ?? '취소'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  flex: 1,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: ColorSeed.boldOrangeStrong.color,
-                        foregroundColor: Colors.white,
+            Padding(
+              padding: (confirmText == null) != (cancelText == null)
+                  ? const EdgeInsets.symmetric(horizontal: 56)
+                  : EdgeInsets.zero,
+              child: Flex(
+                direction: Axis.horizontal,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: ColorSeed.boldOrangeRegular.color,
+                        side: BorderSide(
+                            color: ColorSeed.boldOrangeRegular.color,
+                            width: 0.5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -93,14 +74,41 @@ class Modal extends StatelessWidget {
                         textStyle: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            inherit: false)),
-                    onPressed: () {
-                      onConfirm();
-                    },
-                    child: Text(confirmText ?? '확인'),
+                            inherit: false),
+                      ),
+                      onPressed: () {
+                        onCancel?.call();
+                      },
+                      child: Text(cancelText ?? '취소'),
+                    ),
                   ),
-                ),
-              ],
+                  if (confirmText != null) ...[
+                    const SizedBox(width: 8),
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: ColorSeed.boldOrangeStrong.color,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 12),
+                            textStyle: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                inherit: false)),
+                        onPressed: () {
+                          onConfirm();
+                        },
+                        child: Text(confirmText!),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
           ],
         ),

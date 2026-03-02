@@ -583,6 +583,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
                 showModal(
                   context: context,
                   title: '연락처 복사하기',
+                  cancelText: '닫기',
                   desc: Builder(
                     builder: (modalcontext) {
                       return GestureDetector(

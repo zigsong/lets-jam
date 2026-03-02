@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/profile_model.dart';
@@ -9,6 +11,7 @@ import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
 import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
+import 'package:lets_jam/widgets/custom_snackbar.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -146,7 +149,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (!isMyProfile)
                           ElevatedButton(
                             onPressed: () {
-                              // TODO: 연락 모달
+                              final contact = profile?.contact ?? '';
+                              showModal(
+                                context: context,
+                                title: '연락처 복사하기',
+                                cancelText: '닫기',
+                                desc: Builder(
+                                  builder: (modalContext) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(modalContext).pop();
+                                        Clipboard.setData(
+                                            ClipboardData(text: contact));
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          CustomSnackbar(
+                                              content: '연락처가 복사되었어요'),
+                                        );
+                                      },
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(contact),
+                                          const SizedBox(width: 8),
+                                          SvgPicture.asset(
+                                            'assets/icons/plus_copy.svg',
+                                            fit: BoxFit.fitHeight,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
