@@ -40,8 +40,6 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
         _writePostType = type;
       }),
       const LikedScreen(),
-      // const BandScreen(),
-      const ProfileScreen(),
     ];
   }
 
@@ -81,9 +79,9 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
         cancelText: '다음에 할게요',
       );
     } else {
-      setState(() {
-        _selectedIndex = 2;
-      });
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+      );
     }
   }
 

@@ -426,15 +426,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-          if (!isMyProfile)
-            Positioned(
-              top: MediaQuery.of(context).padding.top,
-              left: 8,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top,
+            left: 8,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
             ),
+          ),
         ]));
   }
 }
