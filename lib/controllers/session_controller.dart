@@ -62,21 +62,24 @@ class SessionController extends GetxController {
 
       supabase.auth.onAuthStateChange.listen((data) async {
         final AuthChangeEvent event = data.event;
-        final sbUser = Supabase.instance.client.auth.currentUser;
+        final sbUser = data.session?.user;
 
-        if (sbUser == null) return;
-
-        if (event == AuthChangeEvent.signedIn) {
+        if (event == AuthChangeEvent.signedIn && sbUser != null) {
+          print("로그인 성공! 유저 ID: ${sbUser.id}");
           isLoggedIn.value = true;
 
-          final jamUser =
-              await supabase.from('profiles').select().eq('id', sbUser.id);
+          try {
+            final jamUser =
+                await supabase.from('profiles').select().eq('id', sbUser.id);
 
-          if (jamUser.isNotEmpty) {
-            user.value = ProfileModel.fromJson(jamUser[0]);
-            hasProfile.value = true;
-          } else {
-            Get.to(() => TermsAgreementScreen(user: sbUser));
+            if (jamUser.isNotEmpty) {
+              user.value = ProfileModel.fromJson(jamUser[0]);
+              hasProfile.value = true;
+            } else {
+              Get.to(() => TermsAgreementScreen(user: sbUser));
+            }
+          } catch (e) {
+            print("프로필 조회 에러: $e");
           }
         }
       });
