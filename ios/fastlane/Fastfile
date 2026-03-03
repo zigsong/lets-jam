@@ -1,0 +1,73 @@
+default_platform(:ios)
+
+platform :ios do
+
+  # 공통 로직 분리 (중복 제거)
+  private_lane :setup_signing do
+    app_store_connect_api_key(
+      key_id: "BHM5SMRV9F",
+      issuer_id: "f9d63cd7-3347-44d5-9b75-7ac4ddabb1db",
+      key_filepath: "./fastlane/AuthKey_BHM5SMRV9F.p8",
+      duration: 1200,
+      in_house: false
+    )
+
+    match(
+      type: "appstore",
+      app_identifier: "com.chunkybuddy.letsjam",
+      readonly: true
+    )
+  end
+
+  private_lane :build_flutter_ipa do
+    sh("cd .. && flutter build ios --release --no-codesign")
+
+    increment_build_number(xcodeproj: "Runner.xcodeproj")
+
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      configuration: "Release",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "com.chunkybuddy.letsjam" => "match AppStore com.chunkybuddy.letsjam"
+        }
+      },
+      output_directory: "./build",
+      output_name: "Runner.ipa",
+      clean: true
+    )
+  end
+
+  # ------------------------------------------------
+  # TestFlight 업로드
+  # 실행: fastlane beta
+  # ------------------------------------------------
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    setup_signing
+    build_flutter_ipa
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true  # 처리 완료 대기 스킵
+    )
+  end
+
+  # ------------------------------------------------
+  # App Store Connect 업로드 (심사 제출까지)
+  # 실행: fastlane release
+  # ------------------------------------------------
+  desc "Build and upload to App Store Connect"
+  lane :release do
+    setup_signing
+    build_flutter_ipa
+
+    upload_to_app_store(
+      skip_metadata: true,
+      skip_screenshots: true,
+      submit_for_review: false  # true로 바꾸면 심사까지 자동 제출
+    )
+  end
+
+end
