@@ -22,6 +22,33 @@ class SessionController extends GetxController {
   void onInit() async {
     super.onInit();
     await loadUser();
+    _listenAuthState();
+  }
+
+  void _listenAuthState() {
+    supabase.auth.onAuthStateChange.listen((data) async {
+      final AuthChangeEvent event = data.event;
+      final sbUser = data.session?.user;
+
+      if (event == AuthChangeEvent.signedIn && sbUser != null) {
+        isLoggedIn.value = true;
+
+        try {
+          final jamUser =
+              await supabase.from('profiles').select().eq('id', sbUser.id);
+
+          if (jamUser.isNotEmpty) {
+            user.value = ProfileModel.fromJson(jamUser[0]);
+            user.refresh();
+            hasProfile.value = true;
+          } else {
+            Get.to(() => TermsAgreementScreen(user: sbUser));
+          }
+        } catch (e) {
+          print("프로필 조회 에러: $e");
+        }
+      }
+    });
   }
 
   Future<void> loadUser() async {
@@ -57,32 +84,8 @@ class SessionController extends GetxController {
       await supabase.auth.signInWithOAuth(
         OAuthProvider.kakao,
         authScreenLaunchMode: LaunchMode.externalApplication,
-        redirectTo: 'io.supabase.letsjam://login-callback/',
+        redirectTo: 'io.supabase.letsjam://login-callback',
       );
-
-      supabase.auth.onAuthStateChange.listen((data) async {
-        final AuthChangeEvent event = data.event;
-        final sbUser = data.session?.user;
-
-        if (event == AuthChangeEvent.signedIn && sbUser != null) {
-          print("로그인 성공! 유저 ID: ${sbUser.id}");
-          isLoggedIn.value = true;
-
-          try {
-            final jamUser =
-                await supabase.from('profiles').select().eq('id', sbUser.id);
-
-            if (jamUser.isNotEmpty) {
-              user.value = ProfileModel.fromJson(jamUser[0]);
-              hasProfile.value = true;
-            } else {
-              Get.to(() => TermsAgreementScreen(user: sbUser));
-            }
-          } catch (e) {
-            print("프로필 조회 에러: $e");
-          }
-        }
-      });
     } on PlatformException catch (err) {
       print('로그인 에러: $err');
     }
