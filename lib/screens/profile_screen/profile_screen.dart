@@ -68,11 +68,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void onClickShareCourtUrl() {
-    // TODO: webview_flutter로 현재 링크 가져오기
-    // TODO: 앱 아이콘 확인
     final url = 'https://letsjam.work/profile/${profile?.id}';
     SharePlus.instance.share(ShareParams(
-        text: 'JAM! 째미난 밴드 라이프 커뮤니티 | ${profile?.nickname}님의 프로필',
+        subject: 'JAM! 째미난 밴드 라이프 커뮤니티 | ${profile?.nickname}님의 프로필',
         uri: Uri.parse(url)));
   }
 
