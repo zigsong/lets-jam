@@ -135,11 +135,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 10,
                     ),
                     if (profile?.bio != null && profile!.bio!.isNotEmpty)
-                      Text(profile!.bio!,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                          )),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 60),
+                        child: Text(profile!.bio!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                            )),
+                      ),
                     const SizedBox(
                       height: 20,
                     ),
