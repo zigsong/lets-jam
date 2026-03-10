@@ -112,7 +112,7 @@ class _ReplyContentState extends State<ReplyContent> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ProfileScreen(targetUser: author),
+                      builder: (_) => ProfileScreen(profileId: author.id),
                     ),
                   );
                 },

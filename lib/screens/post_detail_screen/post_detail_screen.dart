@@ -527,7 +527,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => ProfileScreen(targetUser: user),
+                    builder: (_) => ProfileScreen(profileId: user.id),
                   ),
                 );
               },

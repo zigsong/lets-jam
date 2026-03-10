@@ -2,8 +2,8 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
-import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/splash_screen.dart';
@@ -15,6 +15,26 @@ final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+final _router = GoRouter(
+  navigatorKey: navigatorKey,
+  observers: [routeObserver],
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const DefaultNavigation(),
+    ),
+    GoRoute(
+      path: '/profiles/:profileId',
+      builder: (context, state) {
+        final profileId = state.pathParameters['profileId']; // URL에서 ID 추출
+
+        return ProfileScreen(profileId: profileId!);
+      },
+    ),
+  ],
+);
 
 Future<void> main() async {
   /** splash screen 시간 */
@@ -63,28 +83,15 @@ class _MyAppState extends State<MyApp> {
         await Supabase.instance.client.auth.getSessionFromUrl(uri);
         return;
       }
-
-      final segments = uri.pathSegments;
-      if (segments.length >= 2 && segments[0] == 'profile') {
-        final userId = segments[1];
-        final response = await Supabase.instance.client
-            .from('profiles')
-            .select('*')
-            .eq('id', userId)
-            .single();
-        final profile = ProfileModel.fromJson(response);
-        navigatorKey.currentState?.push(MaterialPageRoute(
-          builder: (_) => ProfileScreen(targetUser: profile),
-        ));
-      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      navigatorObservers: [routeObserver],
+    return MaterialApp.router(
+      routerConfig: _router,
+      title: 'JAM',
+
       // NOTE: 디바이스의 설정과 무관하게 폰트 사이즈를 고정시킴
       builder: (context, child) {
         final MediaQueryData data = MediaQuery.of(context);
@@ -121,13 +128,6 @@ class _MyAppState extends State<MyApp> {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           )),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/home': (context) => const DefaultNavigation(),
-        // '/second': (context) => SecondScreen(),
-        // '/third': (context) => ThirdScreen(),
-      },
     );
   }
 }

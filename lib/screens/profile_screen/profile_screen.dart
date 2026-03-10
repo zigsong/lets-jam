@@ -26,9 +26,9 @@ Map<SessionEnum, String> sessionImagesActive = {
 };
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key, this.targetUser});
+  const ProfileScreen({super.key, this.profileId});
 
-  final ProfileModel? targetUser;
+  final String? profileId;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -37,19 +37,41 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final SessionController sessionController = Get.find<SessionController>();
   final supabase = Supabase.instance.client;
-  ProfileModel? get profile =>
-      widget.targetUser ?? sessionController.user.value;
+
+  ProfileModel? _targetUser;
+
+  ProfileModel? get profile => _targetUser ?? sessionController.user.value;
 
   bool get isMyProfile =>
-      widget.targetUser == null ||
-      widget.targetUser?.id == sessionController.user.value?.id;
+      _targetUser == null ||
+      _targetUser?.id == sessionController.user.value?.id;
 
   List<Map<String, dynamic>> _posts = [];
 
   @override
   void initState() {
     super.initState();
-    _loadPosts();
+    _loadTargetUser().then((_) => _loadPosts());
+  }
+
+  Future<void> _loadTargetUser() async {
+    final profileId = widget.profileId;
+    if (profileId == null) return;
+
+    final currentUserId = sessionController.user.value?.id;
+    if (profileId == currentUserId) return;
+
+    final response = await supabase
+        .from('profiles')
+        .select()
+        .eq('id', profileId)
+        .maybeSingle();
+
+    if (response != null && mounted) {
+      setState(() {
+        _targetUser = ProfileModel.fromJson(response);
+      });
+    }
   }
 
   Future<void> _loadPosts() async {
@@ -67,11 +89,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void onClickShareCourtUrl() {
-    final url = 'https://letsjam.work/profile/${profile?.id}';
-    SharePlus.instance.share(ShareParams(
-        subject: 'JAM! 째미난 밴드 라이프 커뮤니티 | ${profile?.nickname}님의 프로필',
-        uri: Uri.parse(url)));
+  void onClickShareCourtUrl() async {
+    try {
+      final url = 'https://letsjam.work/profiles/${profile?.id}';
+      final box = context.findRenderObject() as RenderBox;
+      await SharePlus.instance.share(ShareParams(
+          uri: Uri.parse(url),
+          subject: 'JAM! 째미난 밴드 라이프 커뮤니티 | ${profile?.nickname}님의 프로필',
+          sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size));
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(customSnackbar('공유 오류: $e'));
+      }
+    }
   }
 
   Future<void> _deleteProfile(String id) async {
