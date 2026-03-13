@@ -18,13 +18,15 @@ class TextInput extends StatelessWidget {
       this.suffixButton,
       this.focusNode,
       this.errorText,
-      this.prefixText});
+      this.prefixText,
+      this.onTap});
 
   final String? label;
   final String? initialValue;
   final String? placeholder;
   final void Function(String)? onChanged;
   final void Function()? onSubmit;
+  final void Function()? onTap;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final double? height;
@@ -95,6 +97,7 @@ class TextInput extends StatelessWidget {
                     ),
                     cursorColor: ColorSeed.meticulousGrayLight.color,
                     validator: validator,
+                    onTap: onTap,
                     onChanged: onChanged,
                     onFieldSubmitted: (value) {
                       onSubmit?.call();

@@ -83,8 +83,9 @@ class _ReplyInputState extends State<ReplyInput> {
           child: TextInput(
             controller: _textEditingController,
             placeholder: '댓글을 작성해 주세요',
-            onChanged: (value) {
+            onTap: () {
               if (sessionController.isLoggedIn.value == false) {
+                FocusManager.instance.primaryFocus?.unfocus();
                 showModal(
                     context: context,
                     desc: '로그인 후에 이용할 수 있어요',
@@ -95,9 +96,10 @@ class _ReplyInputState extends State<ReplyInput> {
                     cancelText: '다음에 할게요',
                     onCancel: null);
               } else if (sessionController.hasProfile.value == false) {
+                FocusManager.instance.primaryFocus?.unfocus();
                 showModal(
                   context: context,
-                  desc: '프로필 작성 후에 이용할 수 있어요.\n프로필을 작성할까요?',
+                  desc: '프로필이 없어요.\n프로필을 작성할까요?',
                   confirmText: '작성하기',
                   onConfirm: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -106,11 +108,12 @@ class _ReplyInputState extends State<ReplyInput> {
                   },
                   cancelText: '다음에 할게요',
                 );
-              } else {
-                setState(() {
-                  _value = value;
-                });
               }
+            },
+            onChanged: (value) {
+              setState(() {
+                _value = value;
+              });
             },
             suffixButton: Image.asset(
               'assets/icons/send.png',
