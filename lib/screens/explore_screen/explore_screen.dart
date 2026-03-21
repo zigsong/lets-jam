@@ -73,7 +73,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 
   void _switchToTab(PostTypeEnum type) {
-    _tabController.index = type == PostTypeEnum.findBand ? 1 : 0;
+    _tabController.index = type == PostTypeEnum.findMember ? 1 : 0;
   }
 
   @override

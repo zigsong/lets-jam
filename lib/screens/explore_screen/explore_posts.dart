@@ -101,8 +101,8 @@ class _ExplorePostsState extends State<ExplorePosts> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Obx(() {
             final filteredPosts = widget.postType == PostTypeEnum.findBand
-                ? _filterPosts(findSessionPosts)
-                : _filterPosts(findBandPosts);
+                ? _filterPosts(findBandPosts)
+                : _filterPosts(findSessionPosts);
 
             return ListView.separated(
                 padding: EdgeInsets.zero,

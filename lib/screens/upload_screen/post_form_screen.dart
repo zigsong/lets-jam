@@ -69,7 +69,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
       postType = widget.post!.postType;
       formData = FindSessionUploadModel.fromPost(widget.post!);
     } else {
-      postType = widget.initialPostType ?? PostTypeEnum.findBand;
+      postType = widget.initialPostType ?? PostTypeEnum.findMember;
       formData = FindSessionUploadModel.init();
     }
   }
