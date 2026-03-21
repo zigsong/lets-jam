@@ -59,6 +59,15 @@ class _LikedPostsState extends State<LikedPosts> {
 
         final posts = snapshot.data!;
 
+        if (posts.isEmpty) {
+          return const Center(
+            child: Text(
+              '아직 찜한 게시글이 없어요',
+              style: TextStyle(fontSize: 15, color: Colors.grey),
+            ),
+          );
+        }
+
         return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ListView.separated(
