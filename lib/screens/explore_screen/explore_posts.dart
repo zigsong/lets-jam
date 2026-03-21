@@ -104,37 +104,44 @@ class _ExplorePostsState extends State<ExplorePosts> {
                 ? _filterPosts(findBandPosts)
                 : _filterPosts(findSessionPosts);
 
-            return ListView.separated(
-                padding: EdgeInsets.zero,
-                itemCount: filteredPosts.length,
-                separatorBuilder: (context, index) => const SizedBox(
-                      height: 8,
-                    ),
-                itemBuilder: (context, index) {
-                  final post = filteredPosts[index];
-                  return GestureDetector(
-                    child: PostThumbnail(post: post),
-                    onTap: () async {
-                      final deleted = await Navigator.push(
-                          context,
-                          Platform.isIOS
-                              ? CupertinoPageRoute(
-                                  builder: (context) => PostDetailScreen(
-                                        postId: post.id,
-                                        userId: post.userId,
-                                      ))
-                              : MaterialPageRoute(
-                                  builder: (context) => PostDetailScreen(
-                                        postId: post.id,
-                                        userId: post.userId,
-                                      )));
+            return RefreshIndicator(
+              color: const Color(0xFFFF6B2C),
+              onRefresh: () async {
+                _refresh();
+                await _posts;
+              },
+              child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  itemCount: filteredPosts.length,
+                  separatorBuilder: (context, index) => const SizedBox(
+                        height: 8,
+                      ),
+                  itemBuilder: (context, index) {
+                    final post = filteredPosts[index];
+                    return GestureDetector(
+                      child: PostThumbnail(post: post),
+                      onTap: () async {
+                        final deleted = await Navigator.push(
+                            context,
+                            Platform.isIOS
+                                ? CupertinoPageRoute(
+                                    builder: (context) => PostDetailScreen(
+                                          postId: post.id,
+                                          userId: post.userId,
+                                        ))
+                                : MaterialPageRoute(
+                                    builder: (context) => PostDetailScreen(
+                                          postId: post.id,
+                                          userId: post.userId,
+                                        )));
 
-                      if (deleted == true) {
-                        _refresh();
-                      }
-                    },
-                  );
-                });
+                        if (deleted == true) {
+                          _refresh();
+                        }
+                      },
+                    );
+                  }),
+            );
           }),
         );
       },
