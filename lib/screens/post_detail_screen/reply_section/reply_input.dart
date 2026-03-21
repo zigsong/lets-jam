@@ -24,8 +24,9 @@ class _ReplyInputState extends State<ReplyInput> {
   String _value = '';
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
   }
 
   Future<void> _submit() async {

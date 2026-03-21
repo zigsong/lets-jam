@@ -39,6 +39,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   bool? isMyPost;
   bool _scrolledPastThreshold = false;
+  final ScrollController _scrollController = ScrollController();
+  double _previousBottomInset = 0;
 
   @override
   void initState() {
@@ -48,7 +50,24 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    if (bottomInset > _previousBottomInset && _scrollController.hasClients) {
+      final diff = bottomInset - _previousBottomInset;
+      _scrollController.jumpTo(
+        (_scrollController.offset + diff).clamp(
+          0.0,
+          _scrollController.position.maxScrollExtent,
+        ),
+      );
+    }
+    _previousBottomInset = bottomInset;
+  }
+
+  @override
   void dispose() {
+    _scrollController.dispose();
     // 페이지 떠날 때 상태바 원래 색으로 복원
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     super.dispose();
@@ -117,6 +136,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // state가 MediaQuery를 구독하도록 강제 → didChangeDependencies가 키보드 변화에 반응함
+    MediaQuery.of(context).viewInsets.bottom;
     return FutureBuilder(
         future: _post,
         builder: (context, snapshot) {
@@ -133,6 +154,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           final post = snapshot.data!;
 
           return Scaffold(
+            resizeToAvoidBottomInset: true,
             body: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification notification) {
                 if (notification.metrics.axis != Axis.vertical) return false;
@@ -158,6 +180,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     children: [
                       Expanded(
                         child: SingleChildScrollView(
+                          controller: _scrollController,
                           child: Column(
                             children: [
                               ImageSlider(images: post.images),
@@ -224,6 +247,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 endIndent: 16,
                               ),
                               ReplySection(postId: post.id),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).viewInsets.bottom,
+                              ),
                             ],
                           ),
                         ),
