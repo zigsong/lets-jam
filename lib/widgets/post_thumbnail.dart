@@ -18,7 +18,8 @@ class PostThumbnail extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(width: 1, color: ColorSeed.boldOrangeStrong.color),
+          border:
+              Border.all(width: 1, color: ColorSeed.boldOrangeRegular.color),
           borderRadius: BorderRadius.circular(8)),
       child: IntrinsicHeight(
         child: Row(
