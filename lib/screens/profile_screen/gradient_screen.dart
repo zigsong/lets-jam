@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/utils/image_utils.dart';
 
 class GradientSplitScreen extends StatelessWidget {
   final String? backgroundImageUrl;
@@ -23,15 +25,18 @@ class GradientSplitScreen extends StatelessWidget {
             right: 0,
             height: halfHeight,
             child: backgroundImageUrl != null && backgroundImageUrl!.isNotEmpty
-                ? Image.network(
-                    backgroundImageUrl!,
+                ? CachedNetworkImage(
+                    fadeInDuration: Duration.zero,
+                    imageUrl: supabaseImageUrl(backgroundImageUrl!,
+                        width: 800, quality: 80),
                     fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.center,
+                    memCacheWidth: 800,
                   )
                 : Image.asset(
                     'assets/images/empty_profile_background.png',
                     fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.center,
                   ),
           ),
 

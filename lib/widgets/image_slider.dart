@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/full_image_slider.dart';
 
 class ImageSlider extends StatefulWidget {
@@ -52,10 +54,12 @@ class _ImageSliderState extends State<ImageSlider> {
             (image) {
               return Builder(
                 builder: (context) {
-                  return Image.network(
-                    image,
+                  return CachedNetworkImage(
+                    fadeInDuration: Duration.zero,
+                    imageUrl: supabaseImageUrl(image, width: 800, quality: 85),
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
+                    memCacheWidth: 800,
                   );
                 },
               );
@@ -80,11 +84,14 @@ class _ImageSliderState extends State<ImageSlider> {
         onTap: () {
           showFullImageSliderModal(context, widget.images!, 1);
         },
-        child: Image.network(
-          widget.images![0],
+        child: CachedNetworkImage(
+                    fadeInDuration: Duration.zero,
+          imageUrl:
+              supabaseImageUrl(widget.images![0], width: 800, quality: 85),
           width: MediaQuery.of(context).size.width,
           height: imageHeight,
           fit: BoxFit.cover,
+          memCacheWidth: 800,
         ),
       );
     }

@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/utils/image_utils.dart';
 
 class MultipleImagePicker extends StatefulWidget {
   final Function(XFile file) onSelect;
@@ -37,7 +39,12 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
 
   Widget buildImageFromString(String path) {
     if (path.startsWith('http')) {
-      return Image.network(path, fit: BoxFit.cover);
+      return CachedNetworkImage(
+                    fadeInDuration: Duration.zero,
+        imageUrl: supabaseImageUrl(path, width: 120, quality: 80),
+        fit: BoxFit.cover,
+        memCacheWidth: 120,
+      );
     } else {
       return Image.file(File(path), fit: BoxFit.cover);
     }

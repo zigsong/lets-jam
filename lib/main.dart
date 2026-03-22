@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
-import 'package:lets_jam/screens/splash_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';

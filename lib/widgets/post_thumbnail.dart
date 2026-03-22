@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/date_parser.dart';
 import 'package:lets_jam/utils/helper.dart';
+import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/post_badge.dart';
 import 'package:lets_jam/widgets/post_like_button.dart';
 
@@ -176,10 +178,13 @@ class PostThumbnail extends StatelessWidget {
                 child: Stack(children: [
                   Positioned.fill(
                     child: (post.images?.isNotEmpty ?? false)
-                        ? Image.network(
-                            post.images![0],
+                        ? CachedNetworkImage(
+                    fadeInDuration: Duration.zero,
+                            imageUrl: supabaseImageUrl(post.images![0],
+                                width: 300, quality: 80),
                             fit: BoxFit.cover,
                             alignment: Alignment.center,
+                            memCacheWidth: 300,
                           )
                         : Image.asset(
                             'assets/images/thumbnail_default.png',

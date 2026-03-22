@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
+import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -70,10 +72,12 @@ class _ReplyInputState extends State<ReplyInput> {
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
           clipBehavior: Clip.antiAlias,
           child: currentUser?.profileImage?.isNotEmpty == true
-              ? Image.network(
-                  currentUser!.profileImage!,
-                  width: MediaQuery.of(context).size.width,
+              ? CachedNetworkImage(
+                    fadeInDuration: Duration.zero,
+                  imageUrl: supabaseImageUrl(currentUser!.profileImage!,
+                      width: 80, quality: 80),
                   fit: BoxFit.cover,
+                  memCacheWidth: 80,
                 )
               : Image.asset('assets/images/profile_avatar.png'),
         ),

@@ -12,6 +12,8 @@ import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/custom_snackbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/post_like_button.dart';
@@ -568,10 +570,12 @@ class PostDetailAuthorInfo extends StatelessWidget {
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: user.profileImage?.isNotEmpty == true
-                        ? Image.network(
-                            user.profileImage!,
-                            width: MediaQuery.of(context).size.width,
+                        ? CachedNetworkImage(
+                    fadeInDuration: Duration.zero,
+                            imageUrl: supabaseImageUrl(user.profileImage!,
+                                width: 80, quality: 80),
                             fit: BoxFit.cover,
+                            memCacheWidth: 80,
                           )
                         : Image.asset('assets/images/profile_avatar.png'),
                   ),
