@@ -13,7 +13,7 @@ platform :ios do
   end
 
   private_lane :build_flutter_ipa do
-    sh("cd .. && flutter build ios --release --no-codesign")
+    sh("export PATH=\"$HOME/.rbenv/shims:$HOME/.rbenv/bin:/opt/homebrew/bin:$PATH\" && eval \"$(rbenv init -)\" && cd .. && flutter build ios --release --no-codesign")
 
     increment_build_number(xcodeproj: "Runner.xcodeproj")
 
@@ -23,10 +23,8 @@ platform :ios do
       configuration: "Release",
       export_method: "app-store",
       export_options: {
-        provisioningProfiles: {
-          "com.chunkybuddy.letsjam" => "match AppStore com.chunkybuddy.letsjam"
-        },
-        signingStyle: "automatic"
+        signingStyle: "automatic",
+        teamID: "J262X57F7K"
       },
       output_directory: "./build",
       output_name: "Runner.ipa",
