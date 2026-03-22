@@ -12,6 +12,8 @@ import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/custom_snackbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -147,8 +149,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: BorderRadius.circular(100)),
                       clipBehavior: Clip.antiAlias,
                       child: profile?.profileImage?.isNotEmpty == true
-                          ? Image.network(profile!.profileImage!,
-                              fit: BoxFit.cover)
+                          ? CachedNetworkImage(
+                              fadeInDuration: Duration.zero,
+                              imageUrl: supabaseImageUrl(profile!.profileImage!,
+                                  width: 200, quality: 80),
+                              fit: BoxFit.cover,
+                              memCacheWidth: 200,
+                            )
                           : Image.asset('assets/images/profile_avatar.png'),
                     ),
                     const SizedBox(
@@ -200,10 +207,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               content: '연락처가 복사되었어요'),
                                         );
                                       },
-                                        child: Wrap(
-                                          crossAxisAlignment:
-                                              WrapCrossAlignment.center,
-                                          spacing: 8,
+                                      child: Wrap(
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
+                                        spacing: 8,
                                         children: [
                                           Text(contact),
                                           SvgPicture.asset(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/models/profile_upload_model.dart';
@@ -9,6 +10,7 @@ import 'package:lets_jam/screens/default_navigation.dart';
 
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
+import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
@@ -281,14 +283,17 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
         child: Column(
           children: [
             Container(
-              height: 483,
+              height: MediaQuery.of(context).padding.top + 362,
               decoration: BoxDecoration(
                 color: ColorSeed.boldOrangeLight.color,
                 image: formData.backgroundImages?.isNotEmpty == true
                     ? DecorationImage(
                         image: formData.backgroundImages!.first
                                 .startsWith('http')
-                            ? NetworkImage(formData.backgroundImages!.first)
+                            ? CachedNetworkImageProvider(supabaseImageUrl(
+                                formData.backgroundImages!.first,
+                                width: 800,
+                                quality: 80))
                             : FileImage(File(formData.backgroundImages!.first)),
                         fit: BoxFit.cover,
                       )
@@ -317,11 +322,16 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                                   : ClipOval(
                                       child: formData.profileImage!
                                               .startsWith('http')
-                                          ? Image.network(
-                                              formData.profileImage!,
+                                          ? CachedNetworkImage(
+                                              fadeInDuration: Duration.zero,
+                                              imageUrl: supabaseImageUrl(
+                                                  formData.profileImage!,
+                                                  width: 200,
+                                                  quality: 80),
                                               width: 102,
                                               height: 102,
                                               fit: BoxFit.cover,
+                                              memCacheWidth: 200,
                                             )
                                           : Image.file(
                                               File(formData.profileImage!),

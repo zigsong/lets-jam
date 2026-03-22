@@ -30,13 +30,13 @@ class GradientSplitScreen extends StatelessWidget {
                     imageUrl: supabaseImageUrl(backgroundImageUrl!,
                         width: 800, quality: 80),
                     fit: BoxFit.cover,
-                    alignment: Alignment.center,
+                    alignment: Alignment.bottomCenter,
                     memCacheWidth: 800,
                   )
                 : Image.asset(
                     'assets/images/empty_profile_background.png',
                     fit: BoxFit.cover,
-                    alignment: Alignment.center,
+                    alignment: Alignment.bottomCenter,
                   ),
           ),
 
