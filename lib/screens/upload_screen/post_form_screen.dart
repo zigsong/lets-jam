@@ -51,7 +51,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
   String? _titleErrorText;
   String? _contactErrorText;
   bool _sessionError = false;
-  bool _regionError = false;
+  String? _regionErrorText;
   bool _hashtagError = false;
 
   final _sessionKey = GlobalKey();
@@ -59,7 +59,8 @@ class _PostFormScreenState extends State<PostFormScreen> {
   bool get _isSubmitDisabled =>
       formData.title.trim().isEmpty ||
       formData.sessions.isEmpty ||
-      formData.contact.trim().isEmpty;
+      formData.contact.trim().isEmpty ||
+      formData.regions.isEmpty;
 
   @override
   void initState() {
@@ -89,7 +90,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
       _titleErrorText = null;
       _contactErrorText = null;
       _sessionError = false;
-      _regionError = false;
+      _regionErrorText = null;
       _hashtagError = false;
     });
 
@@ -101,6 +102,10 @@ class _PostFormScreenState extends State<PostFormScreen> {
     }
     if (formData.sessions.isEmpty) {
       _sessionError = true;
+      hasError = true;
+    }
+    if (formData.regions.isEmpty) {
+      _regionErrorText = '지역을 선택해주세요';
       hasError = true;
     }
     if (formData.contact.trim().isEmpty) {
@@ -298,6 +303,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
                     ),
                     CustomForm(
                       label: '지역',
+                      isRequired: true,
                       subTitle: '합주할 수 있는 지역을 선택해 주세요 (최대 3개)',
                       content: RegionSelector(
                         selectedRegions: formData.regions,
@@ -305,21 +311,20 @@ class _PostFormScreenState extends State<PostFormScreen> {
                           setState(() {
                             if (formData.regions.contains(region)) {
                               formData.regions.remove(region);
-                              _regionError = false;
                             } else {
                               if (formData.regions.length >= 3) {
-                                _regionError = true;
+                                _regionErrorText = '3개까지 선택할 수 있어요';
                                 return;
                               }
-                              _regionError = false;
+                              _regionErrorText = null;
                               formData.regions.add(region);
                             }
                           });
                         },
                       ),
                     ),
-                    if (_regionError)
-                      const FormErrorMessage(message: '3개까지 선택할 수 있어요'),
+                    if (_regionErrorText != null)
+                      FormErrorMessage(message: _regionErrorText!),
                     const SizedBox(
                       height: 30,
                     ),
