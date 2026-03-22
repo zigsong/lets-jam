@@ -621,13 +621,11 @@ class PostDetailAuthorInfo extends StatelessWidget {
                             CustomSnackbar(content: '연락처가 복사되었어요'),
                           );
                         },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 8,
                           children: [
                             Text(contact),
-                            const SizedBox(
-                              width: 8,
-                            ),
                             SvgPicture.asset(
                               'assets/icons/plus_copy.svg',
                               fit: BoxFit.fitHeight,
