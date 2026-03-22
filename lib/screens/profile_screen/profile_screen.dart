@@ -397,13 +397,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(
                             height: 16,
                           ),
-                          const SizedBox(
+                          SizedBox(
                             height: 32,
                             child: Align(
                               alignment: Alignment.bottomLeft,
                               child: Text(
-                                '작성한 글',
-                                style: TextStyle(
+                                '작성한 글 (${_posts.length})',
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -411,6 +411,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           const SizedBox(height: 10),
+                          if (_posts.isEmpty)
+                            const Text(
+                              '아직 작성한 글이 없어요',
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontSize: 14,
+                              ),
+                            ),
                           ..._posts.asMap().entries.map((entry) {
                             final i = entry.key;
                             final post = entry.value;
@@ -427,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           userId: profile!.id,
                                         ),
                                       ),
-                                    );
+                                    ).then((_) => _loadPosts());
                                   },
                                   child: Container(
                                     width: double.infinity,
