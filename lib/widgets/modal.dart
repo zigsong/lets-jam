@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
-class Modal extends StatelessWidget {
+class Modal extends StatefulWidget {
   const Modal(
       {super.key,
       this.title,
       required this.desc,
       this.cancelText,
       this.confirmText,
-      required this.onConfirm,
+      this.onConfirm,
+      this.asyncOnConfirm,
       this.onCancel});
 
   final String? title;
@@ -16,8 +17,29 @@ class Modal extends StatelessWidget {
   final String? cancelText;
   final String? confirmText;
 
-  final VoidCallback onConfirm;
+  final VoidCallback? onConfirm;
+  final Future<void> Function()? asyncOnConfirm;
   final VoidCallback? onCancel;
+
+  @override
+  State<Modal> createState() => _ModalState();
+}
+
+class _ModalState extends State<Modal> {
+  bool _isLoading = false;
+
+  Future<void> _handleConfirm() async {
+    if (widget.asyncOnConfirm != null) {
+      setState(() => _isLoading = true);
+      try {
+        await widget.asyncOnConfirm!();
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    } else {
+      widget.onConfirm?.call();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,28 +53,28 @@ class Modal extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (title != null)
+            if (widget.title != null)
               Column(children: [
                 Center(
                   child: Text(
-                    title!,
+                    widget.title!,
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                 ),
                 const SizedBox(height: 16),
               ]),
-            if (desc is String)
+            if (widget.desc is String)
               Text(
-                desc,
+                widget.desc,
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 15),
               )
             else
-              Center(child: desc),
+              Center(child: widget.desc),
             const SizedBox(height: 24),
             Padding(
-              padding: (confirmText == null) != (cancelText == null)
+              padding: (widget.confirmText == null) != (widget.cancelText == null)
                   ? const EdgeInsets.symmetric(horizontal: 56)
                   : EdgeInsets.zero,
               child: Flex(
@@ -76,13 +98,13 @@ class Modal extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             inherit: false),
                       ),
-                      onPressed: () {
-                        onCancel?.call();
+                      onPressed: _isLoading ? null : () {
+                        widget.onCancel?.call();
                       },
-                      child: Text(cancelText ?? '취소'),
+                      child: Text(widget.cancelText ?? '취소'),
                     ),
                   ),
-                  if (confirmText != null) ...[
+                  if (widget.confirmText != null) ...[
                     const SizedBox(width: 8),
                     Expanded(
                       flex: 1,
@@ -100,10 +122,17 @@ class Modal extends StatelessWidget {
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 inherit: false)),
-                        onPressed: () {
-                          onConfirm();
-                        },
-                        child: Text(confirmText!),
+                        onPressed: _isLoading ? null : _handleConfirm,
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(widget.confirmText!),
                       ),
                     ),
                   ],
@@ -124,6 +153,7 @@ void showModal({
   String? cancelText,
   String? confirmText,
   VoidCallback? onConfirm,
+  Future<void> Function()? asyncOnConfirm,
   VoidCallback? onCancel,
 }) {
   showGeneralDialog(
@@ -139,10 +169,18 @@ void showModal({
           desc: desc,
           cancelText: cancelText,
           confirmText: confirmText,
-          onConfirm: () {
-            Navigator.of(modalContext).pop();
-            onConfirm?.call(); // 외부에서 액션 처리
-          },
+          onConfirm: onConfirm != null
+              ? () {
+                  Navigator.of(modalContext).pop();
+                  onConfirm();
+                }
+              : null,
+          asyncOnConfirm: asyncOnConfirm != null
+              ? () async {
+                  await asyncOnConfirm();
+                  if (modalContext.mounted) Navigator.of(modalContext).pop();
+                }
+              : null,
           onCancel: () {
             Navigator.of(modalContext).pop();
             onCancel?.call();

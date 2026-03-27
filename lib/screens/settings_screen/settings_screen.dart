@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
+import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/screens/terms_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/custom_snackbar.dart';
@@ -44,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final SessionController sessionController = Get.find<SessionController>();
   late Worker _loginWorker;
 
-  List<SettingItem> get settings => [
+  List<SettingItem> _buildSettings(BuildContext context) => [
         if (!sessionController.isLoggedIn.value)
           SettingItem(
             title: '로그인/회원가입하기',
@@ -97,7 +98,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: '로그아웃',
             onClick: () async {
               await sessionController.signOut();
-              if (mounted) {
+              if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   CustomSnackbar(content: '로그아웃되었어요'),
                 );
@@ -108,10 +109,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               }
             },
           ),
-        // TODO: 어딘가로 연결 혹은 알럿
-        const SettingItem(
-          title: '회원 탈퇴',
-        ),
+        if (sessionController.isLoggedIn.value)
+          SettingItem(
+            title: '회원 탈퇴',
+            onClick: () => showModal(
+              context: context,
+              title: 'JAM을 떠나시겠어요?',
+              desc: '탈퇴 시, 개인정보와 활동 내역은 영구적으로\n삭제되며 복구할 수 없어요. 계속 진행할까요?',
+              cancelText: '취소',
+              confirmText: '탈퇴하기',
+              asyncOnConfirm: _deleteAccount,
+              onCancel: () {},
+            ),
+          ),
         SettingItem(
           title: '앱 버전 정보',
           info: _version,
@@ -148,10 +158,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.dispose();
   }
 
+  Future<void> _deleteAccount() async {
+    try {
+      await sessionController.deleteAccount();
+      if (context.mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const DefaultNavigation()),
+          (_) => false,
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          CustomSnackbar(content: '탈퇴 처리 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.'),
+        );
+      }
+    }
+  }
+
   Future<void> _loadVersion() async {
     final info = await PackageInfo.fromPlatform();
-    print('info: $info');
-
     setState(() {
       _version = '${info.version} (${info.buildNumber})';
     });
@@ -171,78 +197,80 @@ class _SettingsScreenState extends State<SettingsScreen> {
               TextStyle(fontSize: 18, color: ColorSeed.boldOrangeMedium.color),
         ),
       ),
-      body: Obx(() => ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            itemCount: settings.length,
-            itemBuilder: (context, index) {
-              final item = settings[index];
-
-              return ListTile(
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          item.title,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: item.titleFontWeight ?? FontWeight.w500,
-                            color: item.textColor,
-                          ),
-                        ),
-                        if (item.info != null) ...[
-                          const SizedBox(width: 10),
-                          Text(
-                            item.info!,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: ColorSeed.meticulousGrayMedium.color,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    if (item.subtitle != null) ...[
-                      const SizedBox(height: 4),
+      body: Obx(() {
+        final items = _buildSettings(context);
+        return ListView.separated(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          itemCount: items.length,
+          itemBuilder: (_, index) {
+            final item = items[index];
+            return ListTile(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
                       Text(
-                        item.subtitle!,
+                        item.title,
                         style: TextStyle(
-                          fontSize: 13,
-                          color: item.textColor != null
-                              ? item.textColor!.withOpacity(0.7)
-                              : ColorSeed.meticulousGrayMedium.color,
+                          fontSize: 16,
+                          fontWeight: item.titleFontWeight ?? FontWeight.w500,
+                          color: item.textColor,
                         ),
                       ),
+                      if (item.info != null) ...[
+                        const SizedBox(width: 10),
+                        Text(
+                          item.info!,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: ColorSeed.meticulousGrayMedium.color,
+                          ),
+                        ),
+                      ],
                     ],
+                  ),
+                  if (item.subtitle != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      item.subtitle!,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: item.textColor != null
+                            ? item.textColor!.withOpacity(0.7)
+                            : ColorSeed.meticulousGrayMedium.color,
+                      ),
+                    ),
                   ],
-                ),
-                trailing: item.showArrow
-                    ? Icon(
-                        Icons.arrow_forward_ios,
-                        size: 12,
-                        color: item.arrowColor ??
-                            ColorSeed.organizedBlackLight.color,
-                      )
-                    : null,
-                onTap: () {
-                  if (item.url != null) {
-                    _launchUrl(item.url!);
-                  } else if (item.onClick != null) {
-                    item.onClick!();
-                  }
-                },
-              );
-            },
-            separatorBuilder: (context, index) => const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Divider(
-                height: 1,
-                thickness: 0.5,
-                color: Color(0xFFDDDDDD),
+                ],
               ),
+              trailing: item.showArrow
+                  ? Icon(
+                      Icons.arrow_forward_ios,
+                      size: 12,
+                      color: item.arrowColor ??
+                          ColorSeed.organizedBlackLight.color,
+                    )
+                  : null,
+              onTap: () {
+                if (item.url != null) {
+                  _launchUrl(item.url!);
+                } else if (item.onClick != null) {
+                  item.onClick!();
+                }
+              },
+            );
+          },
+          separatorBuilder: (_, __) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(
+              height: 1,
+              thickness: 0.5,
+              color: Color(0xFFDDDDDD),
             ),
-          )),
+          ),
+        );
+      }),
     );
   }
 }
