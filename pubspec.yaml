@@ -47,6 +47,7 @@ dependencies:
   go_router: ^15.1.2 # 딥링크 라우팅
   app_links: ^6.0.0 # 딥링크 수신
   cached_network_image: ^3.3.1
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
