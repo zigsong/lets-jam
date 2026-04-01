@@ -109,53 +109,51 @@ class SessionController extends GetxController {
 
   Future<void> deleteAccount() async {
     final currentUser = user.value;
-    if (currentUser == null) return;
 
-    // 1. 스토리지 이미지 삭제
-    try {
-      final imagePaths = <String>[];
+    // 1. 스토리지 이미지 삭제 (프로필이 있을 때만)
+    if (currentUser != null) {
+      try {
+        final imagePaths = <String>[];
 
-      // 프로필 이미지
-      if (currentUser.profileImage != null) {
-        final uri = Uri.parse(currentUser.profileImage!);
-        final pathSegments = uri.pathSegments;
-        final storageIdx = pathSegments.indexOf('images');
-        if (storageIdx != -1 && storageIdx + 1 < pathSegments.length) {
-          imagePaths.add(pathSegments.sublist(storageIdx + 1).join('/'));
-        }
-      }
-
-      // 배경 이미지
-      for (final imageUrl in currentUser.backgroundImages ?? []) {
-        final uri = Uri.parse(imageUrl);
-        final pathSegments = uri.pathSegments;
-        final storageIdx = pathSegments.indexOf('images');
-        if (storageIdx != -1 && storageIdx + 1 < pathSegments.length) {
-          imagePaths.add(pathSegments.sublist(storageIdx + 1).join('/'));
-        }
-      }
-
-      // 게시글 이미지
-      final posts = await supabase
-          .from('posts')
-          .select('images')
-          .eq('user_id', currentUser.id);
-      for (final post in posts) {
-        for (final imageUrl in (post['images'] as List<dynamic>? ?? [])) {
-          final uri = Uri.parse(imageUrl as String);
+        if (currentUser.profileImage != null) {
+          final uri = Uri.parse(currentUser.profileImage!);
           final pathSegments = uri.pathSegments;
           final storageIdx = pathSegments.indexOf('images');
           if (storageIdx != -1 && storageIdx + 1 < pathSegments.length) {
             imagePaths.add(pathSegments.sublist(storageIdx + 1).join('/'));
           }
         }
-      }
 
-      if (imagePaths.isNotEmpty) {
-        await supabase.storage.from('images').remove(imagePaths);
+        for (final imageUrl in currentUser.backgroundImages ?? []) {
+          final uri = Uri.parse(imageUrl);
+          final pathSegments = uri.pathSegments;
+          final storageIdx = pathSegments.indexOf('images');
+          if (storageIdx != -1 && storageIdx + 1 < pathSegments.length) {
+            imagePaths.add(pathSegments.sublist(storageIdx + 1).join('/'));
+          }
+        }
+
+        final posts = await supabase
+            .from('posts')
+            .select('images')
+            .eq('user_id', currentUser.id);
+        for (final post in posts) {
+          for (final imageUrl in (post['images'] as List<dynamic>? ?? [])) {
+            final uri = Uri.parse(imageUrl as String);
+            final pathSegments = uri.pathSegments;
+            final storageIdx = pathSegments.indexOf('images');
+            if (storageIdx != -1 && storageIdx + 1 < pathSegments.length) {
+              imagePaths.add(pathSegments.sublist(storageIdx + 1).join('/'));
+            }
+          }
+        }
+
+        if (imagePaths.isNotEmpty) {
+          await supabase.storage.from('images').remove(imagePaths);
+        }
+      } catch (e) {
+        print("스토리지 삭제 에러 (무시하고 계속): $e");
       }
-    } catch (e) {
-      print("스토리지 삭제 에러 (무시하고 계속): $e");
     }
 
     // 2. auth user 삭제 (DB cascade로 profiles, posts 자동 삭제)

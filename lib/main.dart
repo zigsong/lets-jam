@@ -15,7 +15,7 @@ final RouteObserver<ModalRoute<void>> routeObserver =
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-final _router = GoRouter(
+final appRouter = GoRouter(
   navigatorKey: navigatorKey,
   observers: [routeObserver],
   initialLocation: '/',
@@ -88,7 +88,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: _router,
+      routerConfig: appRouter,
       title: 'JAM',
 
       // NOTE: 디바이스의 설정과 무관하게 폰트 사이즈를 고정시킴

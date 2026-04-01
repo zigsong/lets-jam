@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
-import 'package:lets_jam/screens/default_navigation.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lets_jam/main.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/screens/terms_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
@@ -102,10 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   CustomSnackbar(content: '로그아웃되었어요'),
                 );
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const DefaultNavigation()));
+                context.go('/');
               }
             },
           ),
@@ -144,8 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (loggedIn && mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/home', (route) => false);
+            context.go('/');
           }
         });
       }
@@ -161,19 +158,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _deleteAccount() async {
     try {
       await sessionController.deleteAccount();
-      if (context.mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const DefaultNavigation()),
-          (_) => false,
-        );
-      }
-    } catch (_) {
-      if (context.mounted) {
+    } catch (e) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           CustomSnackbar(content: '탈퇴 처리 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.'),
         );
       }
+      return;
     }
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackbar(content: '탈퇴가 완료되었어요'),
+      );
+    }
+    navigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 
   Future<void> _loadVersion() async {
