@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/image_utils.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:lets_jam/utils/photo_permission_dialog.dart';
 
 class MultipleImagePicker extends StatefulWidget {
   final Function(XFile file) onSelect;
@@ -29,46 +30,23 @@ class _MultipleImagePickerState extends State<MultipleImagePicker> {
   }
 
   Future getImage(ImageSource imageSource) async {
-    final status = await Permission.photos.status;
-    if (status.isPermanentlyDenied || status.isDenied) {
-      if (mounted) {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('사진 접근 권한 필요'),
-            content: const Text('사진을 업로드하려면 설정에서 사진 접근을 허용해주세요.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('취소'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  openAppSettings();
-                },
-                child: const Text('설정으로 이동'),
-              ),
-            ],
-          ),
-        );
+    try {
+      final XFile? pickedFile = await picker.pickImage(source: imageSource);
+      if (pickedFile != null) {
+        widget.onSelect(XFile(pickedFile.path));
+        setState(() {
+          imageCount = widget.images.length;
+        });
       }
-      return;
-    }
-
-    final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    if (pickedFile != null) {
-      widget.onSelect(XFile(pickedFile.path));
-      setState(() {
-        imageCount = widget.images.length;
-      });
+    } on PlatformException catch (_) {
+      if (mounted) showPhotoPermissionDialog(context);
     }
   }
 
   Widget buildImageFromString(String path) {
     if (path.startsWith('http')) {
       return CachedNetworkImage(
-                    fadeInDuration: Duration.zero,
+        fadeInDuration: Duration.zero,
         imageUrl: supabaseImageUrl(path, width: 120, quality: 80),
         fit: BoxFit.cover,
         memCacheWidth: 120,

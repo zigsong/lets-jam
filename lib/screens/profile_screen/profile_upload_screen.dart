@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' hide TextInput;
 import 'package:get/get.dart';
 import 'package:lets_jam/models/profile_upload_model.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +14,7 @@ import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:lets_jam/utils/photo_permission_dialog.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 import 'package:lets_jam/widgets/wide_button.dart';
@@ -54,22 +56,30 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickProfileImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        formData.profileImage = pickedFile.path;
-      });
+    try {
+      final XFile? pickedFile =
+          await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          formData.profileImage = pickedFile.path;
+        });
+      }
+    } on PlatformException {
+      if (mounted) showPhotoPermissionDialog(context);
     }
   }
 
   Future<void> _pickBackgroundImage() async {
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        formData.backgroundImages = [pickedFile.path];
-      });
+    try {
+      final XFile? pickedFile =
+          await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          formData.backgroundImages = [pickedFile.path];
+        });
+      }
+    } on PlatformException {
+      if (mounted) showPhotoPermissionDialog(context);
     }
   }
 
