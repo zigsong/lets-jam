@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
+import 'package:lets_jam/screens/auth_screen.dart';
 
 import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
@@ -68,7 +69,9 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
           desc: '로그인 후에 이용할 수 있어요',
           confirmText: '로그인',
           onConfirm: () {
-            sessionController.signIn();
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const AuthScreen()),
+            );
           },
           cancelText: '다음에 할게요',
           onCancel: null);
@@ -183,7 +186,10 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                               desc: '로그인 후에 이용할 수 있어요',
                               confirmText: '로그인',
                               onConfirm: () {
-                                sessionController.signIn();
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (_) => const AuthScreen()),
+                                );
                               },
                               cancelText: '다음에 할게요',
                               onCancel: null);
