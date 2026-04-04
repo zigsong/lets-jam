@@ -203,7 +203,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
           customSnackbar('프로필 작성을 완료했습니다'),
         );
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const DefaultNavigation(fromIndex: 2),
+          builder: (context) => const DefaultNavigation(),
         ));
       }
     } catch (e) {
