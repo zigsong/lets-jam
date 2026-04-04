@@ -222,7 +222,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
     final backgroundImageUrls =
         await _uploadImages(formData.backgroundImages ?? []);
 
-    await supabase.from('profiles').insert({
+    await supabase.from('profiles').upsert({
       'id': userId,
       'nickname': formData.nickname,
       'sessions': formData.sessions.map((e) => e.name).toList(),

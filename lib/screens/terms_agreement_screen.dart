@@ -30,8 +30,11 @@ class _TermsAgreementScreenState extends State<TermsAgreementScreen> {
       isDismissible: false,
       enableDrag: false,
       builder: (context) => TermsBottomSheet(
-        onAgree: () {
+        onAgree: () async {
           Navigator.pop(context);
+          await Supabase.instance.client.from('user_consents').upsert({
+            'user_id': widget.user.id,
+          });
           // 약관 동의 후 회원가입 완료 화면으로 이동
           Get.off(() => WelcomeScreen(user: widget.user));
         },

@@ -42,7 +42,14 @@ class SessionController extends GetxController {
             user.refresh();
             hasProfile.value = true;
           } else {
-            Get.to(() => TermsAgreementScreen(user: sbUser));
+            final consents = await supabase
+                .from('user_consents')
+                .select()
+                .eq('user_id', sbUser.id);
+            if (consents.isEmpty) {
+              Get.to(() => TermsAgreementScreen(user: sbUser));
+            }
+            // 동의 기록 있으면 TermsAgreementScreen 스킵, 홈으로
           }
         } catch (e) {
           print("프로필 조회 에러: $e");
