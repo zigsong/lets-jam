@@ -175,7 +175,7 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
         elevation: 0,
         iconTheme: IconThemeData(color: ColorSeed.boldOrangeStrong.color),
         title: Text(
-          _isSignUpMode ? '회원가입' : '로그인',
+          _isSignUpMode ? 'JAM 시작하기' : '로그인',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -184,83 +184,96 @@ class _EmailAuthScreenState extends State<EmailAuthScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextInput(
-                label: '이메일',
-                placeholder: 'example@email.com',
-                errorText: _emailError,
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (v) => setState(() {
-                  _email = v;
-                  _emailError = null;
-                }),
-              ),
-              const SizedBox(height: 20),
-              _buildPasswordField(
-                placeholder: '비밀번호 (6자 이상)',
-                obscure: _obscurePassword,
-                onToggleObscure: () =>
-                    setState(() => _obscurePassword = !_obscurePassword),
-                onChanged: (v) => setState(() {
-                  _password = v;
-                  _passwordError = null;
-                }),
-                errorText: _passwordError,
-              ),
-              if (_isSignUpMode) ...[
-                const SizedBox(height: 20),
-                _buildPasswordField(
-                  placeholder: '비밀번호 확인',
-                  obscure: _obscurePasswordConfirm,
-                  onToggleObscure: () => setState(
-                      () => _obscurePasswordConfirm = !_obscurePasswordConfirm),
-                  onChanged: (v) => setState(() {
-                    _passwordConfirm = v;
-                    _passwordConfirmError = null;
-                  }),
-                  errorText: _passwordConfirmError,
-                ),
-              ],
-              const SizedBox(height: 32),
-              WideButton(
-                text: _isSignUpMode ? '회원가입' : '로그인',
-                onPressed: _isLoading ? null : _submit,
-                disabled: _isLoading,
-              ),
-              const SizedBox(height: 24),
-              Center(
-                child: TextButton(
-                  onPressed: _switchMode,
-                  child: RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: ColorSeed.meticulousGrayMedium.color,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextInput(
+                      label: '이메일',
+                      placeholder: 'example@email.com',
+                      errorText: _emailError,
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (v) => setState(() {
+                        _email = v;
+                        _emailError = null;
+                      }),
+                    ),
+                    const SizedBox(height: 20),
+                    _buildPasswordField(
+                      placeholder: '비밀번호 (6자 이상)',
+                      obscure: _obscurePassword,
+                      onToggleObscure: () =>
+                          setState(() => _obscurePassword = !_obscurePassword),
+                      onChanged: (v) => setState(() {
+                        _password = v;
+                        _passwordError = null;
+                      }),
+                      errorText: _passwordError,
+                    ),
+                    if (_isSignUpMode) ...[
+                      const SizedBox(height: 20),
+                      _buildPasswordField(
+                        placeholder: '비밀번호 확인',
+                        obscure: _obscurePasswordConfirm,
+                        onToggleObscure: () => setState(() =>
+                            _obscurePasswordConfirm = !_obscurePasswordConfirm),
+                        onChanged: (v) => setState(() {
+                          _passwordConfirm = v;
+                          _passwordConfirmError = null;
+                        }),
+                        errorText: _passwordConfirmError,
                       ),
-                      children: [
-                        TextSpan(
-                          text: _isSignUpMode
-                              ? '이미 계정이 있나요? '
-                              : '아직 계정이 없나요? ',
-                        ),
-                        TextSpan(
-                          text: _isSignUpMode ? '로그인' : '회원가입',
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+              child: Column(
+                children: [
+                  WideButton(
+                    text: _isSignUpMode ? '회원가입' : '로그인',
+                    onPressed: _isLoading ? null : _submit,
+                    disabled: _isLoading,
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: TextButton(
+                      onPressed: _switchMode,
+                      child: RichText(
+                        text: TextSpan(
                           style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: ColorSeed.organizedBlackMedium.color,
+                            fontSize: 14,
+                            color: ColorSeed.meticulousGrayMedium.color,
                           ),
+                          children: [
+                            TextSpan(
+                              text: _isSignUpMode
+                                  ? '이미 계정이 있나요? '
+                                  : '아직 계정이 없나요? ',
+                            ),
+                            TextSpan(
+                              text: _isSignUpMode ? '로그인' : '회원가입',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: ColorSeed.organizedBlackMedium.color,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

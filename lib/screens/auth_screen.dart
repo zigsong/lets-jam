@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/email_auth_screen.dart';
@@ -24,14 +25,13 @@ class AuthScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(),
-              Image.asset('assets/icons/jam_logo.png', width: 80, height: 80),
-              const SizedBox(height: 16),
+              Image.asset('assets/images/jam_full_logo.png', width: 160),
+              const SizedBox(height: 12),
               Text(
-                'JAM',
+                '째미난 밴드 라이프 커뮤니티',
                 style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: ColorSeed.boldOrangeStrong.color,
+                  fontSize: 14,
+                  color: ColorSeed.boldOrangeMedium.color,
                 ),
               ),
               const Spacer(),
@@ -49,9 +49,21 @@ class AuthScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    '카카오로 시작하기',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/images/kakao.svg',
+                        width: 20,
+                        height: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        '카카오로 시작하기',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    ],
                   ),
                 ),
               ),
