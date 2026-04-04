@@ -91,6 +91,14 @@ class SessionController extends GetxController {
     }
   }
 
+  Future<void> signUpWithEmail(String email, String password) async {
+    await supabase.auth.signUp(email: email, password: password);
+  }
+
+  Future<void> signInWithEmail(String email, String password) async {
+    await supabase.auth.signInWithPassword(email: email, password: password);
+  }
+
   Future<void> signOut() async {
     try {
       await supabase.auth.signOut();
