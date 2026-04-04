@@ -104,6 +104,15 @@ class _ExplorePostsState extends State<ExplorePosts> {
                 ? _filterPosts(findBandPosts)
                 : _filterPosts(findSessionPosts);
 
+            if (filteredPosts.isEmpty) {
+              return const Center(
+                child: Text(
+                  '찾고 있는 게시글이 없어요',
+                  style: TextStyle(fontSize: 15, color: Colors.grey),
+                ),
+              );
+            }
+
             return RefreshIndicator(
               color: const Color(0xFFFF6B2C),
               onRefresh: () async {
