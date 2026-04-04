@@ -9,6 +9,7 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/custom_snackbar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:lets_jam/screens/auth_screen.dart';
 
 class SettingItem {
   final String title;
@@ -54,8 +55,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             textColor: ColorSeed.boldOrangeStrong.color,
             arrowColor: ColorSeed.boldOrangeStrong.color,
             titleFontWeight: FontWeight.w700,
-            onClick: () async {
-              await sessionController.signIn();
+            onClick: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AuthScreen()),
+              );
             },
           ),
         const SettingItem(
