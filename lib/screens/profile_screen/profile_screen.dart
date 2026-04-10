@@ -106,6 +106,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _blockUser(String userId) async {
+    try {
+      await supabase.from('blocked_users').insert({
+        'blocker_id': sessionController.user.value?.id,
+        'blocked_id': userId,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    } catch (_) {}
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(customSnackbar('사용자를 차단했어요'));
+      Navigator.pop(context);
+    }
+  }
+
   Future<void> _deleteProfile(String id) async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     try {
@@ -271,6 +286,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontWeight: FontWeight.w500, fontSize: 13),
                           ),
                         ),
+                        if (!isMyProfile &&
+                            sessionController.isLoggedIn.value) ...[
+                          const SizedBox(width: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              showModal(
+                                context: context,
+                                title: '사용자 차단',
+                                desc:
+                                    '차단하면 이 사용자의 게시글이 피드에서 숨겨집니다.',
+                                confirmText: '차단',
+                                onConfirm: () {
+                                  _blockUser(profile!.id);
+                                },
+                                cancelText: '취소',
+                                onCancel: null,
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              minimumSize: const Size(0, 35),
+                              elevation: 0,
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.red,
+                              side: const BorderSide(color: Colors.red),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              '차단',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  color: Colors.red),
+                            ),
+                          ),
+                        ],
                         if (isMyProfile) ...[
                           const SizedBox(width: 10),
                           GestureDetector(

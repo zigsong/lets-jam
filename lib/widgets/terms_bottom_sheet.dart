@@ -21,22 +21,24 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
   bool _allAgreed = false;
   bool _termsOfService = false;
   bool _privacyPolicy = false;
+  bool _communityRules = false;
 
   void _toggleAll(bool? value) {
     setState(() {
       _allAgreed = value ?? false;
       _termsOfService = _allAgreed;
       _privacyPolicy = _allAgreed;
+      _communityRules = _allAgreed;
     });
   }
 
   void _updateAllAgreed() {
     setState(() {
-      _allAgreed = _termsOfService && _privacyPolicy;
+      _allAgreed = _termsOfService && _privacyPolicy && _communityRules;
     });
   }
 
-  bool get _canProceed => _termsOfService && _privacyPolicy;
+  bool get _canProceed => _termsOfService && _privacyPolicy && _communityRules;
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +119,26 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                     MaterialPageRoute(
                       builder: (context) => const TermsDetailScreen(
                         type: TermsType.privacyPolicy,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              _CheckboxItem(
+                title: '커뮤니티 이용규칙(필수)',
+                value: _communityRules,
+                onChanged: (value) {
+                  setState(() {
+                    _communityRules = value ?? false;
+                    _updateAllAgreed();
+                  });
+                },
+                onDetailTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TermsDetailScreen(
+                        type: TermsType.termsOfService,
                       ),
                     ),
                   );

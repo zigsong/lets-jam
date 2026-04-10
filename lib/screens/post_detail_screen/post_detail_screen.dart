@@ -130,6 +130,61 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     }
   }
 
+  Future<void> _reportPost(String postId) async {
+    try {
+      await supabase.from('reports').insert({
+        'reporter_id': sessionController.user.value?.id,
+        'reported_post_id': postId,
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    } catch (_) {}
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CustomSnackbar(content: '신고가 접수되었어요. 검토 후 조치하겠습니다.'),
+      );
+    }
+  }
+
+  void _showReportDialog(String postId) {
+    String? selectedReason;
+    final reasons = ['스팸', '욕설/혐오', '음란물', '사기/허위정보', '기타'];
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('게시글 신고'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: reasons
+                .map((reason) => RadioListTile<String>(
+                      title: Text(reason),
+                      value: reason,
+                      groupValue: selectedReason,
+                      onChanged: (value) =>
+                          setDialogState(() => selectedReason = value),
+                    ))
+                .toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: selectedReason == null
+                  ? null
+                  : () {
+                      Navigator.pop(context);
+                      _reportPost(postId);
+                    },
+              child: const Text('신고'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _refresh() {
     setState(() {
       _post = _fetchPost();
@@ -349,10 +404,28 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     ),
                                   )
                                 : Padding(
-                                    padding: const EdgeInsets.only(right: 27),
-                                    child: PostLikeButton(
-                                      postId: post.id,
-                                      hasBackground: false,
+                                    padding: const EdgeInsets.only(right: 8),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (sessionController.isLoggedIn.value)
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.flag_outlined,
+                                              color: _scrolledPastThreshold
+                                                  ? ColorSeed
+                                                      .organizedBlackMedium
+                                                      .color
+                                                  : Colors.white,
+                                            ),
+                                            onPressed: () =>
+                                                _showReportDialog(post.id),
+                                          ),
+                                        PostLikeButton(
+                                          postId: post.id,
+                                          hasBackground: false,
+                                        ),
+                                      ],
                                     ),
                                   )
                           ],
