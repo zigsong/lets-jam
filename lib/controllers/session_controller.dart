@@ -98,6 +98,18 @@ class SessionController extends GetxController {
     }
   }
 
+  Future<void> signInWithApple() async {
+    try {
+      await supabase.auth.signInWithOAuth(
+        OAuthProvider.apple,
+        authScreenLaunchMode: LaunchMode.externalApplication,
+        redirectTo: 'io.supabase.letsjam://login-callback',
+      );
+    } on PlatformException catch (err) {
+      print('Apple 로그인 에러: $err');
+    }
+  }
+
   Future<void> signUpWithEmail(String email, String password) async {
     await supabase.auth.signUp(email: email, password: password);
   }

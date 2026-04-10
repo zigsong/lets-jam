@@ -97,6 +97,35 @@ class AuthScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 12),
+              // Apple로 시작하기
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => sessionController.signInWithApple(),
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: const Color(0xFF000000),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.apple, size: 22),
+                      SizedBox(width: 8),
+                      Text(
+                        'Apple로 시작하기',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 32),
             ],
           ),
