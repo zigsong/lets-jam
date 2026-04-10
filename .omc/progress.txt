@@ -1,0 +1,25 @@
+# Ralph Progress Log
+## Session: App Store 재심사 구현
+
+### Background Agents
+- Agent ae393ce: 5.1.1(ii) Info.plist 사진 권한 문구 수정
+- Agent adb0101: 4.8 Sign in with Apple 구현
+- Agent ab0f39d: 1.2 UGC 신고/차단/약관 구현
+- Agent ace86d6: 5.1.1(v) 계정 삭제 가시성 + APPSTORE_NOTES.md
+
+### Key Files
+- ios/Runner/Info.plist: 사진 권한 문구
+- lib/screens/auth_screen.dart: Apple 로그인 버튼
+- lib/controllers/session_controller.dart: signInWithApple()
+- lib/screens/post_detail_screen/post_detail_screen.dart: 신고 버튼
+- lib/screens/profile_screen/profile_screen.dart: 차단 버튼
+- lib/widgets/terms_bottom_sheet.dart: 커뮤니티 규칙 약관
+- lib/screens/settings_screen/settings_screen.dart: 회원 탈퇴 가시성
+
+### Patterns
+- Supabase client: Supabase.instance.client
+- Error snackbar: CustomSnackbar(content: '...') or customSnackbar('...')
+- Modal: showModal(context, title, desc, confirmText, ...)
+- Auth OAuth: supabase.auth.signInWithOAuth(OAuthProvider.xxx, redirectTo: 'io.supabase.letsjam://login-callback', authScreenLaunchMode: LaunchMode.externalApplication)
+- 로그인 여부: sessionController.isLoggedIn.value
+- 현재 유저: sessionController.user.value
