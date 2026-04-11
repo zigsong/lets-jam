@@ -112,10 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         if (sessionController.isLoggedIn.value)
           SettingItem(
-            title: '회원 탈퇴 (계정 삭제)',
-            subtitle: '계정과 모든 데이터가 영구적으로 삭제됩니다',
-            textColor: Colors.red,
-            arrowColor: Colors.red,
+            title: '회원 탈퇴',
             onClick: () => showModal(
               context: context,
               title: 'JAM을 떠나시겠어요?',
