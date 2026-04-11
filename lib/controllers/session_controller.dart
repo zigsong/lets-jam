@@ -98,7 +98,7 @@ class SessionController extends GetxController {
     }
   }
 
-  Future<void> signIn() => _signInWithOAuth(OAuthProvider.kakao);
+  Future<void> signInWithKakao() => _signInWithOAuth(OAuthProvider.kakao);
 
   Future<void> signInWithApple() => _signInWithOAuth(OAuthProvider.apple);
 

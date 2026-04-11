@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
+import 'package:lets_jam/screens/auth_screen.dart';
 import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/modal.dart';
@@ -73,7 +74,7 @@ class _ReplyInputState extends State<ReplyInput> {
           clipBehavior: Clip.antiAlias,
           child: currentUser?.profileImage?.isNotEmpty == true
               ? CachedNetworkImage(
-                    fadeInDuration: Duration.zero,
+                  fadeInDuration: Duration.zero,
                   imageUrl: supabaseImageUrl(currentUser!.profileImage!,
                       width: 80, quality: 80),
                   fit: BoxFit.cover,
@@ -96,7 +97,9 @@ class _ReplyInputState extends State<ReplyInput> {
                     desc: '로그인 후에 이용할 수 있어요',
                     confirmText: '로그인',
                     onConfirm: () {
-                      sessionController.signIn();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const AuthScreen()),
+                      );
                     },
                     cancelText: '다음에 할게요',
                     onCancel: null);
