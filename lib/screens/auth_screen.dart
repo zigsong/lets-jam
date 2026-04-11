@@ -12,7 +12,15 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final SessionController sessionController = Get.find<SessionController>();
 
-    return Scaffold(
+    return Obx(() {
+      if (sessionController.isLoggedIn.value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          }
+        });
+      }
+      return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -39,7 +47,7 @@ class AuthScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => sessionController.signIn(),
+                  onPressed: () => sessionController.signInWithKakao(),
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
                     backgroundColor: const Color(0xFFFEE500),
@@ -132,5 +140,6 @@ class AuthScreen extends StatelessWidget {
         ),
       ),
     );
+    });
   }
 }
