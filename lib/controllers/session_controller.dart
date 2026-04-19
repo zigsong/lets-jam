@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/terms_agreement_screen.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SessionController extends GetxController {
@@ -100,7 +101,26 @@ class SessionController extends GetxController {
 
   Future<void> signInWithKakao() => _signInWithOAuth(OAuthProvider.kakao);
 
-  Future<void> signInWithApple() => _signInWithOAuth(OAuthProvider.apple);
+  Future<void> signInWithApple() async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.apple,
+        idToken: credential.identityToken!,
+      );
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code != AuthorizationErrorCode.canceled) {
+        print('Apple 로그인 에러: $e');
+      }
+    } catch (e) {
+      print('Apple 로그인 에러: $e');
+    }
+  }
 
   Future<void> signUpWithEmail(String email, String password) async {
     await supabase.auth.signUp(email: email, password: password);
