@@ -140,7 +140,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     } catch (_) {}
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackbar(content: '신고가 접수되었어요. 검토 후 조치하겠습니다.'),
+        CustomSnackbar(content: '신고가 접수되었어요'),
       );
     }
   }
@@ -191,8 +191,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 ),
                 const SizedBox(height: 16),
                 ...reasons.map((reason) => GestureDetector(
-                      onTap: () =>
-                          setSheetState(() => selectedReason = reason),
+                      onTap: () => setSheetState(() => selectedReason = reason),
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
@@ -737,7 +736,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
                     ),
                     child: user.profileImage?.isNotEmpty == true
                         ? CachedNetworkImage(
-                    fadeInDuration: Duration.zero,
+                            fadeInDuration: Duration.zero,
                             imageUrl: supabaseImageUrl(user.profileImage!,
                                 width: 80, quality: 80),
                             fit: BoxFit.cover,
