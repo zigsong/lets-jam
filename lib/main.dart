@@ -105,7 +105,10 @@ class _MyAppState extends State<MyApp> {
           fontFamily: 'Pretendard',
           colorScheme:
               ColorScheme.fromSeed(seedColor: ColorSeed.boldOrangeMedium.color)
-                  .copyWith(surfaceTint: Colors.transparent),
+                  .copyWith(
+            surface: Colors.white,
+            surfaceTint: Colors.transparent,
+          ),
           // MARK: 버튼 높이 맞추기
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
