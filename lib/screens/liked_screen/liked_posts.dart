@@ -31,7 +31,17 @@ class _LikedPostsState extends State<LikedPosts> {
 
     if (user == null) return [];
 
-    final response = await Supabase.instance.client
+    final supabase = Supabase.instance.client;
+
+    final blockedResponse = await supabase
+        .from('blocked_users')
+        .select('blocked_id')
+        .eq('blocker_id', user.id);
+    final blockedIds = blockedResponse
+        .map<String>((row) => row['blocked_id'] as String)
+        .toList();
+
+    final response = await supabase
         .from('post_likes')
         .select('posts(*, comment_count:comments!left(id))')
         .eq('user_id', user.id)
@@ -39,6 +49,7 @@ class _LikedPostsState extends State<LikedPosts> {
 
     return response
         .map<PostModel>((json) => PostModel.fromJson(json['posts']))
+        .where((post) => !blockedIds.contains(post.userId))
         .toList();
   }
 

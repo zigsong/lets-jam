@@ -115,9 +115,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     } catch (_) {}
     if (mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(customSnackbar('사용자를 차단했어요'));
-      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(customSnackbar('사용자를 차단했어요'));
+      Navigator.pop(context, true);
     }
   }
 
@@ -294,8 +293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               showModal(
                                 context: context,
                                 title: '사용자 차단',
-                                desc:
-                                    '차단하면 이 사용자의 게시글이 피드에서 숨겨집니다.',
+                                desc: '차단하면 이 사용자의 게시글이 피드에서 숨겨집니다.',
                                 confirmText: '차단',
                                 onConfirm: () {
                                   _blockUser(profile!.id);

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:lets_jam/controllers/explore_filter_controller.dart';
+import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/region_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
@@ -29,6 +30,7 @@ class _ExplorePostsState extends State<ExplorePosts> {
 
   final ExploreFilterController filterController =
       Get.put(ExploreFilterController());
+  final SessionController sessionController = Get.find<SessionController>();
 
   @override
   void initState() {
@@ -39,10 +41,27 @@ class _ExplorePostsState extends State<ExplorePosts> {
   }
 
   Future<List<PostModel>> _fetchPosts() async {
-    final response = await supabase
-        .from('posts')
-        .select('*, comment_count:comments!left(id)')
-        .order('created_at', ascending: false);
+    final currentUserId = sessionController.user.value?.id;
+
+    List<String> blockedIds = [];
+    if (currentUserId != null) {
+      final blockedResponse = await supabase
+          .from('blocked_users')
+          .select('blocked_id')
+          .eq('blocker_id', currentUserId);
+      blockedIds = blockedResponse
+          .map<String>((row) => row['blocked_id'] as String)
+          .toList();
+    }
+
+    var query =
+        supabase.from('posts').select('*, comment_count:comments!left(id)');
+
+    final response = blockedIds.isNotEmpty
+        ? await query
+            .not('user_id', 'in', blockedIds)
+            .order('created_at', ascending: false)
+        : await query.order('created_at', ascending: false);
 
     return response.map<PostModel>((json) => PostModel.fromJson(json)).toList();
   }

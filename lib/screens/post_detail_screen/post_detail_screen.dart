@@ -723,7 +723,11 @@ class PostDetailAuthorInfo extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (_) => ProfileScreen(profileId: user.id),
                   ),
-                );
+                ).then((blocked) {
+                  if (blocked == true && context.mounted) {
+                    Navigator.pop(context, true);
+                  }
+                });
               },
               child: Row(
                 children: [
