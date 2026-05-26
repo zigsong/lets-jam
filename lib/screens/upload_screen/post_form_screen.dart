@@ -143,7 +143,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
       Navigator.pop(
           context, widget.mode == PostFormMode.create ? postType : true);
     } catch (e) {
-      print('저장 에러: $e');
+      debugPrint('저장 에러: $e');
       ScaffoldMessenger.of(context).showSnackBar(customSnackbar('저장 실패: $e'));
     }
   }

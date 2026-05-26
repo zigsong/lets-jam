@@ -225,7 +225,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
         ));
       }
     } catch (e) {
-      print('프로필 저장 에러: $e');
+      debugPrint('프로필 저장 에러: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(customSnackbar('저장 실패: $e'));
     }

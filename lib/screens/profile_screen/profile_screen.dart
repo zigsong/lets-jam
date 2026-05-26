@@ -130,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const DefaultNavigation()));
     } catch (error) {
-      print('프로필 삭제 에러 : $error');
+      debugPrint('프로필 삭제 에러 : $error');
       scaffoldMessenger.showSnackBar(customSnackbar('프로필 삭제에 실패했어요'));
       throw Error;
     }

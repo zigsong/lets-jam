@@ -91,7 +91,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
       return author;
     } catch (error) {
-      print('포스팅 유저 가져오기 에러 : $error');
+      debugPrint('포스팅 유저 가져오기 에러 : $error');
       throw Error;
     }
   }
@@ -108,7 +108,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
       return post;
     } catch (error) {
-      print('포스팅 가져오기 에러 : $error');
+      debugPrint('포스팅 가져오기 에러 : $error');
       throw Error;
     }
   }
@@ -122,7 +122,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       scaffoldMessenger.showSnackBar(customSnackbar("게시글이 삭제되었어요"));
       navigator.pop(true);
     } catch (error) {
-      print('게시글 삭제 에러 : $error');
+      debugPrint('게시글 삭제 에러 : $error');
 
       scaffoldMessenger.showSnackBar(customSnackbar('게시글 삭제에 실패했어요'));
 

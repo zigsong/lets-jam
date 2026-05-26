@@ -7,11 +7,11 @@ class ScrollTracker {
   void listen(VoidCallback onScrollChange) {
     controller.addListener(() {
       if (controller.offset > 100 && !isScrolled) {
-        print('스크롤 on');
+        debugPrint('스크롤 on');
         isScrolled = true;
         onScrollChange();
       } else if (controller.offset <= 100 && isScrolled) {
-        print('스크롤 off');
+        debugPrint('스크롤 off');
         isScrolled = false;
         onScrollChange();
       }

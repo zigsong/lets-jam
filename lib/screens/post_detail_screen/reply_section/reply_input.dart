@@ -56,7 +56,7 @@ class _ReplyInputState extends State<ReplyInput> {
 
       widget.onSubmit();
     } catch (err) {
-      print('댓글 등록 에러: $err');
+      debugPrint('댓글 등록 에러: $err');
     }
   }
 

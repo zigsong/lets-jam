@@ -56,7 +56,7 @@ class SessionController extends GetxController {
             // 동의 기록 있으면 TermsAgreementScreen 스킵, 홈으로
           }
         } catch (e) {
-          print("프로필 조회 에러: $e");
+          debugPrint("프로필 조회 에러: $e");
         }
       }
     });
@@ -86,7 +86,7 @@ class SessionController extends GetxController {
       // final prefs = await SharedPreferences.getInstance();
       // await prefs.setString('user', jsonEncode(newUser.toJson()));
     } catch (e) {
-      print("Error loading user: $e");
+      debugPrint("Error loading user: $e");
     }
   }
 
@@ -98,16 +98,18 @@ class SessionController extends GetxController {
         redirectTo: 'io.supabase.letsjam://login-callback',
       );
     } on PlatformException catch (err) {
-      print('로그인 에러: $err');
+      debugPrint('로그인 에러: $err');
     }
   }
 
   Future<void> signInWithKakao() => _signInWithOAuth(OAuthProvider.kakao);
 
   String _generateNonce([int length = 32]) {
-    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
     final random = Random.secure();
-    return List.generate(length, (_) => charset[random.nextInt(charset.length)]).join();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+        .join();
   }
 
   String _sha256ofString(String input) {
@@ -135,10 +137,10 @@ class SessionController extends GetxController {
       );
     } on SignInWithAppleAuthorizationException catch (e) {
       if (e.code != AuthorizationErrorCode.canceled) {
-        print('Apple 로그인 에러: $e');
+        debugPrint('Apple 로그인 에러: $e');
       }
     } catch (e) {
-      print('Apple 로그인 에러: $e');
+      debugPrint('Apple 로그인 에러: $e');
     }
   }
 
@@ -162,7 +164,7 @@ class SessionController extends GetxController {
       // final prefs = await SharedPreferences.getInstance();
       // await prefs.remove('user');
     } catch (e) {
-      print("Error clearing user: $e");
+      debugPrint("Error clearing user: $e");
     }
   }
 
@@ -211,7 +213,7 @@ class SessionController extends GetxController {
           await supabase.storage.from('images').remove(imagePaths);
         }
       } catch (e) {
-        print("스토리지 삭제 에러 (무시하고 계속): $e");
+        debugPrint("스토리지 삭제 에러 (무시하고 계속): $e");
       }
     }
 

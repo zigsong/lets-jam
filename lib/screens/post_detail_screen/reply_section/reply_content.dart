@@ -56,7 +56,7 @@ class _ReplyContentState extends State<ReplyContent> {
 
       return author;
     } catch (error) {
-      print('댓글 작성자 불러오기 에러 : $error');
+      debugPrint('댓글 작성자 불러오기 에러 : $error');
       throw Error;
     }
   }
@@ -69,7 +69,7 @@ class _ReplyContentState extends State<ReplyContent> {
 
       widget.onRefresh();
     } catch (error) {
-      print('댓글 수정 에러 : $error');
+      debugPrint('댓글 수정 에러 : $error');
 
       ScaffoldMessenger.of(context)
           .showSnackBar(customSnackbar('댓글 수정에 실패했어요'));
@@ -83,7 +83,7 @@ class _ReplyContentState extends State<ReplyContent> {
       await supabase.from('comments').delete().eq('id', widget.reply.id);
       widget.onRefresh();
     } catch (error) {
-      print('댓글 삭제 에러 : $error');
+      debugPrint('댓글 삭제 에러 : $error');
 
       ScaffoldMessenger.of(context)
           .showSnackBar(customSnackbar('댓글 삭제에 실패했어요'));
@@ -126,7 +126,7 @@ class _ReplyContentState extends State<ReplyContent> {
                   clipBehavior: Clip.antiAlias,
                   child: author.profileImage?.isNotEmpty == true
                       ? CachedNetworkImage(
-                    fadeInDuration: Duration.zero,
+                          fadeInDuration: Duration.zero,
                           imageUrl: supabaseImageUrl(author.profileImage!,
                               width: 80, quality: 80),
                           fit: BoxFit.cover,
