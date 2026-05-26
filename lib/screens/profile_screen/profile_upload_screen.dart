@@ -60,6 +60,15 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       final XFile? pickedFile =
           await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
+        if (FileSystemEntity.typeSync(pickedFile.path) !=
+            FileSystemEntityType.file) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              customSnackbar('이미지 파일을 선택할 수 없어요'),
+            );
+          }
+          return;
+        }
         setState(() {
           formData.profileImage = pickedFile.path;
         });
@@ -74,6 +83,15 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       final XFile? pickedFile =
           await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
+        if (FileSystemEntity.typeSync(pickedFile.path) !=
+            FileSystemEntityType.file) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              customSnackbar('이미지 파일을 선택할 수 없어요'),
+            );
+          }
+          return;
+        }
         setState(() {
           formData.backgroundImages = [pickedFile.path];
         });
@@ -257,6 +275,10 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
     for (final image in paths) {
       if (image.startsWith('http')) {
         urls.add(image);
+        continue;
+      }
+
+      if (FileSystemEntity.typeSync(image) != FileSystemEntityType.file) {
         continue;
       }
 
