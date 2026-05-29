@@ -6,7 +6,7 @@ import 'package:lets_jam/main.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/screens/terms_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
-import 'package:lets_jam/widgets/custom_snackbar.dart';
+import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lets_jam/screens/auth_screen.dart';
@@ -104,7 +104,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               await sessionController.signOut();
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  CustomSnackbar(content: '로그아웃되었어요'),
+                  customSnackbar('로그아웃되었어요'),
                 );
                 context.go('/');
               }
@@ -164,14 +164,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          CustomSnackbar(content: '탈퇴 처리 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.'),
+          customSnackbar('탈퇴 처리 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.'),
         );
       }
       return;
     }
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackbar(content: '탈퇴가 완료되었어요'),
+        customSnackbar('탈퇴가 완료되었어요'),
       );
     }
     navigatorKey.currentState?.popUntil((route) => route.isFirst);
