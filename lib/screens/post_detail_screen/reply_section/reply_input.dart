@@ -1,11 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
-import 'package:lets_jam/screens/auth_screen.dart';
-import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
-import 'package:lets_jam/utils/image_utils.dart';
-import 'package:lets_jam/widgets/modal.dart';
+import 'package:lets_jam/utils/auth_guard.dart';
+import 'package:lets_jam/widgets/profile_avatar.dart';
 import 'package:lets_jam/widgets/text_input.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -67,21 +64,7 @@ class _ReplyInputState extends State<ReplyInput> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
-          clipBehavior: Clip.antiAlias,
-          child: currentUser?.profileImage?.isNotEmpty == true
-              ? CachedNetworkImage(
-                  fadeInDuration: Duration.zero,
-                  imageUrl: supabaseImageUrl(currentUser!.profileImage!,
-                      width: 80, quality: 80),
-                  fit: BoxFit.cover,
-                  memCacheWidth: 80,
-                )
-              : Image.asset('assets/images/profile_avatar.png'),
-        ),
+        ProfileAvatar(imageUrl: currentUser?.profileImage),
         const SizedBox(
           width: 16,
         ),
@@ -90,32 +73,10 @@ class _ReplyInputState extends State<ReplyInput> {
             controller: _textEditingController,
             placeholder: '댓글을 작성해 주세요',
             onTap: () {
-              if (sessionController.isLoggedIn.value == false) {
+              if (!sessionController.isLoggedIn.value ||
+                  !sessionController.hasProfile.value) {
                 FocusManager.instance.primaryFocus?.unfocus();
-                showModal(
-                    context: context,
-                    desc: '로그인 후에 이용할 수 있어요',
-                    confirmText: '로그인',
-                    onConfirm: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const AuthScreen()),
-                      );
-                    },
-                    cancelText: '다음에 할게요',
-                    onCancel: null);
-              } else if (sessionController.hasProfile.value == false) {
-                FocusManager.instance.primaryFocus?.unfocus();
-                showModal(
-                  context: context,
-                  desc: '프로필이 없어요.\n프로필을 작성할까요?',
-                  confirmText: '작성하기',
-                  onConfirm: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const ProfileUploadScreen(),
-                    ));
-                  },
-                  cancelText: '다음에 할게요',
-                );
+                requireAuthAndProfile(context, onAuthorized: () {});
               }
             },
             onChanged: (value) {

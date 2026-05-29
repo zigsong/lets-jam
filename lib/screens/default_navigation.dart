@@ -3,17 +3,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
-import 'package:lets_jam/screens/auth_screen.dart';
-
 import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
-import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/upload_screen/upload_post_screen.dart';
+import 'package:lets_jam/utils/auth_guard.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/bottom_app_bar_item.dart';
-import 'package:lets_jam/widgets/modal.dart';
 
 class DefaultNavigation extends StatefulWidget {
   final int? fromIndex;
@@ -63,35 +60,11 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
   }
 
   void _onProfileButtonTapped() {
-    if (sessionController.isLoggedIn.value == false) {
-      showModal(
-          context: context,
-          desc: '로그인 후에 이용할 수 있어요',
-          confirmText: '로그인',
-          onConfirm: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const AuthScreen()),
-            );
-          },
-          cancelText: '다음에 할게요',
-          onCancel: null);
-    } else if (sessionController.hasProfile.value == false) {
-      showModal(
-        context: context,
-        desc: '프로필이 없어요.\n프로필을 작성할까요?',
-        confirmText: '작성하기',
-        onConfirm: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const ProfileUploadScreen(),
-          ));
-        },
-        cancelText: '다음에 할게요',
-      );
-    } else {
+    requireAuthAndProfile(context, onAuthorized: () {
       Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const ProfileScreen()),
       );
-    }
+    });
   }
 
   @override
@@ -180,34 +153,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent, // 빈
                       onTap: () {
-                        if (sessionController.isLoggedIn.value == false) {
-                          showModal(
-                              context: context,
-                              desc: '로그인 후에 이용할 수 있어요',
-                              confirmText: '로그인',
-                              onConfirm: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (_) => const AuthScreen()),
-                                );
-                              },
-                              cancelText: '다음에 할게요',
-                              onCancel: null);
-                        } else if (sessionController.hasProfile.value ==
-                            false) {
-                          showModal(
-                            context: context,
-                            desc: '프로필 작성 후에 이용할 수 있어요.\n프로필을 작성할까요?',
-                            confirmText: '작성하기',
-                            onConfirm: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const ProfileUploadScreen(),
-                              ));
-                            },
-                            cancelText: '다음에 할게요',
-                          );
-                        } else {
+                        requireAuthAndProfile(context, onAuthorized: () {
                           Navigator.of(context)
                               .push(
                             MaterialPageRoute(
@@ -220,7 +166,7 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                               _switchExploreTab?.call(result);
                             }
                           });
-                        }
+                        });
                       },
                       child: Container(
                         decoration: BoxDecoration(
