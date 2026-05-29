@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -6,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
+import 'package:lets_jam/screens/splash_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -27,8 +30,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/profiles/:profileId',
       builder: (context, state) {
-        final profileId = state.pathParameters['profileId']; // URL에서 ID 추출
-
+        final profileId = state.pathParameters['profileId'];
         return ProfileScreen(profileId: profileId!);
       },
     ),
@@ -67,12 +69,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _appLinks = AppLinks();
+  bool _splashDone = false;
 
   @override
   void initState() {
     super.initState();
+    Timer(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _splashDone = true);
+    });
     _appLinks.uriLinkStream.listen((uri) async {
-      // OAuth 콜백 처리
       if (uri.host == 'login-callback') {
         await Supabase.instance.client.auth.getSessionFromUrl(uri);
         return;
@@ -82,6 +87,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_splashDone) {
+      return const MaterialApp(home: SplashScreen());
+    }
+
     return MaterialApp.router(
       routerConfig: appRouter,
       title: 'JAM',
