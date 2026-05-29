@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/terms_agreement_screen.dart';
+import 'package:lets_jam/utils/image_utils.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -177,21 +178,13 @@ class SessionController extends GetxController {
         final imagePaths = <String>[];
 
         if (currentUser.profileImage != null) {
-          final uri = Uri.parse(currentUser.profileImage!);
-          final pathSegments = uri.pathSegments;
-          final storageIdx = pathSegments.indexOf('images');
-          if (storageIdx != -1 && storageIdx + 1 < pathSegments.length) {
-            imagePaths.add(pathSegments.sublist(storageIdx + 1).join('/'));
-          }
+          final path = extractStoragePath(currentUser.profileImage!);
+          if (path != null) imagePaths.add(path);
         }
 
         for (final imageUrl in currentUser.backgroundImages ?? []) {
-          final uri = Uri.parse(imageUrl);
-          final pathSegments = uri.pathSegments;
-          final storageIdx = pathSegments.indexOf('images');
-          if (storageIdx != -1 && storageIdx + 1 < pathSegments.length) {
-            imagePaths.add(pathSegments.sublist(storageIdx + 1).join('/'));
-          }
+          final path = extractStoragePath(imageUrl);
+          if (path != null) imagePaths.add(path);
         }
 
         final posts = await supabase
@@ -200,12 +193,8 @@ class SessionController extends GetxController {
             .eq('user_id', currentUser.id);
         for (final post in posts) {
           for (final imageUrl in (post['images'] as List<dynamic>? ?? [])) {
-            final uri = Uri.parse(imageUrl as String);
-            final pathSegments = uri.pathSegments;
-            final storageIdx = pathSegments.indexOf('images');
-            if (storageIdx != -1 && storageIdx + 1 < pathSegments.length) {
-              imagePaths.add(pathSegments.sublist(storageIdx + 1).join('/'));
-            }
+            final path = extractStoragePath(imageUrl as String);
+            if (path != null) imagePaths.add(path);
           }
         }
 
