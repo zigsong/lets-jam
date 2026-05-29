@@ -36,9 +36,6 @@ final appRouter = GoRouter(
 );
 
 Future<void> main() async {
-  /** splash screen 시간 */
-  await Future.delayed(const Duration(milliseconds: 1000));
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
@@ -57,8 +54,6 @@ Future<void> main() async {
 
   /** ExploreFilterController도 이곳에서 initialize하기 */
   Get.put(SessionController());
-
-  WidgetsFlutterBinding.ensureInitialized();
 
   runApp(const GetMaterialApp(home: MyApp()));
 }
