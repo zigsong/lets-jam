@@ -11,10 +11,8 @@ import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
 import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
-import 'package:lets_jam/widgets/custom_snackbar.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/modal.dart';
+import 'package:lets_jam/widgets/profile_avatar.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -132,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (error) {
       debugPrint('프로필 삭제 에러 : $error');
       scaffoldMessenger.showSnackBar(customSnackbar('프로필 삭제에 실패했어요'));
-      throw Error;
+      rethrow;
     }
   }
 
@@ -156,22 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.only(top: 240),
                 child: Column(
                   children: [
-                    Container(
-                      width: 102,
-                      height: 102,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100)),
-                      clipBehavior: Clip.antiAlias,
-                      child: profile?.profileImage?.isNotEmpty == true
-                          ? CachedNetworkImage(
-                              fadeInDuration: Duration.zero,
-                              imageUrl: supabaseImageUrl(profile!.profileImage!,
-                                  width: 200, quality: 80),
-                              fit: BoxFit.cover,
-                              memCacheWidth: 200,
-                            )
-                          : Image.asset('assets/images/profile_avatar.png'),
-                    ),
+                    ProfileAvatar(imageUrl: profile?.profileImage, size: 102),
                     const SizedBox(
                       height: 10,
                     ),
@@ -217,8 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             ClipboardData(text: contact));
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
-                                          CustomSnackbar(
-                                              content: '연락처가 복사되었어요'),
+                                          customSnackbar('연락처가 복사되었어요'),
                                         );
                                       },
                                       child: Wrap(

@@ -11,10 +11,8 @@ import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
-import 'package:lets_jam/widgets/custom_snackbar.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:lets_jam/utils/image_utils.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
+import 'package:lets_jam/widgets/profile_avatar.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/post_like_button.dart';
 import 'package:lets_jam/widgets/tag.dart';
@@ -92,7 +90,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       return author;
     } catch (error) {
       debugPrint('포스팅 유저 가져오기 에러 : $error');
-      throw Error;
+      rethrow;
     }
   }
 
@@ -109,7 +107,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       return post;
     } catch (error) {
       debugPrint('포스팅 가져오기 에러 : $error');
-      throw Error;
+      rethrow;
     }
   }
 
@@ -126,7 +124,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
       scaffoldMessenger.showSnackBar(customSnackbar('게시글 삭제에 실패했어요'));
 
-      throw Error;
+      rethrow;
     }
   }
 
@@ -140,7 +138,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     } catch (_) {}
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackbar(content: '신고가 접수되었어요'),
+        customSnackbar('신고가 접수되었어요'),
       );
     }
   }
@@ -731,23 +729,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
               },
               child: Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: user.profileImage?.isNotEmpty == true
-                        ? CachedNetworkImage(
-                            fadeInDuration: Duration.zero,
-                            imageUrl: supabaseImageUrl(user.profileImage!,
-                                width: 80, quality: 80),
-                            fit: BoxFit.cover,
-                            memCacheWidth: 80,
-                          )
-                        : Image.asset('assets/images/profile_avatar.png'),
-                  ),
+                  ProfileAvatar(imageUrl: user.profileImage),
                   const SizedBox(
                     width: 12,
                   ),
@@ -791,7 +773,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
                           Navigator.of(modalcontext).pop();
                           Clipboard.setData(ClipboardData(text: contact));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            CustomSnackbar(content: '연락처가 복사되었어요'),
+                            customSnackbar('연락처가 복사되었어요'),
                           );
                         },
                         child: Wrap(
