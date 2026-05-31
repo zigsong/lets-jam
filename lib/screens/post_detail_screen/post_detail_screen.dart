@@ -11,6 +11,7 @@ import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
+import 'package:lets_jam/utils/navigation.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/profile_avatar.dart';
 import 'package:lets_jam/widgets/modal.dart';
@@ -454,13 +455,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                                 : null,
                                             onPressed: () async {
                                               final edited =
-                                                  await Navigator.push(
+                                                  await pushScreen(
                                                 context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EditPostScreen(
-                                                          post: post),
-                                                ),
+                                                EditPostScreen(post: post),
                                               );
 
                                               if (edited == true) {
@@ -714,12 +711,8 @@ class PostDetailAuthorInfo extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ProfileScreen(profileId: user.id),
-                  ),
-                ).then((blocked) {
+                pushScreen(context, ProfileScreen(profileId: user.id))
+                    .then((blocked) {
                   if (blocked == true && context.mounted) {
                     Navigator.pop(context, true);
                   }
