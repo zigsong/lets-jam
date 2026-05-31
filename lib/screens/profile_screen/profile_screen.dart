@@ -468,8 +468,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             return Column(
                               children: [
                                 GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
+                                  onTap: () async {
+                                    await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) => PostDetailScreen(
@@ -477,7 +477,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           userId: profile!.id,
                                         ),
                                       ),
-                                    ).then((_) => _loadPosts());
+                                    );
+                                    if (mounted) _loadPosts();
                                   },
                                   child: Container(
                                     width: double.infinity,
