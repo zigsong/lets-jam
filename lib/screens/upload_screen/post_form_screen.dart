@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/screens/upload_screen/hashtag_selector.dart';
@@ -6,6 +5,7 @@ import 'package:lets_jam/screens/upload_screen/region_selector.dart';
 import 'package:lets_jam/screens/upload_screen/upload_type_toggler.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
+import 'package:lets_jam/utils/image_upload.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:lets_jam/widgets/multiple_image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -152,7 +152,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
     final user = sessionController.user.value;
     final userId = user!.id;
 
-    final imageUrls = await _uploadImages(formData.images);
+    final imageUrls = await uploadImages(formData.images, pathPrefix: 'post_uploads');
 
     await supabase.from('posts').insert({
       'user_id': userId,
@@ -178,7 +178,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
       if (prevImages.contains(img)) {
         imageUrls.add(img);
       } else {
-        final uploaded = await _uploadImages([img]);
+        final uploaded = await uploadImages([img], pathPrefix: 'post_uploads');
         imageUrls.addAll(uploaded);
       }
     }
@@ -193,28 +193,6 @@ class _PostFormScreenState extends State<PostFormScreen> {
       'tags': formData.tags,
       'images': imageUrls,
     }).eq('id', widget.post!.id);
-  }
-
-  Future<List<String>> _uploadImages(List<String> paths) async {
-    const bucket = 'images';
-    final urls = <String>[];
-
-    for (final image in paths) {
-      if (image.startsWith('http')) {
-        urls.add(image);
-        continue;
-      }
-
-      final path =
-          'post_uploads/${DateTime.now().millisecondsSinceEpoch}-${image.split('/').last}';
-      final res = await supabase.storage.from(bucket).upload(path, File(image));
-      final filePath = res.replaceFirst('$bucket/', '');
-      final url = supabase.storage.from(bucket).getPublicUrl(filePath);
-
-      urls.add(url);
-    }
-
-    return urls;
   }
 
   @override
