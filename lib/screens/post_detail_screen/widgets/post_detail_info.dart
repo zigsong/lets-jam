@@ -28,7 +28,7 @@ class PostDetailInfo extends StatelessWidget {
                 post.regions?.map((region) => region.displayName).toList()),
           const SizedBox(height: 8),
           if (post.tags?.isNotEmpty ?? false)
-            _listHashTags('해시태그', post.tags?.map((tag) => tag).toList()),
+            _listHashTags('해시태그', post.tags),
         ],
       ),
     );

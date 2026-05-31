@@ -173,7 +173,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 if (notification.metrics.axis != Axis.vertical) return false;
 
                 final offset = notification.metrics.pixels;
-                const threshold = 150.0; // threshold 설정
+                const threshold = 150.0;
 
                 if (offset > threshold && !_scrolledPastThreshold) {
                   setState(() {
