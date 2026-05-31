@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/post_model.dart';
-import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/post_detail_screen/reply_section/reply_section.dart';
-import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
+import 'package:lets_jam/screens/post_detail_screen/widgets/post_detail_author_info.dart';
+import 'package:lets_jam/screens/post_detail_screen/widgets/post_detail_info.dart';
+import 'package:lets_jam/screens/post_detail_screen/widgets/report_dialog.dart';
+import 'package:lets_jam/screens/post_detail_screen/widgets/wanted_session.dart';
 import 'package:lets_jam/screens/upload_screen/edit_post_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/navigation.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
-import 'package:lets_jam/widgets/profile_avatar.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/post_like_button.dart';
-import 'package:lets_jam/widgets/tag.dart';
 import 'package:lets_jam/widgets/util_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -140,138 +139,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         customSnackbar('신고가 접수되었어요'),
       );
     }
-  }
-
-  void _showReportDialog(String postId) {
-    final reasons = ['스팸', '욕설/혐오', '음란물', '사기/허위정보', '기타'];
-    String? selectedReason;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) => StatefulBuilder(
-        builder: (context, setSheetState) => Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
-          child: SafeArea(
-            top: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 36,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: ColorSeed.meticulousGrayLight.color,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  '게시글 신고',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '신고 사유를 선택해주세요',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: ColorSeed.meticulousGrayMedium.color,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ...reasons.map((reason) => GestureDetector(
-                      onTap: () => setSheetState(() => selectedReason = reason),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 14),
-                        margin: const EdgeInsets.only(bottom: 8),
-                        decoration: BoxDecoration(
-                          color: selectedReason == reason
-                              ? ColorSeed.boldOrangeLight.color
-                              : const Color(0xFFF5F5F5),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: selectedReason == reason
-                                ? ColorSeed.boldOrangeRegular.color
-                                : Colors.transparent,
-                            width: 1,
-                          ),
-                        ),
-                        child: Text(
-                          reason,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: selectedReason == reason
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                            color: selectedReason == reason
-                                ? ColorSeed.boldOrangeStrong.color
-                                : ColorSeed.organizedBlackMedium.color,
-                          ),
-                        ),
-                      ),
-                    )),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(sheetContext),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: ColorSeed.boldOrangeRegular.color,
-                          side: BorderSide(
-                              color: ColorSeed.boldOrangeRegular.color,
-                              width: 0.5),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                        child: const Text('취소',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500)),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: selectedReason == null
-                            ? null
-                            : () {
-                                Navigator.pop(sheetContext);
-                                _reportPost(postId);
-                              },
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          backgroundColor: ColorSeed.boldOrangeStrong.color,
-                          disabledBackgroundColor:
-                              ColorSeed.meticulousGrayLight.color,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                        child: const Text('신고하기',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500)),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   void _refresh() {
@@ -503,8 +370,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                                       .color
                                                   : Colors.white,
                                             ),
-                                            onPressed: () =>
-                                                _showReportDialog(post.id),
+                                            onPressed: () => showReportDialog(
+                                              context,
+                                              onReport: () =>
+                                                  _reportPost(post.id),
+                                            ),
                                           ),
                                         PostLikeButton(
                                           postId: post.id,
@@ -521,273 +391,5 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             ),
           );
         });
-  }
-}
-
-class WantedSession extends StatelessWidget {
-  const WantedSession({
-    super.key,
-    required this.post,
-  });
-
-  final PostModel post;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-            border: Border.all(color: ColorSeed.boldOrangeRegular.color),
-            borderRadius: BorderRadius.circular(10)),
-        child: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.center,
-          runSpacing: 8,
-          children: [
-            const Text(
-              '밴드에서',
-            ),
-            const SizedBox(width: 4),
-            ...post.sessions
-                .map((session) => sessionMap[session]!)
-                .toList()
-                .map(
-                  (tag) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Tag(
-                      text: tag,
-                      color: TagColorEnum.orange,
-                      selected: true,
-                      size: TagSizeEnum.small,
-                    ),
-                  ),
-                ),
-            const SizedBox(width: 4),
-            const Text(
-              '을(를) 담당하고 싶어요',
-            )
-          ],
-        ));
-  }
-}
-
-class PostDetailInfo extends StatelessWidget {
-  const PostDetailInfo({super.key, required this.post});
-
-  final PostModel post;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      decoration: BoxDecoration(
-          color: const Color(0xfff5f5f5),
-          border:
-              Border.all(width: 1, color: ColorSeed.meticulousGrayLight.color),
-          borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        children: [
-          if (post.postType == PostTypeEnum.findMember)
-            _filterDataList('세션',
-                post.sessions.map((session) => sessionMap[session]!).toList()),
-          const SizedBox(
-            height: 8,
-          ),
-          if (post.regions?.isNotEmpty ?? false)
-            _filterDataList('지역',
-                post.regions?.map((region) => region.displayName).toList()),
-          const SizedBox(
-            height: 8,
-          ),
-          if (post.tags?.isNotEmpty ?? false)
-            _listHashTags('해시태그', post.tags?.map((tag) => tag).toList())
-        ],
-      ),
-    );
-  }
-
-  Widget _filterDataList(String label, List<String>? tags) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: SizedBox(
-            width: 48,
-            child: Text(
-              label,
-              style: const TextStyle(fontSize: 13, height: 1),
-            ),
-          ),
-        ),
-        if (tags != null)
-          Expanded(
-            child: Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Wrap(
-                  runSpacing: 8,
-                  spacing: 4,
-                  children: tags
-                      .expand((tag) => [
-                            Text(
-                              tag,
-                              style: const TextStyle(
-                                color: Color(0xff7c7c7c),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Text(
-                              '•',
-                              style: TextStyle(color: Color(0xff7c7c7c)),
-                            ),
-                          ])
-                      .toList()
-                    ..removeLast(), // 마지막 점 제거
-                )),
-          )
-      ],
-    );
-  }
-
-  Widget _listHashTags(String label, List<String>? tags) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: SizedBox(
-              width: 48,
-              child: Text(
-                label,
-                style: const TextStyle(fontSize: 13, height: 1),
-              ),
-            ),
-          ),
-          if (tags != null)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Wrap(
-                    runSpacing: 8,
-                    spacing: 8,
-                    children: tags
-                        .map((tag) => Text(
-                              tag,
-                              style: const TextStyle(
-                                  color: Color(0xff7c7c7c),
-                                  fontWeight: FontWeight.w500),
-                            ))
-                        .toList()),
-              ),
-            )
-        ],
-      ),
-    );
-  }
-}
-
-class PostDetailAuthorInfo extends StatelessWidget {
-  const PostDetailAuthorInfo(
-      {super.key, required this.user, required this.contact});
-
-  final ProfileModel user;
-  final String contact;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-          border: Border(
-              top: BorderSide(
-                  width: 1, color: ColorSeed.meticulousGrayLight.color),
-              bottom: BorderSide(
-                  width: 1, color: ColorSeed.meticulousGrayLight.color))),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                pushScreen(context, ProfileScreen(profileId: user.id))
-                    .then((blocked) {
-                  if (blocked == true && context.mounted) {
-                    Navigator.pop(context, true);
-                  }
-                });
-              },
-              child: Row(
-                children: [
-                  ProfileAvatar(imageUrl: user.profileImage),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.nickname,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        user.sessions
-                            .map((session) => sessionMap[session])
-                            .join(','),
-                        style: const TextStyle(color: Color(0xff838589)),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: ColorSeed.boldOrangeStrong.color,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: () {
-                showModal(
-                  context: context,
-                  title: '연락처 복사하기',
-                  cancelText: '닫기',
-                  desc: Builder(
-                    builder: (modalcontext) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(modalcontext).pop();
-                          Clipboard.setData(ClipboardData(text: contact));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            customSnackbar('연락처가 복사되었어요'),
-                          );
-                        },
-                        child: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 8,
-                          children: [
-                            Text(contact),
-                            SvgPicture.asset(
-                              'assets/icons/plus_copy.svg',
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-              child: const Text(
-                '문의하기',
-              ))
-        ],
-      ),
-    );
   }
 }
