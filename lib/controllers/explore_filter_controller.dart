@@ -21,24 +21,20 @@ class ExploreFilterController extends GetxController {
   }
 
   void toggleRegion(District district) {
-    if (tempRegions.contains(district)) {
-      tempRegions.remove(district);
-    } else {
+    final isAdding = !tempRegions.contains(district);
+    if (isAdding) {
       tempRegions.add(district);
-    }
-
-    // "전체" 옵션 선택 시 같은 Province의 개별 지역들 제거
-    if (district.isAll && tempRegions.contains(district)) {
-      final sameProvinceDistricts =
-          District.getByProvince(district.province).where((d) => !d.isAll);
-      tempRegions.removeWhere((d) => sameProvinceDistricts.contains(d));
-    }
-
-    // 개별 지역 선택 시 같은 Province의 "전체" 옵션 제거
-    if (!district.isAll && tempRegions.contains(district)) {
-      final allOption =
-          District.getByProvince(district.province).firstWhere((d) => d.isAll);
-      tempRegions.remove(allOption);
+      if (district.isAll) {
+        final siblings =
+            District.getByProvince(district.province).where((d) => !d.isAll);
+        tempRegions.removeWhere(siblings.contains);
+      } else {
+        final allOption = District.getByProvince(district.province)
+            .firstWhere((d) => d.isAll);
+        tempRegions.remove(allOption);
+      }
+    } else {
+      tempRegions.remove(district);
     }
   }
 
