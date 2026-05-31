@@ -46,6 +46,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   void initState() {
     super.initState();
     _author = _fetchUserById();
+    _author.then((author) {
+      if (mounted) {
+        setState(() => isMyPost = author.id == sessionController.user.value?.id);
+      }
+    }).catchError((_) {});
     _post = _fetchPost();
   }
 
@@ -80,14 +85,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           .select('*')
           .eq('id', widget.userId)
           .single();
-
-      final author = ProfileModel.fromJson(response);
-
-      setState(() {
-        isMyPost = author.id == sessionController.user.value?.id;
-      });
-
-      return author;
+      return ProfileModel.fromJson(response);
     } catch (error) {
       debugPrint('포스팅 유저 가져오기 에러 : $error');
       rethrow;
