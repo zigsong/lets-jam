@@ -173,7 +173,6 @@ class SessionController extends GetxController {
   Future<void> deleteAccount() async {
     final currentUser = user.value;
 
-    // 1. 스토리지 이미지 삭제 (프로필이 있을 때만)
     if (currentUser != null) {
       try {
         final imagePaths = <String>[];
@@ -188,16 +187,7 @@ class SessionController extends GetxController {
           if (path != null) imagePaths.add(path);
         }
 
-        final posts = await supabase
-            .from('posts')
-            .select('images')
-            .eq('user_id', currentUser.id);
-        for (final post in posts) {
-          for (final imageUrl in (post['images'] as List<dynamic>? ?? [])) {
-            final path = extractStoragePath(imageUrl as String);
-            if (path != null) imagePaths.add(path);
-          }
-        }
+        imagePaths.addAll(await _fetchPostImagePaths(currentUser.id));
 
         if (imagePaths.isNotEmpty) {
           await supabase.storage.from('images').remove(imagePaths);
@@ -207,12 +197,20 @@ class SessionController extends GetxController {
       }
     }
 
-    // 2. auth user 삭제 (DB cascade로 profiles, posts 자동 삭제)
     await supabase.rpc('delete_user');
 
-    // 3. 로컬 상태 초기화
     user.value = null;
     isLoggedIn.value = false;
     hasProfile.value = false;
+  }
+
+  Future<List<String>> _fetchPostImagePaths(String userId) async {
+    final posts =
+        await supabase.from('posts').select('images').eq('user_id', userId);
+    return posts
+        .expand<dynamic>((p) => (p['images'] as List<dynamic>?) ?? const [])
+        .map((url) => extractStoragePath(url as String))
+        .whereType<String>()
+        .toList();
   }
 }
