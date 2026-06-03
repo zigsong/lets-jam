@@ -85,10 +85,13 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
           children: [
             Container(
               decoration: BoxDecoration(
-                border: Border(
-                    top: BorderSide(
-                        color: ColorSeed.meticulousGrayLight.color,
-                        width: 1.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 12,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
               ),
               child: BottomAppBar(
                 padding:
