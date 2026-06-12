@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 enum PostLikeButtonSize { sm, lg }
@@ -24,6 +25,7 @@ class _PostLikeButtonState extends State<PostLikeButton> {
 
   bool isLiked = false;
   bool isLoading = true;
+  bool _isToggling = false;
 
   @override
   void initState() {
@@ -42,37 +44,44 @@ class _PostLikeButtonState extends State<PostLikeButton> {
   }
 
   Future<void> _toggleLike() async {
-    if (sessionController.user.value == null) {
-      throw Exception('로그인된 유저가 없습니다.');
-    }
+    if (sessionController.user.value == null) return;
+    // 진행 중인 토글이 있으면 무시 (중복 탭 방지)
+    if (_isToggling) return;
 
     final userId = sessionController.user.value!.id;
+    final wasLiked = isLiked;
 
-    if (isLiked == true) {
-      try {
+    // 낙관적 업데이트: 먼저 UI를 바꾸고, 실패하면 롤백
+    setState(() {
+      _isToggling = true;
+      isLiked = !wasLiked;
+    });
+
+    try {
+      if (wasLiked) {
         await supabase
             .from('post_likes')
             .delete()
             .eq('user_id', userId)
             .eq('post_id', widget.postId);
-
-        setState(() {
-          isLiked = false;
-        });
-      } catch (error) {
-        throw Exception('좋아요 취소 실패');
-      }
-    } else {
-      try {
+      } else {
         await supabase
             .from('post_likes')
             .insert({'user_id': userId, 'post_id': widget.postId});
-
-        setState(() {
-          isLiked = true;
-        });
-      } catch (error) {
-        throw Exception('좋아요 실패');
+      }
+    } catch (error) {
+      debugPrint('좋아요 토글 에러: $error');
+      if (mounted) {
+        setState(() => isLiked = wasLiked);
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackbar(wasLiked ? '좋아요 취소에 실패했어요' : '좋아요에 실패했어요'),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isToggling = false);
+      } else {
+        _isToggling = false;
       }
     }
   }
