@@ -309,7 +309,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 },
                               ),
                             ),
-                            isMyPost == true
+                            if (isMyPost != null)
+                              isMyPost == true
                                 ? Padding(
                                     padding: const EdgeInsets.only(right: 20),
                                     child: Row(
