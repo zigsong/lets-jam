@@ -70,8 +70,10 @@ class _ReplyContentState extends State<ReplyContent> {
     } catch (error) {
       debugPrint('댓글 수정 에러 : $error');
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(customSnackbar('댓글 수정에 실패했어요'));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(customSnackbar('댓글 수정에 실패했어요'));
+      }
 
       rethrow;
     }
@@ -84,8 +86,10 @@ class _ReplyContentState extends State<ReplyContent> {
     } catch (error) {
       debugPrint('댓글 삭제 에러 : $error');
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(customSnackbar('댓글 삭제에 실패했어요'));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(customSnackbar('댓글 삭제에 실패했어요'));
+      }
 
       rethrow;
     }
