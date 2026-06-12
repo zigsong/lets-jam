@@ -7,6 +7,8 @@ import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
 import 'package:lets_jam/models/post_model.dart';
+import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
+import 'package:lets_jam/screens/upload_screen/post_form_screen.dart';
 import 'package:lets_jam/screens/upload_screen/upload_post_screen.dart';
 import 'package:lets_jam/utils/auth_guard.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
@@ -165,8 +167,19 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                             ),
                           )
                               .then((result) {
-                            if (result is PostTypeEnum) {
-                              _switchExploreTab?.call(result);
+                            if (!mounted) return;
+                            if (result is CreatedPostResult) {
+                              // 작성한 타입으로 탐색 탭을 전환해두고,
+                              // 방금 만든 글의 상세 화면으로 이동
+                              _switchExploreTab?.call(result.postType);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => PostDetailScreen(
+                                    postId: result.postId,
+                                    userId: result.userId,
+                                  ),
+                                ),
+                              );
                             }
                           });
                         });

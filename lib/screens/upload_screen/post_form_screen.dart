@@ -19,6 +19,13 @@ import 'package:lets_jam/widgets/form_error_message.dart';
 
 enum PostFormMode { create, edit }
 
+/// 글 작성 완료 후 방금 만든 글의 상세 화면으로 이동하기 위해 반환하는 결과
+typedef CreatedPostResult = ({
+  String postId,
+  String userId,
+  PostTypeEnum postType,
+});
+
 class PostFormScreen extends StatefulWidget {
   final PostFormMode mode;
   final PostModel? post;
@@ -128,10 +135,17 @@ class _PostFormScreenState extends State<PostFormScreen> {
     }
 
     try {
+      final Object? popResult;
       if (widget.mode == PostFormMode.create) {
-        await _insertPost();
+        final newPostId = await _insertPost();
+        popResult = (
+          postId: newPostId,
+          userId: sessionController.user.value!.id,
+          postType: postType,
+        );
       } else {
         await _updatePost();
+        popResult = true;
       }
 
       if (!mounted) return;
@@ -140,31 +154,37 @@ class _PostFormScreenState extends State<PostFormScreen> {
             ? '게시글을 작성했습니다.'
             : '게시글을 수정했습니다.'),
       );
-      Navigator.pop(
-          context, widget.mode == PostFormMode.create ? postType : true);
+      Navigator.pop(context, popResult);
     } catch (e) {
       debugPrint('저장 에러: $e');
       ScaffoldMessenger.of(context).showSnackBar(customSnackbar('저장 실패: $e'));
     }
   }
 
-  Future<void> _insertPost() async {
+  Future<String> _insertPost() async {
     final user = sessionController.user.value;
     final userId = user!.id;
 
-    final imageUrls = await uploadImages(formData.images, pathPrefix: 'post_uploads');
+    final imageUrls =
+        await uploadImages(formData.images, pathPrefix: 'post_uploads');
 
-    await supabase.from('posts').insert({
-      'user_id': userId,
-      'title': formData.title,
-      'sessions': formData.sessions.map((e) => e.name).toList(),
-      'regions': formData.regions.map((e) => e.displayName).toList(),
-      'contact': formData.contact,
-      'description': formData.description,
-      'tags': formData.tags,
-      'images': imageUrls,
-      'post_type': postType.name,
-    });
+    final inserted = await supabase
+        .from('posts')
+        .insert({
+          'user_id': userId,
+          'title': formData.title,
+          'sessions': formData.sessions.map((e) => e.name).toList(),
+          'regions': formData.regions.map((e) => e.displayName).toList(),
+          'contact': formData.contact,
+          'description': formData.description,
+          'tags': formData.tags,
+          'images': imageUrls,
+          'post_type': postType.name,
+        })
+        .select('id')
+        .single();
+
+    return inserted['id'] as String;
   }
 
   Future<void> _updatePost() async {
