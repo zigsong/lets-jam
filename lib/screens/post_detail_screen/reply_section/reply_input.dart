@@ -39,7 +39,8 @@ class _ReplyInputState extends State<ReplyInput> {
       await supabase.from('comments').insert({
         'post_id': widget.postId,
         'user_id': currentUser.id,
-        'content': _value
+        'content': _value,
+        'created_at': DateTime.now().toIso8601String(),
       });
 
       final content = _textEditingController.text;
