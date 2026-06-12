@@ -13,6 +13,7 @@ class TextInput extends StatelessWidget {
       this.validator,
       this.keyboardType,
       this.height,
+      this.maxLength,
       this.isRequired,
       this.controller,
       this.suffixButton,
@@ -30,6 +31,7 @@ class TextInput extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final double? height;
+  final int? maxLength;
   final bool? isRequired;
   final TextEditingController? controller;
   final Widget? suffixButton;
@@ -73,7 +75,9 @@ class TextInput extends StatelessWidget {
                     style: const TextStyle(fontSize: 13),
                     maxLines:
                         keyboardType == TextInputType.multiline ? null : 1,
+                    maxLength: maxLength,
                     decoration: InputDecoration(
+                      counterText: '',
                       prefixText: prefixText,
                       hintText: placeholder,
                       focusedBorder: OutlineInputBorder(

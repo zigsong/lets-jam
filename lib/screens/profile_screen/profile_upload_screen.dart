@@ -459,6 +459,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                             },
                             keyboardType: TextInputType.multiline,
                             height: 96,
+                            maxLength: 50,
                           ),
                         ),
                         const SizedBox(
