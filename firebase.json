@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"ios":{"default":{"projectId":"jamlog-b8e50","appId":"1:337968552397:ios:12a463b199e7bcccc50c84","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"jamlog-b8e50","configurations":{"ios":"1:337968552397:ios:12a463b199e7bcccc50c84"}}}}}}
