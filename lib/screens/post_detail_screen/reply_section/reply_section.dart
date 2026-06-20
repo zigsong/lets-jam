@@ -22,7 +22,7 @@ class _ReplySectionState extends State<ReplySection> {
   Future<List<ReplyModel>> _fetchReplys() async {
     final response = await supabase
         .from('comments')
-        .select()
+        .select('*, profiles(*)')
         .eq('post_id', widget.postId)
         .order('created_at', ascending: false);
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/reply_model.dart';
-import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/date_parser.dart';
@@ -26,7 +25,6 @@ class _ReplyContentState extends State<ReplyContent> {
   final supabase = Supabase.instance.client;
 
   final SessionController sessionController = Get.find<SessionController>();
-  late Future<ProfileModel> _author;
   late String _editingValue;
 
   bool? isMyReply;
@@ -35,29 +33,8 @@ class _ReplyContentState extends State<ReplyContent> {
   @override
   void initState() {
     super.initState();
-    _author = _fetchUserById();
     _editingValue = widget.reply.content;
-  }
-
-  Future<ProfileModel> _fetchUserById() async {
-    try {
-      final response = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', widget.reply.userId)
-          .single();
-
-      final author = ProfileModel.fromJson(response);
-
-      setState(() {
-        isMyReply = author.id == sessionController.user.value?.id;
-      });
-
-      return author;
-    } catch (error) {
-      debugPrint('댓글 작성자 불러오기 에러 : $error');
-      rethrow;
-    }
+    isMyReply = widget.reply.author?.id == sessionController.user.value?.id;
   }
 
   Future<void> _editReply() async {
@@ -97,16 +74,12 @@ class _ReplyContentState extends State<ReplyContent> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _author,
-      builder: (context, snapshot) {
-        if (snapshot.hasError || !snapshot.hasData) {
-          return const SizedBox.shrink();
-        }
+    final author = widget.reply.author;
+    if (author == null) {
+      return const SizedBox.shrink();
+    }
 
-        final author = snapshot.data!;
-
-        return Container(
+    return Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -231,8 +204,6 @@ class _ReplyContentState extends State<ReplyContent> {
             ],
           ),
         );
-      },
-    );
   }
 }
 
