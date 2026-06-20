@@ -77,18 +77,49 @@ class _MyAppState extends State<MyApp> {
   final _appLinks = AppLinks();
   bool _splashDone = false;
 
+  /// 스플래시 도중 들어온 딥링크를 보관했다가 라우터 준비 후 이동
+  String? _pendingLocation;
+
   @override
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 2), () {
-      if (mounted) setState(() => _splashDone = true);
-    });
-    _appLinks.uriLinkStream.listen((uri) async {
-      if (uri.host == 'login-callback') {
-        await Supabase.instance.client.auth.getSessionFromUrl(uri);
-        return;
+      if (!mounted) return;
+      setState(() => _splashDone = true);
+      final pending = _pendingLocation;
+      if (pending != null) {
+        _pendingLocation = null;
+        appRouter.go(pending);
       }
     });
+
+    // 앱이 실행 중일 때 들어오는 링크
+    _appLinks.uriLinkStream.listen(_handleUri);
+    // 앱이 꺼진 상태에서 링크로 실행된 경우(콜드 스타트)
+    _appLinks.getInitialLink().then((uri) {
+      if (uri != null) _handleUri(uri);
+    });
+  }
+
+  Future<void> _handleUri(Uri uri) async {
+    // 카카오/Supabase 로그인 콜백
+    if (uri.host == 'login-callback') {
+      await Supabase.instance.client.auth.getSessionFromUrl(uri);
+      return;
+    }
+
+    // letsjam.work Universal Link → 프로필 화면 (예: /profiles/{id})
+    if (uri.host == 'letsjam.work' &&
+        uri.pathSegments.length >= 2 &&
+        uri.pathSegments[0] == 'profiles') {
+      final location = '/profiles/${uri.pathSegments[1]}';
+      if (_splashDone) {
+        appRouter.go(location);
+      } else {
+        // 라우터가 아직 안 떴으면 스플래시 종료 후 이동하도록 보관
+        _pendingLocation = location;
+      }
+    }
   }
 
   @override
