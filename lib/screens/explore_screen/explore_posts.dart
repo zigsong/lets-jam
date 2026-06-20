@@ -4,69 +4,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:lets_jam/controllers/explore_filter_controller.dart';
-import 'package:lets_jam/controllers/session_controller.dart';
+import 'package:lets_jam/controllers/explore_posts_controller.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/region_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
 import 'package:lets_jam/widgets/post_thumbnail.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ExplorePosts extends StatefulWidget {
+class ExplorePosts extends StatelessWidget {
   final PostTypeEnum postType;
-  final void Function(void Function()) onReloadRegister;
 
-  const ExplorePosts(
-      {super.key, required this.postType, required this.onReloadRegister});
-
-  @override
-  State<ExplorePosts> createState() => _ExplorePostsState();
-}
-
-class _ExplorePostsState extends State<ExplorePosts> {
-  final supabase = Supabase.instance.client;
-
-  late Future<List<PostModel>> _posts;
+  ExplorePosts({super.key, required this.postType});
 
   final ExploreFilterController filterController =
-      Get.put(ExploreFilterController());
-  final SessionController sessionController = Get.find<SessionController>();
+      Get.find<ExploreFilterController>();
+  final ExplorePostsController postsController =
+      Get.find<ExplorePostsController>();
 
-  @override
-  void initState() {
-    super.initState();
-
-    widget.onReloadRegister(_fetchPosts);
-    _posts = _fetchPosts();
-  }
-
-  Future<List<PostModel>> _fetchPosts() async {
-    final currentUserId = sessionController.user.value?.id;
-
-    List<String> blockedIds = [];
-    if (currentUserId != null) {
-      final blockedResponse = await supabase
-          .from('blocked_users')
-          .select('blocked_id')
-          .eq('blocker_id', currentUserId);
-      blockedIds = blockedResponse
-          .map<String>((row) => row['blocked_id'] as String)
-          .toList();
-    }
-
-    var query =
-        supabase.from('posts').select('*, comment_count:comments!left(id)');
-
-    final response = blockedIds.isNotEmpty
-        ? await query
-            .not('user_id', 'in', blockedIds)
-            .order('created_at', ascending: false)
-        : await query.order('created_at', ascending: false);
-
-    return response.map<PostModel>((json) => PostModel.fromJson(json)).toList();
-  }
-
-  _filterPosts(List<PostModel> allPosts) {
+  List<PostModel> _filterPosts(List<PostModel> allPosts) {
     List<SessionEnum> sessions = filterController.sessions;
     List<District> expandedRegions = filterController.getExpandedRegions();
 
@@ -93,86 +48,65 @@ class _ExplorePostsState extends State<ExplorePosts> {
     }).toList();
   }
 
-  void _refresh() {
-    setState(() {
-      _posts = _fetchPosts();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _posts,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Obx(() {
+        if (postsController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final posts = snapshot.data!;
-        final findBandPosts = posts
-            .where((post) => post.postType == PostTypeEnum.findBand)
+        final typedPosts = postsController.posts
+            .where((post) => post.postType == postType)
             .toList();
-        final findSessionPosts = posts
-            .where((post) => post.postType == PostTypeEnum.findMember)
-            .toList();
+        final filteredPosts = _filterPosts(typedPosts);
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Obx(() {
-            final filteredPosts = widget.postType == PostTypeEnum.findBand
-                ? _filterPosts(findBandPosts)
-                : _filterPosts(findSessionPosts);
+        if (filteredPosts.isEmpty) {
+          return const Center(
+            child: Text(
+              '찾고 있는 게시글이 없어요',
+              style: TextStyle(fontSize: 15, color: Colors.grey),
+            ),
+          );
+        }
 
-            if (filteredPosts.isEmpty) {
-              return const Center(
-                child: Text(
-                  '찾고 있는 게시글이 없어요',
-                  style: TextStyle(fontSize: 15, color: Colors.grey),
-                ),
-              );
-            }
+        return RefreshIndicator(
+          color: const Color(0xFFFF6B2C),
+          onRefresh: () => postsController.fetchPosts(),
+          child: ListView.separated(
+              padding: EdgeInsets.zero,
+              itemCount: filteredPosts.length,
+              separatorBuilder: (context, index) => const SizedBox(
+                    height: 8,
+                  ),
+              itemBuilder: (context, index) {
+                final post = filteredPosts[index];
+                return GestureDetector(
+                  child: PostThumbnail(post: post),
+                  onTap: () async {
+                    final deleted = await Navigator.push(
+                        context,
+                        Platform.isIOS
+                            ? CupertinoPageRoute(
+                                builder: (context) => PostDetailScreen(
+                                      postId: post.id,
+                                      userId: post.userId,
+                                    ))
+                            : MaterialPageRoute(
+                                builder: (context) => PostDetailScreen(
+                                      postId: post.id,
+                                      userId: post.userId,
+                                    )));
 
-            return RefreshIndicator(
-              color: const Color(0xFFFF6B2C),
-              onRefresh: () async {
-                _refresh();
-                await _posts;
-              },
-              child: ListView.separated(
-                  padding: EdgeInsets.zero,
-                  itemCount: filteredPosts.length,
-                  separatorBuilder: (context, index) => const SizedBox(
-                        height: 8,
-                      ),
-                  itemBuilder: (context, index) {
-                    final post = filteredPosts[index];
-                    return GestureDetector(
-                      child: PostThumbnail(post: post),
-                      onTap: () async {
-                        final deleted = await Navigator.push(
-                            context,
-                            Platform.isIOS
-                                ? CupertinoPageRoute(
-                                    builder: (context) => PostDetailScreen(
-                                          postId: post.id,
-                                          userId: post.userId,
-                                        ))
-                                : MaterialPageRoute(
-                                    builder: (context) => PostDetailScreen(
-                                          postId: post.id,
-                                          userId: post.userId,
-                                        )));
-
-                        if (deleted == true) {
-                          _refresh();
-                        }
-                      },
-                    );
-                  }),
-            );
-          }),
+                    if (deleted == true) {
+                      postsController.fetchPosts();
+                    }
+                  },
+                );
+              }),
         );
-      },
+      }),
     );
   }
 }

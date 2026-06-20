@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/explore_filter_controller.dart';
+import 'package:lets_jam/controllers/explore_posts_controller.dart';
 import 'package:lets_jam/main.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/alarm_screen.dart';
@@ -28,8 +29,8 @@ class _ExploreScreenState extends State<ExploreScreen>
     with TickerProviderStateMixin, RouteAware {
   final ExploreFilterController exploreFilterController =
       Get.put(ExploreFilterController());
-
-  late void Function() _reloadItems;
+  final ExplorePostsController explorePostsController =
+      Get.put(ExplorePostsController());
 
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -87,7 +88,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   @override
   void didPopNext() {
     // 다른 화면에서 돌아왔을 때 호출됨
-    _reloadItems();
+    explorePostsController.fetchPosts();
   }
 
   void _toggleExploreFilter() {
@@ -223,18 +224,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                 TabBarView(
                   controller: _tabController,
                   children: [
-                    ExplorePosts(
-                      postType: PostTypeEnum.findBand,
-                      onReloadRegister: (reloadFn) {
-                        _reloadItems = reloadFn;
-                      },
-                    ),
-                    ExplorePosts(
-                      postType: PostTypeEnum.findMember,
-                      onReloadRegister: (reloadFn) {
-                        _reloadItems = reloadFn;
-                      },
-                    ),
+                    ExplorePosts(postType: PostTypeEnum.findBand),
+                    ExplorePosts(postType: PostTypeEnum.findMember),
                   ],
                 ),
                 // dimmed 배경
