@@ -108,11 +108,24 @@ class _MyAppState extends State<MyApp> {
       return;
     }
 
-    // letsjam.work Universal Link → 프로필 화면 (예: /profiles/{id})
+    // 프로필 딥링크 → 프로필 화면
+    // - Universal Link: https://letsjam.work/profiles/{id}
+    //     scheme=https, host=letsjam.work, pathSegments=[profiles, {id}]
+    // - Custom Scheme: letsjam://profiles/{id} (카톡 등 인앱 브라우저 대응)
+    //     scheme=letsjam, host=profiles, pathSegments=[{id}]
+    String? profileId;
     if (uri.host == 'letsjam.work' &&
         uri.pathSegments.length >= 2 &&
         uri.pathSegments[0] == 'profiles') {
-      final location = '/profiles/${uri.pathSegments[1]}';
+      profileId = uri.pathSegments[1];
+    } else if (uri.scheme == 'letsjam' &&
+        uri.host == 'profiles' &&
+        uri.pathSegments.isNotEmpty) {
+      profileId = uri.pathSegments[0];
+    }
+
+    if (profileId != null) {
+      final location = '/profiles/$profileId';
       if (_splashDone) {
         appRouter.go(location);
       } else {
