@@ -50,3 +50,6 @@ app.*.map.json
 
 # OMC local state
 .omc/
+
+# iOS build artifacts (ipa, dSYM 등 빌드 산출물)
+ios/build/
