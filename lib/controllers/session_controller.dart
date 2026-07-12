@@ -24,6 +24,24 @@ class SessionController extends GetxController {
   /// 쨈 프로필 등록 여부
   var hasProfile = false.obs;
 
+  /// 프로토타입/미배포 기능 접근 권한 (dev_testers allowlist 기반).
+  /// 프로필과 분리된 테이블이라 프로필 삭제/재생성과 무관하게 유지된다.
+  var isDev = false.obs;
+
+  /// dev_testers allowlist에 auth 유저 id가 있는지 조회해 [isDev]를 갱신한다.
+  Future<void> _loadDevTesterFlag(String userId) async {
+    try {
+      final rows = await supabase
+          .from('dev_testers')
+          .select('user_id')
+          .eq('user_id', userId);
+      isDev.value = rows.isNotEmpty;
+    } catch (e) {
+      debugPrint('테스터 여부 조회 에러: $e');
+      isDev.value = false;
+    }
+  }
+
   @override
   void onInit() async {
     super.onInit();
@@ -38,6 +56,7 @@ class SessionController extends GetxController {
 
       if (event == AuthChangeEvent.signedIn && sbUser != null) {
         isLoggedIn.value = true;
+        _loadDevTesterFlag(sbUser.id);
 
         try {
           final jamUser =
@@ -74,6 +93,7 @@ class SessionController extends GetxController {
           await supabase.from('profiles').select().eq('id', sessionUser.id);
 
       isLoggedIn.value = true;
+      _loadDevTesterFlag(sessionUser.id);
 
       if (data.isNotEmpty) {
         user.value = ProfileModel.fromJson(data[0]);
@@ -161,6 +181,7 @@ class SessionController extends GetxController {
       user.value = null;
       isLoggedIn.value = false;
       hasProfile.value = false;
+      isDev.value = false;
 
       /** TODO: 로컬 저장 */
       // final prefs = await SharedPreferences.getInstance();

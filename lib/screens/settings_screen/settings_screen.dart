@@ -4,6 +4,7 @@ import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_jam/main.dart';
 import 'package:lets_jam/widgets/modal.dart';
+import 'package:lets_jam/screens/developer_test_screen/developer_test_screen.dart';
 import 'package:lets_jam/screens/terms_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
@@ -128,6 +129,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
           info: _version,
           showArrow: false,
         ),
+        if (sessionController.isDev.value)
+          SettingItem(
+            title: 'JAM 개발자 테스트',
+            subtitle: '아직 배포되지 않은 프로토타입을 확인해요',
+            textColor: ColorSeed.boldOrangeStrong.color,
+            arrowColor: ColorSeed.boldOrangeStrong.color,
+            titleFontWeight: FontWeight.w700,
+            onClick: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const DeveloperTestScreen()),
+              );
+            },
+          ),
       ];
 
   Future<void> _launchUrl(String url) async {
