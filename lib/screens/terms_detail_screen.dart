@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum TermsType { termsOfService, privacyPolicy }
+enum TermsType { termsOfService, privacyPolicy, communityPolicy }
 
 class TermsDetailScreen extends StatelessWidget {
   final TermsType type;
@@ -13,6 +13,8 @@ class TermsDetailScreen extends StatelessWidget {
         return 'JAM 이용약관';
       case TermsType.privacyPolicy:
         return '개인정보 처리방침';
+      case TermsType.communityPolicy:
+        return '커뮤니티 이용규칙';
     }
   }
 
@@ -22,6 +24,8 @@ class TermsDetailScreen extends StatelessWidget {
         return _termsOfServiceContent;
       case TermsType.privacyPolicy:
         return _privacyPolicyContent;
+      case TermsType.communityPolicy:
+        return _communityPolicyContent;
     }
   }
 
@@ -146,4 +150,44 @@ JAM은 개인정보 처리에 대한 책임을 지고, 개인정보와 관련한
   ∙ 이름: 심소연
   ∙ 이메일: jam.chunkybuddy@gmail.com
 개인정보 열람 청구 및 불만 처리 관련하여 궁금한 점이 있다면 언제든지 연락해주세요.
+''';
+
+const String _communityPolicyContent = '''
+JAM은 밴드 멤버를 구하고, 함께 음악을 만들어가는 공간입니다.
+모든 이용자가 안전하고 즐겁게 서비스를 이용할 수 있도록 아래 규칙을 반드시 준수해 주세요.
+
+제1조 적용 범위
+본 규칙은 JAM메시지 등이용자가 작성하거나 공유하는 모든 콘텐츠 및 활동에 적용됩니다.
+
+제2조 금지 행위
+이용자는 다음 행위를 해서는 안 됩니다.
+- 허위·기만 정보 작성 — 본인의 세션, 경력, 연락처 등을 허위로 기재하거나 타인의 정보를 도용하는 행위
+- 혐오·비하 표현 — 특정인 또는 집단에 대한 욕설, 성적 표현, 혐오 발
+- 괴롭힘 및 스토킹 — 특정 이용자를 반복적으로 괴롭히거나, 동의 없이 연락을 지속하는 행위
+- 저작권 침해 — 타인의 음악, 이미지, 영상 등 저작물을 무단으로 게시
+- 스팸·홍보성 게시물 — 서비스 목적과 무관한 광고, 반복 게시, 외부 링크 도배 행위
+- 불법 콘텐츠 — 음란물, 폭력물, 불법 촬영물 등 법령에 위반되는 콘텐츠 게시
+- 서비스 방해 — 비정상적인 방법으로 서비스 운영을 저해하거나 다른 이용자의 활동을 방해하는 행위
+
+제3조 신고 및 처리
+- 이용자는 부적절한 게시물 또는 이용자를 신고하거나 차단할 수 있습니다.
+- 회사는 신고된 콘텐츠를 24시간 이내에 검토하여 삭제, 게시 제한, 이 .
+- 신고 결과는 신고자에게 별도로 통보되지 않을 수 있습니다.
+                                                  제4조 제재 기
+위반 행위의 유형과 심각성에 따라 아래와 같이 단계적 조치가 적용됩니다.
+
+단계 | 조치 내용
+1단계 | 해당 콘텐츠 삭제 및 경고
+2단계 | 일정 기간 서비스 이용 제한
+3단계 | 계정 영구 정지
+
+단, 욕설·혐오 표현, 음란물, 스토킹, 불법 콘텐츠 게시 등 중대한 위반에 대해서는 무관용 원칙(Zero Tolerance Policy)에 따라 사전 통보 없이 즉시 영구 제한될 수 있습니다.
+
+제5조 콘텐츠 책임
+- 게시물에 대한 책임은 작성자 본인에게 있으며, 회사는 이용자가 작성 증하지않습니다.
+- 회사는 본 규칙에 위반되거나 서비스 운영상 부적절하다고 판단되는 콘텐츠를 사전 통지 없이 삭제할 수 있습니다.
+
+제6조 규칙 변경
+본 규칙은 서비스 정책 및 관련 법령에 따라 변경될 수 있으며, 변경 시 앱 내 공지를 통해 사전 안내합니다.
+
 ''';

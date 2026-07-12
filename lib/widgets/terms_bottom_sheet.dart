@@ -138,7 +138,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const TermsDetailScreen(
-                        type: TermsType.termsOfService,
+                        type: TermsType.communityPolicy,
                       ),
                     ),
                   );
