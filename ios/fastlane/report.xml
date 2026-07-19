@@ -5,42 +5,42 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000222">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000198">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: Switch to ios setup_signing lane" time="0.000174">
+      <testcase classname="fastlane.lanes" name="1: Switch to ios setup_signing lane" time="8.4e-05">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: app_store_connect_api_key" time="0.002985">
+      <testcase classname="fastlane.lanes" name="2: app_store_connect_api_key" time="0.003446">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: Switch to ios build_flutter_ipa lane" time="8.5e-05">
+      <testcase classname="fastlane.lanes" name="3: Switch to ios build_flutter_ipa lane" time="7.0e-05">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: export PATH=&quot;$HOME/.rbenv/shims:$HOME/.rbenv/bin:/opt/homebrew/bin:$PATH&quot; &amp;&amp; eval &quot;$(rbenv init -)&quot; &amp;&amp; cd .. &amp;&amp; flutter build ios --release --no-codesign" time="58.207123">
+      <testcase classname="fastlane.lanes" name="4: export PATH=&quot;$HOME/.rbenv/shims:$HOME/.rbenv/bin:/opt/homebrew/bin:$PATH&quot; &amp;&amp; unset GEM_HOME GEM_PATH BUNDLE_GEMFILE BUNDLE_BIN_PATH BUNDLER_VERSION RUBYOPT RUBYLIB &amp;&amp; eval &quot;$(rbenv init -)&quot; &amp;&amp; cd .. &amp;&amp; flutter build ios --release --no-codesign" time="32.540176">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: increment_build_number" time="1.4308">
+      <testcase classname="fastlane.lanes" name="5: increment_build_number" time="0.242657">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: build_app" time="68.296394">
+      <testcase classname="fastlane.lanes" name="6: build_app" time="61.662412">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="7: upload_to_testflight" time="57.010038">
+      <testcase classname="fastlane.lanes" name="7: upload_to_testflight" time="77.8956">
         
       </testcase>
     
