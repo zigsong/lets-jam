@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
-import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
+import 'package:lets_jam/widgets/like_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-enum PostLikeButtonSize { sm, lg }
+typedef PostLikeButtonSize = LikeButtonSize;
 
 class PostLikeButton extends StatefulWidget {
   final String postId;
-  final PostLikeButtonSize? size;
+  final LikeButtonSize? size;
   final bool? hasBackground;
 
   const PostLikeButton(
@@ -106,25 +106,13 @@ class _PostLikeButtonState extends State<PostLikeButton> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isSmall = widget.size == PostLikeButtonSize.sm;
-
     if (sessionController.user.value == null) return const SizedBox.shrink();
 
-    return GestureDetector(
+    return LikeButton(
+      isLiked: isLiked,
       onTap: _toggleLike,
-      child: Container(
-        width: isSmall ? 24 : 40,
-        height: isSmall ? 24 : 40,
-        padding: EdgeInsets.all(isSmall ? 4 : 8),
-        decoration: widget.hasBackground == true
-            ? BoxDecoration(
-                color: ColorSeed.organizedBlackMedium.color.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(6))
-            : null,
-        child: isLiked == true
-            ? Image.asset('assets/images/like_filled.png')
-            : Image.asset('assets/images/like_empty.png'),
-      ),
+      size: widget.size,
+      hasBackground: widget.hasBackground,
     );
   }
 }

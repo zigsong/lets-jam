@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/screens/studio_screen/studio.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/widgets/like_button.dart';
 import 'package:lets_jam/widgets/post_badge.dart';
 
 class StudioCard extends StatelessWidget {
@@ -105,15 +106,10 @@ class StudioCard extends StatelessWidget {
                     Positioned(
                       right: 8,
                       bottom: 8,
-                      child: GestureDetector(
+                      child: LikeButton(
+                        isLiked: liked,
                         onTap: onToggleLike,
-                        child: Image.asset(
-                          liked
-                              ? 'assets/images/like_filled.png'
-                              : 'assets/images/like_empty.png',
-                          width: 28,
-                          height: 28,
-                        ),
+                        size: LikeButtonSize.md,
                       ),
                     ),
                   ],
