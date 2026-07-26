@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lets_jam/screens/studio_screen/studio.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/like_button.dart';
 import 'package:lets_jam/widgets/post_badge.dart';
+
+/// 1000 단위 콤마. 22000 -> "22,000".
+final _priceFormat = NumberFormat('#,###');
 
 class StudioCard extends StatelessWidget {
   final Studio room;
@@ -51,29 +55,31 @@ class StudioCard extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 20, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 6),
-                  PostBadge(text: room.district.displayName),
+                  if (room.regionLabel != null) ...[
+                    const SizedBox(height: 6),
+                    PostBadge(text: room.regionLabel!),
+                  ],
                   const SizedBox(height: 8),
-                  Text(
-                    room.tags.map((tag) => '#$tag').join('  '),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: ColorSeed.organizedBlackLight.color,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
                   Row(
                     children: [
-                      const Icon(Icons.star,
-                          size: 14, color: Color(0xffFFC02D)),
-                      const SizedBox(width: 2),
                       Text(
-                        '${room.rating} (${room.reviewCount})',
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
+                        room.minPrice != null
+                            ? '${_priceFormat.format(room.minPrice)}원~'
+                            : '가격 문의',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: ColorSeed.boldOrangeMedium.color,
+                        ),
                       ),
+                      if (room.roomCount > 0) ...[
+                        const SizedBox(width: 6),
+                        Text(
+                          '· 룸 ${room.roomCount}개',
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
                     ],
                   ),
                 ],
@@ -89,20 +95,17 @@ class StudioCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    if (room.imagePath != null)
-                      Image.asset(room.imagePath!, fit: BoxFit.cover)
-                    else
-                      Container(
-                        color: ColorSeed.boldOrangeLight.color,
-                        alignment: Alignment.center,
-                        child: Text(
-                          '사진을 준비중이에요',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: ColorSeed.organizedBlackLight.color,
-                          ),
+                    Container(
+                      color: ColorSeed.boldOrangeLight.color,
+                      alignment: Alignment.center,
+                      child: Text(
+                        '사진을 준비중이에요',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: ColorSeed.organizedBlackLight.color,
                         ),
                       ),
+                    ),
                     Positioned(
                       right: 8,
                       bottom: 8,

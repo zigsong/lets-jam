@@ -6,82 +6,7 @@ import 'package:lets_jam/screens/studio_screen/studio.dart';
 import 'package:lets_jam/screens/studio_screen/studio_card.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/tag.dart';
-
-/// [프로토타입] 하드코딩된 합주실 목록.
-const List<Studio> _mockRooms = [
-  Studio(
-    name: '홍대 사운드박스 합주실',
-    district: District.hongdae,
-    pricePerHour: 15000,
-    capacity: 6,
-    rating: 4.8,
-    reviewCount: 132,
-    tags: ['드럼 완비', '앰프 대여', '주차가능'],
-  ),
-  Studio(
-    name: '강남 리듬스테이지',
-    district: District.gangnam,
-    pricePerHour: 22000,
-    capacity: 8,
-    rating: 4.6,
-    reviewCount: 87,
-    tags: ['방음 우수', '녹음 가능', '심야 이용'],
-  ),
-  Studio(
-    name: '건대 그루브룸',
-    district: District.kondae,
-    pricePerHour: 12000,
-    capacity: 5,
-    rating: 4.9,
-    reviewCount: 210,
-    tags: ['가성비', '드럼 완비', '24시간'],
-  ),
-  Studio(
-    name: '잠실 재밍하우스',
-    district: District.jamsil,
-    pricePerHour: 18000,
-    capacity: 7,
-    rating: 4.3,
-    reviewCount: 54,
-    tags: ['넓은 공간', '주차가능'],
-  ),
-  Studio(
-    name: '영등포 튠업스튜디오',
-    district: District.yeondeungpo,
-    pricePerHour: 16000,
-    capacity: 6,
-    rating: 4.5,
-    reviewCount: 76,
-    tags: ['신축', '앰프 대여', '음료 무료'],
-  ),
-  Studio(
-    name: '종로 멜로디베이스',
-    district: District.jongno,
-    pricePerHour: 14000,
-    capacity: 5,
-    rating: 4.2,
-    reviewCount: 41,
-    tags: ['접근성 좋음', '드럼 완비'],
-  ),
-  Studio(
-    name: '수원 하모니큐브',
-    district: District.suwon,
-    pricePerHour: 11000,
-    capacity: 6,
-    rating: 4.7,
-    reviewCount: 98,
-    tags: ['가성비', '주차가능', '심야 이용'],
-  ),
-  Studio(
-    name: '인천 비트팩토리',
-    district: District.incheon,
-    pricePerHour: 13000,
-    capacity: 8,
-    rating: 4.4,
-    reviewCount: 63,
-    tags: ['넓은 공간', '녹음 가능'],
-  ),
-];
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StudioScreen extends StatefulWidget {
   const StudioScreen({super.key});
@@ -94,17 +19,53 @@ class _StudioScreenState extends State<StudioScreen> {
   // 선택된 지역 필터 (비어있으면 전체)
   final Set<District> _selectedDistricts = {};
 
-  // [프로토타입] 찜한 합주실 (이름 기준, 로컬 상태로만 유지)
+  // 찜한 합주실 (id 기준, 로컬 상태로만 유지)
   final Set<String> _likedRooms = {};
+
+  // Supabase에서 불러온 합주실 목록
+  List<Studio> _studios = [];
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final res = await Supabase.instance.client
+          .from('studios')
+          .select('id, studio_name, region, rooms')
+          .order('studio_name');
+      final list = (res as List)
+          .map((e) => Studio.fromMap(e as Map<String, dynamic>))
+          .toList();
+      if (!mounted) return;
+      setState(() {
+        _studios = list;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _error = '합주실을 불러오지 못했어요';
+        _loading = false;
+      });
+    }
+  }
 
   // 필터 칩으로 노출할 지역들 (전체 옵션 제외)
   List<District> get _regionOptions =>
       District.values.where((d) => !d.isAll).toList();
 
   List<Studio> get _filteredRooms {
-    if (_selectedDistricts.isEmpty) return _mockRooms;
-    return _mockRooms
-        .where((room) => _selectedDistricts.contains(room.district))
+    if (_selectedDistricts.isEmpty) return _studios;
+    return _studios
+        .where((room) =>
+            room.district != null &&
+            _selectedDistricts.contains(room.district))
         .toList();
   }
 
@@ -124,12 +85,68 @@ class _StudioScreenState extends State<StudioScreen> {
 
   void _toggleLike(Studio room) {
     setState(() {
-      if (_likedRooms.contains(room.name)) {
-        _likedRooms.remove(room.name);
+      if (_likedRooms.contains(room.id)) {
+        _likedRooms.remove(room.id);
       } else {
-        _likedRooms.add(room.name);
+        _likedRooms.add(room.id);
       }
     });
+  }
+
+  Widget _buildBody(List<Studio> rooms) {
+    if (_loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_error != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              _error!,
+              style: const TextStyle(fontSize: 15, color: Colors.grey),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _loading = true;
+                  _error = null;
+                });
+                _load();
+              },
+              child: const Text('다시 시도'),
+            ),
+          ],
+        ),
+      );
+    }
+    if (rooms.isEmpty) {
+      return const Center(
+        child: Text(
+          '조건에 맞는 합주실이 없어요',
+          style: TextStyle(fontSize: 15, color: Colors.grey),
+        ),
+      );
+    }
+    return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        childAspectRatio: 0.68,
+      ),
+      itemCount: rooms.length,
+      itemBuilder: (context, index) {
+        final room = rooms[index];
+        return StudioCard(
+          room: room,
+          liked: _likedRooms.contains(room.id),
+          onToggleLike: () => _toggleLike(room),
+        );
+      },
+    );
   }
 
   @override
@@ -247,34 +264,7 @@ class _StudioScreenState extends State<StudioScreen> {
             ),
           ),
           // 목록
-          Expanded(
-            child: rooms.isEmpty
-                ? const Center(
-                    child: Text(
-                      '조건에 맞는 합주실이 없어요',
-                      style: TextStyle(fontSize: 15, color: Colors.grey),
-                    ),
-                  )
-                : GridView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.68,
-                    ),
-                    itemCount: rooms.length,
-                    itemBuilder: (context, index) {
-                      final room = rooms[index];
-                      return StudioCard(
-                        room: room,
-                        liked: _likedRooms.contains(room.name),
-                        onToggleLike: () => _toggleLike(room),
-                      );
-                    },
-                  ),
-          ),
+          Expanded(child: _buildBody(rooms)),
         ],
       ),
     );
