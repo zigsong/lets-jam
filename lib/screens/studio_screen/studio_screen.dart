@@ -4,6 +4,7 @@ import 'package:lets_jam/screens/alarm_screen.dart';
 import 'package:lets_jam/screens/settings_screen/settings_screen.dart';
 import 'package:lets_jam/screens/studio_screen/studio.dart';
 import 'package:lets_jam/screens/studio_screen/studio_card.dart';
+import 'package:lets_jam/screens/studio_screen/studio_like_service.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/tag.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,7 +20,7 @@ class _StudioScreenState extends State<StudioScreen> {
   // 선택된 지역 필터 (비어있으면 전체)
   final Set<District> _selectedDistricts = {};
 
-  // 찜한 합주실 (id 기준, 로컬 상태로만 유지)
+  // 찜한 합주실 id 집합 (studio_likes 테이블과 동기화)
   final Set<String> _likedRooms = {};
 
   // Supabase에서 불러온 합주실 목록
@@ -42,9 +43,13 @@ class _StudioScreenState extends State<StudioScreen> {
       final list = (res as List)
           .map((e) => Studio.fromMap(e as Map<String, dynamic>))
           .toList();
+      final likedIds = await StudioLikeService.fetchLikedIds();
       if (!mounted) return;
       setState(() {
         _studios = list;
+        _likedRooms
+          ..clear()
+          ..addAll(likedIds);
         _loading = false;
       });
     } catch (_) {
@@ -83,14 +88,34 @@ class _StudioScreenState extends State<StudioScreen> {
     setState(() => _selectedDistricts.clear());
   }
 
-  void _toggleLike(Studio room) {
+  Future<void> _toggleLike(Studio room) async {
+    final wasLiked = _likedRooms.contains(room.id);
+
+    // 낙관적 업데이트: 먼저 UI 반영 후 실패하면 롤백
     setState(() {
-      if (_likedRooms.contains(room.id)) {
+      if (wasLiked) {
         _likedRooms.remove(room.id);
       } else {
         _likedRooms.add(room.id);
       }
     });
+
+    try {
+      if (wasLiked) {
+        await StudioLikeService.unlike(room.id);
+      } else {
+        await StudioLikeService.like(room.id);
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        if (wasLiked) {
+          _likedRooms.add(room.id);
+        } else {
+          _likedRooms.remove(room.id);
+        }
+      });
+    }
   }
 
   Widget _buildBody(List<Studio> rooms) {

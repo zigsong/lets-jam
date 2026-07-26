@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/screens/alarm_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_posts.dart';
+import 'package:lets_jam/screens/liked_screen/liked_studios.dart';
 import 'package:lets_jam/screens/settings_screen/settings_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
@@ -11,7 +12,22 @@ class LikedScreen extends StatefulWidget {
   State<LikedScreen> createState() => _LikedScreenState();
 }
 
-class _LikedScreenState extends State<LikedScreen> {
+class _LikedScreenState extends State<LikedScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -70,14 +86,48 @@ class _LikedScreenState extends State<LikedScreen> {
             ],
           ),
         ),
-        const SizedBox(
-          height: 14.5,
+        const SizedBox(height: 8),
+        PreferredSize(
+          preferredSize: const Size.fromHeight(36),
+          child: TabBar(
+            controller: _tabController,
+            labelColor: ColorSeed.boldOrangeMedium.color,
+            unselectedLabelColor: ColorSeed.meticulousGrayMedium.color,
+            indicatorColor: ColorSeed.boldOrangeMedium.color,
+            indicatorWeight: 2.0,
+            indicatorSize: TabBarIndicatorSize.tab,
+            tabs: [
+              Container(
+                height: 36,
+                alignment: Alignment.center,
+                child: const Text(
+                  '밴드/멤버 구하기',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Container(
+                height: 36,
+                alignment: Alignment.center,
+                child: const Text(
+                  '합주실',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
         ),
-        const Expanded(
-          child: Stack(children: [
-            LikedPosts(),
-          ]),
-        )
+        const SizedBox(
+          height: 24,
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: const [
+              LikedPosts(),
+              LikedStudios(),
+            ],
+          ),
+        ),
       ]),
     );
   }
