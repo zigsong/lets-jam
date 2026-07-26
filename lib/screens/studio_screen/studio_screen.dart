@@ -208,9 +208,9 @@ class _StudioScreenState extends State<StudioScreen> {
               ],
             ),
           ),
-          // 지역 필터 바
+          // 지역 필터 바 (오른쪽에 초기화 버튼)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.only(top: 8),
             child: Row(
               children: [
                 const SizedBox(width: 16),
@@ -233,36 +233,33 @@ class _StudioScreenState extends State<StudioScreen> {
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          // 선택 요약 + 초기화
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
                 if (_selectedDistricts.isNotEmpty)
                   GestureDetector(
                     onTap: _reset,
-                    child: Row(
-                      children: [
-                        Text(
-                          '초기화',
-                          style: TextStyle(
-                            color: ColorSeed.boldOrangeRegular.color,
-                            fontSize: 13,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 16, 0),
+                      child: Row(
+                        children: [
+                          Text(
+                            '초기화',
+                            style: TextStyle(
+                              color: ColorSeed.boldOrangeRegular.color,
+                              fontSize: 13,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 4),
-                        Image.asset('assets/icons/filter_reset.png',
-                            width: 18, height: 18),
-                      ],
+                          const SizedBox(width: 4),
+                          Image.asset('assets/icons/filter_reset.png',
+                              width: 18, height: 18),
+                        ],
+                      ),
                     ),
-                  ),
+                  )
+                else
+                  const SizedBox(width: 16),
               ],
             ),
           ),
+          const SizedBox(height: 12),
           // 목록
           Expanded(child: _buildBody(rooms)),
         ],
