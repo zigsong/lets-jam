@@ -9,6 +9,7 @@ import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/region_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/post_thumbnail.dart';
 
 class ExplorePosts extends StatelessWidget {
@@ -63,10 +64,23 @@ class ExplorePosts extends StatelessWidget {
         final filteredPosts = _filterPosts(typedPosts);
 
         if (filteredPosts.isEmpty) {
-          return const Center(
-            child: Text(
-              '찾고 있는 게시글이 없어요',
-              style: TextStyle(fontSize: 15, color: Colors.grey),
+          return Center(
+            child: Transform.translate(
+              offset: const Offset(0, -20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/empty_post.png',
+                    width: 138,
+                  ),
+                  Text(
+                    '찾고 있는 게시글이 없어요',
+                    style: TextStyle(
+                        fontSize: 15, color: ColorSeed.boldOrangeMedium.color),
+                  ),
+                ],
+              ),
             ),
           );
         }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
+import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/post_thumbnail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -71,10 +72,23 @@ class _LikedPostsState extends State<LikedPosts> {
         final posts = snapshot.data!;
 
         if (posts.isEmpty) {
-          return const Center(
-            child: Text(
-              '아직 찜한 게시글이 없어요',
-              style: TextStyle(fontSize: 15, color: Colors.grey),
+          return Center(
+            child: Transform.translate(
+              offset: const Offset(0, -20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/empty_post.png',
+                    width: 138,
+                  ),
+                  Text(
+                    '아직 찜한 게시글이 없어요',
+                    style: TextStyle(
+                        fontSize: 15, color: ColorSeed.boldOrangeMedium.color),
+                  ),
+                ],
+              ),
             ),
           );
         }
