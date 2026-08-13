@@ -51,6 +51,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   String? _contactErrorText;
   bool _sessionError = false;
   bool _nicknameDuplicated = false;
+  bool _isSubmitting = false;
   Timer? _nicknameDebounce;
 
   final _sessionKey = GlobalKey();
@@ -167,6 +168,8 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
   }
 
   Future<void> _submit() async {
+    if (_isSubmitting) return;
+
     setState(() {
       _nicknameErrorText = null;
       _contactErrorText = null;
@@ -206,6 +209,8 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       return;
     }
 
+    setState(() => _isSubmitting = true);
+
     try {
       if (isEditMode) {
         await _updateProfile();
@@ -229,6 +234,8 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       debugPrint('프로필 저장 에러: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(customSnackbar('저장 실패: $e'));
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
@@ -236,10 +243,13 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
     final userId = supabase.auth.currentUser!.id;
 
     final profileImageUrl = formData.profileImage != null
-        ? (await uploadImages([formData.profileImage!], pathPrefix: 'profile_uploads')).first
+        ? (await uploadImages([formData.profileImage!],
+                pathPrefix: 'profile_uploads'))
+            .first
         : null;
-    final backgroundImageUrls =
-        await uploadImages(formData.backgroundImages ?? [], pathPrefix: 'profile_uploads');
+    final backgroundImageUrls = await uploadImages(
+        formData.backgroundImages ?? [],
+        pathPrefix: 'profile_uploads');
 
     await supabase.from('profiles').upsert({
       'id': userId,
@@ -254,10 +264,13 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
 
   Future<void> _updateProfile() async {
     final profileImageUrl = formData.profileImage != null
-        ? (await uploadImages([formData.profileImage!], pathPrefix: 'profile_uploads')).first
+        ? (await uploadImages([formData.profileImage!],
+                pathPrefix: 'profile_uploads'))
+            .first
         : null;
-    final backgroundImageUrls =
-        await uploadImages(formData.backgroundImages ?? [], pathPrefix: 'profile_uploads');
+    final backgroundImageUrls = await uploadImages(
+        formData.backgroundImages ?? [],
+        pathPrefix: 'profile_uploads');
 
     await supabase.from('profiles').update({
       'nickname': formData.nickname,
@@ -468,6 +481,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                         WideButton(
                           text: isEditMode ? '수정하기' : '작성하기',
                           onPressed: _submit,
+                          isLoading: _isSubmitting,
                         ),
                         const SizedBox(
                           height: 20,

@@ -179,7 +179,7 @@ class PostThumbnail extends StatelessWidget {
                   Positioned.fill(
                     child: (post.images?.isNotEmpty ?? false)
                         ? CachedNetworkImage(
-                    fadeInDuration: Duration.zero,
+                            fadeInDuration: Duration.zero,
                             imageUrl: supabaseImageUrl(post.images![0],
                                 width: 300, quality: 80),
                             fit: BoxFit.cover,
@@ -192,8 +192,30 @@ class PostThumbnail extends StatelessWidget {
                             alignment: Alignment.center,
                           ),
                   ),
-                  Positioned(
+                  if (!post.isRecruiting)
+                    Positioned(
                       top: 10,
+                      right: 10,
+                      child: Container(
+                        width: 54,
+                        height: 18,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: ColorSeed.boldOrangeStrong.color,
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: const Text(
+                          '구하기 완료',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  Positioned(
+                      bottom: 10,
                       right: 10,
                       child: PostLikeButton(
                         postId: post.id,

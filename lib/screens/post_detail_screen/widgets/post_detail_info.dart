@@ -1,36 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/screens/post_detail_screen/widgets/recruiting_checkbox.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
 class PostDetailInfo extends StatelessWidget {
-  const PostDetailInfo({super.key, required this.post});
+  const PostDetailInfo({super.key, required this.post, this.isMyPost = false});
 
   final PostModel post;
+  final bool isMyPost;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      decoration: BoxDecoration(
-          color: const Color(0xfff5f5f5),
-          border:
-              Border.all(width: 1, color: ColorSeed.meticulousGrayLight.color),
-          borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        children: [
-          if (post.postType == PostTypeEnum.findMember)
-            _filterDataList('세션',
-                post.sessions.map((session) => sessionMap[session]!).toList()),
-          const SizedBox(height: 8),
-          if (post.regions?.isNotEmpty ?? false)
-            _filterDataList('지역',
-                post.regions?.map((region) => region.displayName).toList()),
-          const SizedBox(height: 8),
-          if (post.tags?.isNotEmpty ?? false)
-            _listHashTags('해시태그', post.tags),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          decoration: BoxDecoration(
+              color: const Color(0xfff5f5f5),
+              border: Border.all(
+                  width: 1, color: ColorSeed.meticulousGrayLight.color),
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
+              if (post.postType == PostTypeEnum.findMember)
+                _filterDataList(
+                    '세션',
+                    post.sessions
+                        .map((session) => sessionMap[session]!)
+                        .toList()),
+              const SizedBox(height: 8),
+              if (post.regions?.isNotEmpty ?? false)
+                _filterDataList('지역',
+                    post.regions?.map((region) => region.displayName).toList()),
+              const SizedBox(height: 8),
+              if (post.tags?.isNotEmpty ?? false)
+                _listHashTags('해시태그', post.tags),
+            ],
+          ),
+        ),
+        if (isMyPost)
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: RecruitingCheckbox(post: post),
+            ),
+          ),
+      ],
     );
   }
 
@@ -82,7 +100,8 @@ class PostDetailInfo extends StatelessWidget {
             padding: const EdgeInsets.only(top: 4.0),
             child: SizedBox(
               width: 48,
-              child: Text(label, style: const TextStyle(fontSize: 13, height: 1)),
+              child:
+                  Text(label, style: const TextStyle(fontSize: 13, height: 1)),
             ),
           ),
           if (tags != null)

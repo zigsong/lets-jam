@@ -18,6 +18,7 @@ class PostModel {
   List<String>? images;
   dynamic bandProfile;
   int? replyCount;
+  bool isRecruiting;
 
   PostModel(
       {required this.id,
@@ -31,7 +32,8 @@ class PostModel {
       this.regions,
       this.tags,
       this.images,
-      this.replyCount});
+      this.replyCount,
+      this.isRecruiting = true});
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
@@ -49,6 +51,7 @@ class PostModel {
       replyCount: json['comment_count'] != null
           ? (json['comment_count'] as List).length
           : null,
+      isRecruiting: json['is_recruiting'] ?? true,
     );
   }
 

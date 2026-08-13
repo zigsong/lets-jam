@@ -48,7 +48,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     _author = _fetchUserById();
     _author.then((author) {
       if (mounted) {
-        setState(() => isMyPost = author.id == sessionController.user.value?.id);
+        setState(
+            () => isMyPost = author.id == sessionController.user.value?.id);
       }
     }).catchError((_) {});
     _post = _fetchPost();
@@ -241,8 +242,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                                 PostTypeEnum.findMember &&
                                             post.sessions.isNotEmpty) ||
                                         (post.regions?.isNotEmpty ?? false) ||
-                                        (post.tags?.isNotEmpty ?? false))
-                                      PostDetailInfo(post: post),
+                                        (post.tags?.isNotEmpty ?? false) ||
+                                        isMyPost == true)
+                                      PostDetailInfo(
+                                          post: post,
+                                          isMyPost: isMyPost == true),
                                     const SizedBox(
                                       height: 20,
                                     ),
@@ -311,79 +315,81 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             ),
                             if (isMyPost != null)
                               isMyPost == true
-                                ? Padding(
-                                    padding: const EdgeInsets.only(right: 20),
-                                    child: Row(
-                                      children: [
-                                        UtilButton(
-                                            text: '수정',
-                                            color: _scrolledPastThreshold
-                                                ? ColorSeed
-                                                    .organizedBlackMedium.color
-                                                : null,
-                                            onPressed: () async {
-                                              final edited =
-                                                  await pushScreen(
-                                                context,
-                                                EditPostScreen(post: post),
-                                              );
-
-                                              if (edited == true) {
-                                                _refresh();
-                                              }
-                                            }),
-                                        const SizedBox(
-                                          width: 8,
-                                        ),
-                                        UtilButton(
-                                            text: '삭제',
-                                            color: _scrolledPastThreshold
-                                                ? ColorSeed
-                                                    .organizedBlackMedium.color
-                                                : null,
-                                            onPressed: () {
-                                              showModal(
-                                                context: context,
-                                                title: '게시글을 삭제할까요?',
-                                                desc:
-                                                    '삭제된 글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
-                                                confirmText: '삭제',
-                                                onConfirm: () {
-                                                  _deletePost(post.id);
-                                                },
-                                              );
-                                            }),
-                                      ],
-                                    ),
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if (sessionController.isLoggedIn.value)
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.flag_outlined,
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(right: 20),
+                                      child: Row(
+                                        children: [
+                                          UtilButton(
+                                              text: '수정',
                                               color: _scrolledPastThreshold
                                                   ? ColorSeed
                                                       .organizedBlackMedium
                                                       .color
-                                                  : Colors.white,
-                                            ),
-                                            onPressed: () => showReportDialog(
-                                              context,
-                                              onReport: () =>
-                                                  _reportPost(post.id),
-                                            ),
+                                                  : null,
+                                              onPressed: () async {
+                                                final edited = await pushScreen(
+                                                  context,
+                                                  EditPostScreen(post: post),
+                                                );
+
+                                                if (edited == true) {
+                                                  _refresh();
+                                                }
+                                              }),
+                                          const SizedBox(
+                                            width: 8,
                                           ),
-                                        PostLikeButton(
-                                          postId: post.id,
-                                          hasBackground: false,
-                                        ),
-                                      ],
-                                    ),
-                                  )
+                                          UtilButton(
+                                              text: '삭제',
+                                              color: _scrolledPastThreshold
+                                                  ? ColorSeed
+                                                      .organizedBlackMedium
+                                                      .color
+                                                  : null,
+                                              onPressed: () {
+                                                showModal(
+                                                  context: context,
+                                                  title: '게시글을 삭제할까요?',
+                                                  desc:
+                                                      '삭제된 글과 댓글은 확인이 어려워요.\n정말 삭제할까요?',
+                                                  confirmText: '삭제',
+                                                  onConfirm: () {
+                                                    _deletePost(post.id);
+                                                  },
+                                                );
+                                              }),
+                                        ],
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          if (sessionController
+                                              .isLoggedIn.value)
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.flag_outlined,
+                                                color: _scrolledPastThreshold
+                                                    ? ColorSeed
+                                                        .organizedBlackMedium
+                                                        .color
+                                                    : Colors.white,
+                                              ),
+                                              onPressed: () => showReportDialog(
+                                                context,
+                                                onReport: () =>
+                                                    _reportPost(post.id),
+                                              ),
+                                            ),
+                                          PostLikeButton(
+                                            postId: post.id,
+                                            hasBackground: false,
+                                          ),
+                                        ],
+                                      ),
+                                    )
                           ],
                         ),
                       )),
