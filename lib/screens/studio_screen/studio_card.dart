@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_jam/screens/studio_screen/studio.dart';
+import 'package:lets_jam/screens/studio_screen/studio_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/like_button.dart';
 import 'package:lets_jam/widgets/post_badge.dart';
@@ -24,11 +25,13 @@ class StudioCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // [프로토타입] 상세 화면은 아직 미구현
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${room.name} 상세는 준비 중이에요'),
-            duration: const Duration(seconds: 1),
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => StudioDetailScreen(
+              studioId: room.id,
+              studioName: room.name,
+              initiallyLiked: liked,
+            ),
           ),
         );
       },
@@ -76,8 +79,8 @@ class StudioCard extends StatelessWidget {
                         const SizedBox(width: 6),
                         Text(
                           '· 룸 ${room.roomCount}개',
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.grey),
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       ],
                     ],
