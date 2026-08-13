@@ -69,8 +69,7 @@ class _StudioScreenState extends State<StudioScreen> {
     if (_selectedDistricts.isEmpty) return _studios;
     return _studios
         .where((room) =>
-            room.district != null &&
-            _selectedDistricts.contains(room.district))
+            room.district != null && _selectedDistricts.contains(room.district))
         .toList();
   }
 
@@ -184,7 +183,7 @@ class _StudioScreenState extends State<StudioScreen> {
         children: [
           // 헤더
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
