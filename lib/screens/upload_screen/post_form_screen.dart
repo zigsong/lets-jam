@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:lets_jam/screens/upload_screen/hashtag_selector.dart';
 import 'package:lets_jam/screens/upload_screen/region_selector.dart';
 import 'package:lets_jam/screens/upload_screen/upload_type_toggler.dart';
+import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/image_upload.dart';
@@ -183,6 +184,8 @@ class _PostFormScreenState extends State<PostFormScreen> {
         })
         .select('id')
         .single();
+
+    Analytics.writePost(postType.name);
 
     return inserted['id'] as String;
   }

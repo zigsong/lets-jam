@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_jam/screens/studio_screen/studio.dart';
 import 'package:lets_jam/screens/studio_screen/studio_detail_screen.dart';
+import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/like_button.dart';
 import 'package:lets_jam/widgets/post_badge.dart';
@@ -25,8 +26,10 @@ class StudioCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        Analytics.selectStudio(room.id, room.name);
         Navigator.of(context).push(
           MaterialPageRoute(
+            settings: const RouteSettings(name: 'StudioDetailScreen'),
             builder: (_) => StudioDetailScreen(
               studioId: room.id,
               studioName: room.name,

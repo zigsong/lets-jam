@@ -12,6 +12,7 @@ import 'package:lets_jam/models/post_model.dart';
 import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
 import 'package:lets_jam/screens/upload_screen/post_form_screen.dart';
 import 'package:lets_jam/screens/upload_screen/upload_post_screen.dart';
+import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/auth_guard.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/bottom_app_bar_item.dart';
@@ -40,6 +41,10 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
     super.initState();
 
     _selectedIndex = widget.fromIndex ?? 0;
+    const tabNames = ['Home', 'Studio', 'Liked'];
+    Analytics.logScreen(
+      _selectedIndex < tabNames.length ? tabNames[_selectedIndex] : 'Home',
+    );
     _widgetOptions = <Widget>[
       ExploreScreen(
         onSwitchTabRegister: (fn) {
@@ -55,18 +60,21 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
   }
 
   void _onHomeButtonTapped() {
+    Analytics.logScreen('Home');
     setState(() {
       _selectedIndex = 0;
     });
   }
 
   void _onPracticeRoomButtonTapped() {
+    Analytics.logScreen('Studio');
     setState(() {
       _selectedIndex = 1;
     });
   }
 
   void _onLikeButtonTapped() {
+    Analytics.logScreen('Liked');
     setState(() {
       _selectedIndex = 2;
     });
@@ -75,7 +83,10 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
   void _onProfileButtonTapped() {
     requireAuthAndProfile(context, onAuthorized: () {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+        MaterialPageRoute(
+          settings: const RouteSettings(name: 'ProfileScreen'),
+          builder: (_) => const ProfileScreen(),
+        ),
       );
     });
   }
@@ -189,6 +200,8 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                           Navigator.of(context)
                               .push(
                             MaterialPageRoute(
+                              settings:
+                                  const RouteSettings(name: 'UploadPostScreen'),
                               builder: (context) =>
                                   UploadPostScreen(postType: _writePostType),
                             ),
@@ -201,6 +214,8 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                               _switchExploreTab?.call(result.postType);
                               Navigator.of(context).push(
                                 MaterialPageRoute(
+                                  settings: const RouteSettings(
+                                      name: 'PostDetailScreen'),
                                   builder: (_) => PostDetailScreen(
                                     postId: result.postId,
                                     userId: result.userId,

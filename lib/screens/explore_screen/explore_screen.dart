@@ -137,6 +137,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
+                                settings:
+                                    const RouteSettings(name: 'AlarmScreen'),
                                 builder: (context) => const AlarmScreen()),
                           );
                         },
@@ -157,6 +159,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
+                                settings:
+                                    const RouteSettings(name: 'SettingsScreen'),
                                 builder: (context) => const SettingsScreen()),
                           );
                         },

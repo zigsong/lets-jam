@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
+import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/like_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -68,6 +69,7 @@ class _PostLikeButtonState extends State<PostLikeButton> {
         await supabase
             .from('post_likes')
             .insert({'user_id': userId, 'post_id': widget.postId});
+        Analytics.likePost(widget.postId);
       }
     } catch (error) {
       debugPrint('좋아요 토글 에러: $error');

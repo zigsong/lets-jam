@@ -112,6 +112,8 @@ class _LikedPostsState extends State<LikedPosts> {
                       final deleted = await Navigator.push(
                           context,
                           MaterialPageRoute(
+                              settings:
+                                  const RouteSettings(name: 'PostDetailScreen'),
                               builder: (context) => PostDetailScreen(
                                     postId: post.id,
                                     userId: post.userId,

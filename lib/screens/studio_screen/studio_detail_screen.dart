@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_jam/screens/studio_screen/studio_detail.dart';
 import 'package:lets_jam/screens/studio_screen/studio_like_service.dart';
+import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/like_button.dart';
@@ -288,7 +289,10 @@ class _StudioDetailScreenState extends State<StudioDetailScreen> {
           text: '${studio.reservationMethod}으로 문의',
           onTap: studio.reservationLink == null
               ? null
-              : () => _launch(studio.reservationLink),
+              : () {
+                  Analytics.clickInquiry(widget.studioId);
+                  _launch(studio.reservationLink);
+                },
         ),
     ];
 
@@ -356,7 +360,12 @@ class _StudioDetailScreenState extends State<StudioDetailScreen> {
       width: double.infinity,
       height: 42,
       child: ElevatedButton(
-        onPressed: link == null ? null : () => _launch(link),
+        onPressed: link == null
+            ? null
+            : () {
+                Analytics.clickStudioReservation(widget.studioId);
+                _launch(link);
+              },
         style: ElevatedButton.styleFrom(
           backgroundColor: ColorSeed.boldOrangeStrong.color,
           disabledBackgroundColor: ColorSeed.boldOrangeRegular.color,

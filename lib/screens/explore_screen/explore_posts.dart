@@ -103,11 +103,15 @@ class ExplorePosts extends StatelessWidget {
                         context,
                         Platform.isIOS
                             ? CupertinoPageRoute(
+                                settings: const RouteSettings(
+                                    name: 'PostDetailScreen'),
                                 builder: (context) => PostDetailScreen(
                                       postId: post.id,
                                       userId: post.userId,
                                     ))
                             : MaterialPageRoute(
+                                settings: const RouteSettings(
+                                    name: 'PostDetailScreen'),
                                 builder: (context) => PostDetailScreen(
                                       postId: post.id,
                                       userId: post.userId,

@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 
+import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/image_upload.dart';
@@ -223,10 +224,12 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       if (isEditMode) {
         Navigator.of(context).pop(true);
       } else {
+        Analytics.writeProfile();
         ScaffoldMessenger.of(context).showSnackBar(
           customSnackbar('프로필 작성을 완료했습니다'),
         );
         Navigator.of(context).pushReplacement(MaterialPageRoute(
+          settings: const RouteSettings(name: 'DefaultNavigation'),
           builder: (context) => const DefaultNavigation(),
         ));
       }

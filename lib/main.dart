@@ -12,6 +12,7 @@ import 'package:lets_jam/firebase_options.dart';
 import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/splash_screen.dart';
+import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -23,7 +24,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
   navigatorKey: navigatorKey,
-  observers: [routeObserver],
+  observers: [routeObserver, Analytics.observer],
   initialLocation: '/',
   routes: [
     GoRoute(
