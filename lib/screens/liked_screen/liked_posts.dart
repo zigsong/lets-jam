@@ -82,6 +82,9 @@ class _LikedPostsState extends State<LikedPosts> {
                     'assets/images/empty_post.png',
                     width: 138,
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Text(
                     '아직 찜한 게시글이 없어요',
                     style: TextStyle(

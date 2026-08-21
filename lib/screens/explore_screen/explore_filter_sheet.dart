@@ -40,8 +40,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                   ? Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Obx(() {
-                        final sessions =
-                            filterController.tempSessions.toList();
+                        final sessions = filterController.tempSessions.toList();
                         return Wrap(
                           spacing: 8,
                           runSpacing: 8,

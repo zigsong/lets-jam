@@ -43,7 +43,7 @@ class WideButton extends StatelessWidget {
               : ColorSeed.meticulousGrayLight.color,
           disabledForegroundColor:
               isLoading ? Colors.white : ColorSeed.meticulousGrayMedium.color,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),

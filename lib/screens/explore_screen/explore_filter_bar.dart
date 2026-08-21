@@ -67,24 +67,6 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                         children: [
                           GestureDetector(
                               onTap: () {
-                                widget.onToggleFilter(FilterEnum.region);
-                                setState(() {
-                                  _currentFilter = FilterEnum.region;
-                                });
-                              },
-                              child: Tag(
-                                  text: regionFilters.isEmpty
-                                      ? '지역'
-                                      : '지역 ${regionFilters.length}',
-                                  color: TagColorEnum.orange,
-                                  selected:
-                                      _currentFilter == FilterEnum.region ||
-                                          regionFilters.isNotEmpty)),
-                          const SizedBox(
-                            width: 12,
-                          ),
-                          GestureDetector(
-                              onTap: () {
                                 widget.onToggleFilter(FilterEnum.session);
                                 setState(() {
                                   _currentFilter = FilterEnum.session;
@@ -98,6 +80,24 @@ class _ExploreFilterBarState extends State<ExploreFilterBar> {
                                   selected:
                                       _currentFilter == FilterEnum.session ||
                                           sessionFilters.isNotEmpty)),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                widget.onToggleFilter(FilterEnum.region);
+                                setState(() {
+                                  _currentFilter = FilterEnum.region;
+                                });
+                              },
+                              child: Tag(
+                                  text: regionFilters.isEmpty
+                                      ? '지역'
+                                      : '지역 ${regionFilters.length}',
+                                  color: TagColorEnum.orange,
+                                  selected:
+                                      _currentFilter == FilterEnum.region ||
+                                          regionFilters.isNotEmpty)),
                         ],
                       ),
                       Row(
