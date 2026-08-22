@@ -42,7 +42,7 @@ class _LikedScreenState extends State<LikedScreen>
                 style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w600,
-                    color: ColorSeed.boldOrangeMedium.color),
+                    color: ColorSeed.boldOrangeStrong.color),
               ),
               Row(
                 children: [

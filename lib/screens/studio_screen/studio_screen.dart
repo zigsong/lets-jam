@@ -192,7 +192,7 @@ class _StudioScreenState extends State<StudioScreen> {
                   style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: ColorSeed.boldOrangeMedium.color),
+                      color: ColorSeed.boldOrangeStrong.color),
                 ),
                 Row(
                   children: [
