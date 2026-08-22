@@ -1,9 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:lets_jam/controllers/feature_flag_controller.dart';
-import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/screens/profile_screen/profile_screen.dart';
 import 'package:lets_jam/screens/explore_screen/explore_screen.dart';
 import 'package:lets_jam/screens/liked_screen/liked_screen.dart';
@@ -28,9 +25,6 @@ class DefaultNavigation extends StatefulWidget {
 class _DefaultNavigationState extends State<DefaultNavigation> {
   int _selectedIndex = 0;
   final bool _isBottomSheetOpen = false;
-  final SessionController sessionController = Get.find<SessionController>();
-  final FeatureFlagController featureFlagController =
-      Get.find<FeatureFlagController>();
   PostTypeEnum _writePostType = PostTypeEnum.findBand;
   void Function(PostTypeEnum)? _switchExploreTab;
 
@@ -122,67 +116,59 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 32),
                 height: 66,
                 color: Colors.white,
-                child: Obx(() {
-                  // dev_testers allowlist 유저가 개발자 테스트에서 켠 경우에만
-                  // 합주실 프로토타입 탭을 노출
-                  final bool showStudio = sessionController.isDev.value &&
-                      featureFlagController.studioEnabled.value;
-
-                  return Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      BottomAppBarItem(
-                          isActive: _selectedIndex == 0,
-                          defaultIcon: Image.asset(
-                              'assets/icons/bottom_nav/home_default.png'),
-                          activeIcon: Image.asset(
-                              'assets/icons/bottom_nav/home_active.png'),
-                          label: '홈',
-                          onPressed: _onHomeButtonTapped),
-                      BottomAppBarItem(
-                          isActive: _selectedIndex == 2,
-                          defaultIcon: Image.asset(
-                              'assets/icons/bottom_nav/like_default.png'),
-                          activeIcon: Image.asset(
-                              'assets/icons/bottom_nav/like_active.png'),
-                          label: '찜',
-                          onPressed: _onLikeButtonTapped),
-                      BottomAppBarItem(
-                          isActive: false,
-                          defaultIcon: Image.asset(
-                              'assets/icons/bottom_nav/profile_default.png'),
-                          activeIcon: Image.asset(
-                              'assets/icons/bottom_nav/profile_active.png'),
-                          label: '프로필',
-                          onPressed: _onProfileButtonTapped),
-                      if (showStudio)
-                        BottomAppBarItem(
-                            isActive: _selectedIndex == 1,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    BottomAppBarItem(
+                        isActive: _selectedIndex == 0,
+                        defaultIcon: Image.asset(
+                            'assets/icons/bottom_nav/home_default.png'),
+                        activeIcon: Image.asset(
+                            'assets/icons/bottom_nav/home_active.png'),
+                        label: '홈',
+                        onPressed: _onHomeButtonTapped),
+                    BottomAppBarItem(
+                        isActive: _selectedIndex == 2,
+                        defaultIcon: Image.asset(
+                            'assets/icons/bottom_nav/like_default.png'),
+                        activeIcon: Image.asset(
+                            'assets/icons/bottom_nav/like_active.png'),
+                        label: '찜',
+                        onPressed: _onLikeButtonTapped),
+                    BottomAppBarItem(
+                        isActive: _selectedIndex == 1,
+                        defaultIcon: Image.asset(
+                            'assets/icons/bottom_nav/studio_default.png'),
+                        activeIcon: Image.asset(
+                            'assets/icons/bottom_nav/studio_active.png'),
+                        label: '합주실',
+                        onPressed: _onPracticeRoomButtonTapped),
+                    BottomAppBarItem(
+                        isActive: false,
+                        defaultIcon: Image.asset(
+                            'assets/icons/bottom_nav/profile_default.png'),
+                        activeIcon: Image.asset(
+                            'assets/icons/bottom_nav/profile_active.png'),
+                        label: '프로필',
+                        onPressed: _onProfileButtonTapped),
+                    Semantics(
+                      label: '게시글 추가 버튼',
+                      button: true,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: BottomAppBarItem(
+                            isActive: _selectedIndex == 3,
                             defaultIcon: Image.asset(
-                                'assets/icons/bottom_nav/studio_default.png'),
+                                'assets/icons/bottom_nav/add_default.png'),
                             activeIcon: Image.asset(
-                                'assets/icons/bottom_nav/studio_active.png'),
-                            label: '합주실',
-                            onPressed: _onPracticeRoomButtonTapped),
-                      Semantics(
-                        label: '게시글 추가 버튼',
-                        button: true,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: BottomAppBarItem(
-                              isActive: _selectedIndex == 3,
-                              defaultIcon: Image.asset(
-                                  'assets/icons/bottom_nav/add_default.png'),
-                              activeIcon: Image.asset(
-                                  'assets/icons/bottom_nav/add_active.png'),
-                              label: '글쓰기',
-                              onPressed: () {}),
-                        ),
+                                'assets/icons/bottom_nav/add_active.png'),
+                            label: '글쓰기',
+                            onPressed: () {}),
                       ),
-                    ],
-                  );
-                }),
+                    ),
+                  ],
+                ),
               ),
             ),
             Positioned(

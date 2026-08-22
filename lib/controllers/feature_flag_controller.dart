@@ -5,6 +5,6 @@ import 'package:get/get.dart';
 ///
 /// 프로토타입 단계라 인메모리로만 유지한다(앱 재시작 시 기본값으로 초기화).
 class FeatureFlagController extends GetxController {
-  /// 합주실 탭 노출 여부
-  final RxBool studioEnabled = false.obs;
+  /// 합주실 탭 노출 여부 (항상 on)
+  final RxBool studioEnabled = true.obs;
 }
