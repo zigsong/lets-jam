@@ -197,12 +197,12 @@ class PostThumbnail extends StatelessWidget {
                       top: 10,
                       right: 10,
                       child: Container(
-                        width: 54,
-                        height: 18,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 4),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: ColorSeed.boldOrangeStrong.color,
-                          borderRadius: BorderRadius.circular(3),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         child: const Text(
                           '구하기 완료',
