@@ -53,7 +53,7 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
         children: [
           Positioned.fill(
             child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
+              behavior: HitTestBehavior.translucent,
               onTap: _hideDropdown,
             ),
           ),
