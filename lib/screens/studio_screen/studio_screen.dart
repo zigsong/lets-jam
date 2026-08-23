@@ -7,6 +7,7 @@ import 'package:lets_jam/screens/studio_screen/studio_card.dart';
 import 'package:lets_jam/screens/studio_screen/studio_like_service.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/widgets/tag.dart';
+import 'package:lets_jam/widgets/wide_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StudioScreen extends StatefulWidget {
@@ -16,9 +17,22 @@ class StudioScreen extends StatefulWidget {
   State<StudioScreen> createState() => _StudioScreenState();
 }
 
-class _StudioScreenState extends State<StudioScreen> {
-  // 선택된 지역 필터 (비어있으면 전체)
+class _StudioScreenState extends State<StudioScreen>
+    with SingleTickerProviderStateMixin {
+  // 적용된 지역 필터 (비어있으면 전체)
   final Set<District> _selectedDistricts = {};
+
+  // 필터 시트가 열려있는 동안의 임시 선택 (필터 적용 버튼으로 확정)
+  final Set<District> _tempDistricts = {};
+
+  // 필터 시트에서 현재 보고 있는 시/도
+  Province _selectedProvince = Province.values.first;
+
+  // 필터 시트 열림 상태
+  bool _isFilterOpen = false;
+
+  late final AnimationController _sheetController;
+  late final Animation<double> _sheetAnimation;
 
   // 찜한 합주실 id 집합 (studio_likes 테이블과 동기화)
   final Set<String> _likedRooms = {};
@@ -31,7 +45,21 @@ class _StudioScreenState extends State<StudioScreen> {
   @override
   void initState() {
     super.initState();
+    _sheetController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _sheetAnimation = CurvedAnimation(
+      parent: _sheetController,
+      curve: Curves.fastLinearToSlowEaseIn,
+    );
     _load();
+  }
+
+  @override
+  void dispose() {
+    _sheetController.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -61,30 +89,93 @@ class _StudioScreenState extends State<StudioScreen> {
     }
   }
 
-  // 필터 칩으로 노출할 지역들 (전체 옵션 제외)
-  List<District> get _regionOptions =>
-      District.values.where((d) => !d.isAll).toList();
+  // "전체"(isAll) 선택은 해당 시/도의 구체 지역들로 확장해서 필터링
+  Set<District> get _expandedDistricts {
+    final result = <District>{};
+    for (final d in _selectedDistricts) {
+      if (d.isAll) {
+        result.addAll(District.getSpecificByProvince(d.province));
+      } else {
+        result.add(d);
+      }
+    }
+    return result;
+  }
 
   List<Studio> get _filteredRooms {
-    if (_selectedDistricts.isEmpty) return _studios;
+    final expanded = _expandedDistricts;
+    if (expanded.isEmpty) return _studios;
     return _studios
-        .where((room) =>
-            room.district != null && _selectedDistricts.contains(room.district))
+        .where(
+            (room) => room.district != null && expanded.contains(room.district))
         .toList();
   }
 
-  void _toggleDistrict(District district) {
+  bool _provinceHasSelection(Province province) =>
+      _selectedDistricts.any((d) => d.province == province);
+
+  void _onProvinceTap(Province province) {
+    if (!_isFilterOpen) {
+      _openSheet(province);
+    } else if (_selectedProvince != province) {
+      setState(() => _selectedProvince = province);
+    } else {
+      _closeSheet();
+    }
+  }
+
+  void _openSheet(Province province) {
     setState(() {
-      if (_selectedDistricts.contains(district)) {
-        _selectedDistricts.remove(district);
+      _selectedProvince = province;
+      _isFilterOpen = true;
+      _tempDistricts
+        ..clear()
+        ..addAll(_selectedDistricts);
+    });
+    _sheetController.forward();
+  }
+
+  void _closeSheet() {
+    _sheetController.animateBack(0,
+        duration: const Duration(milliseconds: 300));
+    setState(() => _isFilterOpen = false);
+  }
+
+  // 시트 내 구 토글 (explore와 동일한 "전체" 상호배타 로직)
+  void _toggleTempDistrict(District district) {
+    setState(() {
+      final isAdding = !_tempDistricts.contains(district);
+      if (isAdding) {
+        _tempDistricts.add(district);
+        if (district.isAll) {
+          _tempDistricts
+              .removeWhere((d) => d.province == district.province && !d.isAll);
+        } else {
+          _tempDistricts
+              .removeWhere((d) => d.province == district.province && d.isAll);
+        }
       } else {
-        _selectedDistricts.add(district);
+        _tempDistricts.remove(district);
       }
     });
   }
 
+  void _applyFilter() {
+    _sheetController.animateBack(0,
+        duration: const Duration(milliseconds: 300));
+    setState(() {
+      _selectedDistricts
+        ..clear()
+        ..addAll(_tempDistricts);
+      _isFilterOpen = false;
+    });
+  }
+
   void _reset() {
-    setState(() => _selectedDistricts.clear());
+    setState(() {
+      _selectedDistricts.clear();
+      _tempDistricts.clear();
+    });
   }
 
   Future<void> _toggleLike(Studio room) async {
@@ -173,6 +264,101 @@ class _StudioScreenState extends State<StudioScreen> {
     );
   }
 
+  // 시/도 pill + 초기화 버튼이 있는 필터 바
+  Widget _buildFilterBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          SizedBox(
+              width: 20, child: Image.asset('assets/icons/filter_active.png')),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    for (final province in Province.values) ...[
+                      Tag(
+                        text: province.displayName,
+                        color: TagColorEnum.orange,
+                        selected:
+                            (_isFilterOpen && _selectedProvince == province) ||
+                                _provinceHasSelection(province),
+                        onToggle: () => _onProvinceTap(province),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ],
+                ),
+                GestureDetector(
+                  onTap: _reset,
+                  child: Row(
+                    children: [
+                      Text(
+                        '초기화',
+                        style: TextStyle(
+                          color: ColorSeed.boldOrangeRegular.color,
+                          fontSize: 13,
+                          height: 1.38,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Image.asset('assets/icons/filter_reset.png',
+                          width: 18, height: 18),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 아래로 펼쳐지는 지역(구) 선택 시트
+  Widget _buildFilterSheet() {
+    final districts = District.getByProvince(_selectedProvince);
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(15),
+          bottomRight: Radius.circular(15),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: districts
+                  .map((district) => Tag(
+                        text: district.displayName,
+                        color: TagColorEnum.black,
+                        selected: _tempDistricts.contains(district),
+                        onToggle: () => _toggleTempDistrict(district),
+                      ))
+                  .toList(),
+            ),
+          ),
+          Divider(height: 0.5, color: ColorSeed.boldOrangeLight.color),
+          Padding(
+            padding:
+                const EdgeInsets.only(top: 20, right: 16, bottom: 20, left: 16),
+            child: WideButton(text: '필터 적용', onPressed: _applyFilter),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final rooms = _filteredRooms;
@@ -232,60 +418,32 @@ class _StudioScreenState extends State<StudioScreen> {
               ],
             ),
           ),
-          // 지역 필터 바 (오른쪽에 초기화 버튼)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Row(
+          // 지역 필터 바 (시/도 선택)
+          _buildFilterBar(),
+          // 목록 + 필터 시트 오버레이
+          Expanded(
+            child: Stack(
               children: [
-                const SizedBox(width: 16),
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        for (final district in _regionOptions) ...[
-                          Tag(
-                            text: district.displayName,
-                            color: TagColorEnum.black,
-                            size: TagSizeEnum.small,
-                            selected: _selectedDistricts.contains(district),
-                            onToggle: () => _toggleDistrict(district),
-                          ),
-                          const SizedBox(width: 8),
-                        ],
-                      ],
+                _buildBody(rooms),
+                // dimmed 배경
+                if (_isFilterOpen)
+                  GestureDetector(
+                    onTap: _closeSheet,
+                    child: AnimatedOpacity(
+                      opacity: _isFilterOpen ? 0.5 : 0.0,
+                      duration: const Duration(milliseconds: 300),
+                      child: Container(color: Colors.grey),
                     ),
                   ),
-                ),
-                if (_selectedDistricts.isNotEmpty)
-                  GestureDetector(
-                    onTap: _reset,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 16, 0),
-                      child: Row(
-                        children: [
-                          Text(
-                            '초기화',
-                            style: TextStyle(
-                              color: ColorSeed.boldOrangeRegular.color,
-                              fontSize: 13,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Image.asset('assets/icons/filter_reset.png',
-                              width: 18, height: 18),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  const SizedBox(width: 16),
+                if (_isFilterOpen)
+                  SizeTransition(
+                    sizeFactor: _sheetAnimation,
+                    axis: Axis.vertical,
+                    child: _buildFilterSheet(),
+                  ),
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          // 목록
-          Expanded(child: _buildBody(rooms)),
         ],
       ),
     );
