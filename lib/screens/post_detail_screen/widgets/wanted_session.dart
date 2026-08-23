@@ -24,16 +24,13 @@ class WantedSession extends StatelessWidget {
           children: [
             const Text('밴드에서'),
             const SizedBox(width: 4),
-            ...post.sessions
-                .map((session) => sessionMap[session]!)
-                .map(
+            ...post.sessions.map((session) => sessionMap[session]!).map(
                   (tag) => Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: Tag(
                       text: tag,
                       color: TagColorEnum.orange,
                       selected: true,
-                      size: TagSizeEnum.small,
                     ),
                   ),
                 ),

@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
-enum TagSizeEnum { small, medium }
-
 enum TagColorEnum { orange, black }
 
+/// 태그 위젯. Figma JAM_design 기준 4가지 디자인으로 통일한다.
+/// - orange + selected  : 오렌지 채움 (bg Orange/800, 흰 글씨)
+/// - orange + !selected : 오렌지 아웃라인 (border Orange/800, 오렌지 글씨)
+/// - black  + selected  : 블랙 채움 (bg Black/800, 흰 글씨)
+/// - black  + !selected : 그레이 아웃라인 (border Gray/200, 검정 글씨)
 class Tag extends StatelessWidget {
   final String text;
   final TagColorEnum color;
-  final TagSizeEnum size;
   final bool withXIcon;
-  final bool? selected;
+  final bool selected;
   final void Function()? onToggle;
 
   const Tag({
     super.key,
     required this.text,
     required this.color,
-    this.size = TagSizeEnum.medium,
     this.withXIcon = false,
     this.selected = false,
     this.onToggle,
@@ -25,101 +26,83 @@ class Tag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (color == TagColorEnum.orange) {
-      return GestureDetector(
-        onTap: onToggle,
-        child: Container(
-          padding: EdgeInsets.symmetric(
-              horizontal:
-                  selected == true && size == TagSizeEnum.medium ? 14 : 12,
-              vertical:
-                  selected == true && size == TagSizeEnum.medium ? 6.5 : 4.5),
-          decoration: BoxDecoration(
-              color: selected == true ? ColorSeed.boldOrangeStrong.color : null,
-              border: selected == true
-                  ? null
-                  : Border.all(
-                      color: ColorSeed.boldOrangeStrong.color, width: 2),
-              borderRadius: BorderRadius.circular(20)),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                text,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    height: 1,
-                    color: selected == true
-                        ? Colors.white
-                        : ColorSeed.boldOrangeStrong.color),
-              ),
-              if (withXIcon == true)
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Icon(
-                      Icons.close,
-                      size: 16,
-                      color: selected == true
-                          ? Colors.white
-                          : ColorSeed.boldOrangeRegular.color,
-                    )
-                  ],
-                )
-            ],
-          ),
-        ),
-      );
-    }
+    final _TagStyle style = _resolveStyle();
 
     return GestureDetector(
       onTap: onToggle,
       child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: selected == true ? 15 : 14,
-            vertical: selected == true ? 4 : 4),
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7.5),
         decoration: BoxDecoration(
-            color:
-                selected == true ? ColorSeed.organizedBlackMedium.color : null,
-            border: selected == true
-                ? null
-                : Border.all(
-                    color: ColorSeed.meticulousGrayLight.color, width: 1),
-            borderRadius: BorderRadius.circular(20)),
+          color: style.background,
+          border: Border.all(color: style.border, width: 1),
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               text,
               style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  height: 1,
-                  color: selected == true
-                      ? Colors.white
-                      : ColorSeed.organizedBlackMedium.color),
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                height: 1,
+                color: style.foreground,
+              ),
             ),
-            if (withXIcon == true)
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Icon(
-                    Icons.close,
-                    size: 16,
-                    color: selected == true
-                        ? Colors.white
-                        : ColorSeed.boldOrangeRegular.color,
-                  )
-                ],
-              )
+            if (withXIcon) ...[
+              const SizedBox(width: 8),
+              Icon(Icons.close, size: 12, color: style.icon),
+            ],
           ],
         ),
       ),
     );
   }
+
+  _TagStyle _resolveStyle() {
+    switch (color) {
+      case TagColorEnum.orange:
+        return selected
+            ? _TagStyle(
+                background: ColorSeed.boldOrangeStrong.color,
+                border: ColorSeed.boldOrangeStrong.color,
+                foreground: Colors.white,
+                icon: Colors.white,
+              )
+            : _TagStyle(
+                background: Colors.transparent,
+                border: ColorSeed.boldOrangeStrong.color,
+                foreground: ColorSeed.boldOrangeStrong.color,
+                icon: ColorSeed.boldOrangeRegular.color,
+              );
+      case TagColorEnum.black:
+        return selected
+            ? _TagStyle(
+                background: ColorSeed.organizedBlackMedium.color,
+                border: ColorSeed.organizedBlackMedium.color,
+                foreground: Colors.white,
+                icon: Colors.white,
+              )
+            : _TagStyle(
+                background: Colors.transparent,
+                border: ColorSeed.meticulousGrayLight.color,
+                foreground: ColorSeed.organizedBlackMedium.color,
+                icon: ColorSeed.meticulousGrayMedium.color,
+              );
+    }
+  }
+}
+
+class _TagStyle {
+  final Color background;
+  final Color border;
+  final Color foreground;
+  final Color icon;
+
+  const _TagStyle({
+    required this.background,
+    required this.border,
+    required this.foreground,
+    required this.icon,
+  });
 }

@@ -53,7 +53,6 @@ class _RegionSelectorState extends State<RegionSelector> {
               child: Tag(
                 text: entry.value.displayName,
                 color: TagColorEnum.black,
-                size: TagSizeEnum.small,
                 selected: isSelected,
                 withXIcon: true,
               ),

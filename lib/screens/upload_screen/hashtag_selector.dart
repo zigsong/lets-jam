@@ -54,7 +54,6 @@ class _HashTagSelectorState extends State<HashTagSelector> {
               child: Tag(
                 text: tag,
                 color: TagColorEnum.black,
-                size: TagSizeEnum.small,
                 selected: true,
               ),
             );
