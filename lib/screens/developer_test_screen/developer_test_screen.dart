@@ -1,40 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:lets_jam/controllers/feature_flag_controller.dart';
 import 'package:lets_jam/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
-/// 개발자 테스트에서 on/off 할 수 있는 기능 플래그 항목.
-class _FeatureToggle {
-  final String title;
-  final String description;
-  final RxBool flag;
-
-  const _FeatureToggle({
-    required this.title,
-    required this.description,
-    required this.flag,
-  });
-}
-
 /// [개발자 전용] isDev 유저만 볼 수 있는 미배포 기능을
-/// 켜고 끄는 화면. profiles와 분리된 dev_testers allowlist 유저만 진입한다.
+/// 확인하는 화면. profiles와 분리된 dev_testers allowlist 유저만 진입한다.
 class DeveloperTestScreen extends StatelessWidget {
   const DeveloperTestScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final FeatureFlagController flags = Get.find<FeatureFlagController>();
-
-    // 새 미배포 기능을 만들면 여기에 토글 항목을 추가한다.
-    final toggles = <_FeatureToggle>[
-      _FeatureToggle(
-        title: '합주실',
-        description: '하단 탭에 합주실 프로토타입을 노출해요',
-        flag: flags.studioEnabled,
-      ),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -53,80 +27,36 @@ class DeveloperTestScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
             child: Text(
-              '아직 배포되지 않은 기능의 노출 여부를 켜고 끌 수 있어요.',
+              '아직 배포되지 않은 기능을 미리 확인할 수 있어요.',
               style: TextStyle(
                 fontSize: 13,
                 color: ColorSeed.organizedBlackLight.color,
               ),
             ),
           ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              // 토글 항목들 뒤에 클릭형(온보딩) 항목을 하나 더 붙인다.
-              itemCount: toggles.length + 1,
-              itemBuilder: (context, index) {
-                if (index == toggles.length) {
-                  return ListTile(
-                    title: const Text(
-                      '앱 온보딩',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        '처음 설치 온보딩 플로우를 미리 확인해요',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: ColorSeed.meticulousGrayMedium.color,
-                        ),
-                      ),
-                    ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 12,
-                      color: ColorSeed.organizedBlackLight.color,
-                    ),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const OnboardingScreen(),
-                      ),
-                    ),
-                  );
-                }
-
-                final item = toggles[index];
-                return Obx(
-                  () => SwitchListTile(
-                    activeColor: ColorSeed.boldOrangeStrong.color,
-                    title: Text(
-                      item.title,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        item.description,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: ColorSeed.meticulousGrayMedium.color,
-                        ),
-                      ),
-                    ),
-                    value: item.flag.value,
-                    onChanged: (v) => item.flag.value = v,
-                  ),
-                );
-              },
-              separatorBuilder: (_, __) => const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(
-                  height: 1,
-                  thickness: 0.5,
-                  color: Color(0xFFDDDDDD),
+          ListTile(
+            title: const Text(
+              '앱 온보딩',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                '처음 설치 온보딩 플로우를 미리 확인해요',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: ColorSeed.meticulousGrayMedium.color,
                 ),
+              ),
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 12,
+              color: ColorSeed.organizedBlackLight.color,
+            ),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const OnboardingScreen(),
               ),
             ),
           ),
