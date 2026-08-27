@@ -59,7 +59,7 @@ class _StudioDetailScreenState extends State<StudioDetailScreen> {
     final res = await _supabase
         .from('studios')
         .select(
-            'id, studio_name, region, rooms, address, studio_phone, reservation_method, reservation_method_link, studio_photos')
+            'id, studio_name, region, rooms, address, studio_phone, reservation_method, reservation_method_link, operating_hours, studio_photos')
         .eq('id', widget.studioId)
         .single();
     return StudioDetail.fromMap(res);
@@ -273,6 +273,11 @@ class _StudioDetailScreenState extends State<StudioDetailScreen> {
               height: 16,
             ),
           ),
+        ),
+      if (studio.operatingHours != null)
+        _infoRow(
+          icon: Icons.access_time,
+          text: studio.operatingHours!,
         ),
       if (studio.reservationMethod != null)
         _infoRow(

@@ -19,6 +19,9 @@ class StudioDetail {
   /// 예약/문의 링크 (DB `reservation_method_link`).
   final String? reservationLink;
 
+  /// 영업시간 (DB `operating_hours`). 예: "매일 10:00 - 24:00".
+  final String? operatingHours;
+
   /// 사진 목록 (DB `studio_photos`). 비어있으면 플레이스홀더 노출.
   final List<String> photos;
 
@@ -33,6 +36,7 @@ class StudioDetail {
     required this.phone,
     required this.reservationMethod,
     required this.reservationLink,
+    required this.operatingHours,
     required this.photos,
     required this.rooms,
   });
@@ -50,6 +54,7 @@ class StudioDetail {
       phone: _nonEmpty(map['studio_phone'] as String?),
       reservationMethod: _nonEmpty(map['reservation_method'] as String?),
       reservationLink: _nonEmpty(map['reservation_method_link'] as String?),
+      operatingHours: _nonEmpty(map['operating_hours'] as String?),
       photos: photos
           .whereType<String>()
           .map((e) => e.trim())
