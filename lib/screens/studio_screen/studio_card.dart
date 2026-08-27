@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lets_jam/screens/studio_screen/studio.dart';
@@ -101,17 +102,19 @@ class StudioCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Container(
-                      color: ColorSeed.boldOrangeLight.color,
-                      alignment: Alignment.center,
-                      child: Text(
-                        '사진을 준비중이에요',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: ColorSeed.organizedBlackLight.color,
-                        ),
-                      ),
-                    ),
+                    if (room.firstPhoto != null)
+                      CachedNetworkImage(
+                        imageUrl: room.firstPhoto!,
+                        fit: BoxFit.cover,
+                        fadeInDuration: Duration.zero,
+                        fadeOutDuration: Duration.zero,
+                        memCacheWidth: 400,
+                        placeholder: (_, __) =>
+                            Container(color: ColorSeed.boldOrangeLight.color),
+                        errorWidget: (_, __, ___) => _photoPlaceholder(),
+                      )
+                    else
+                      _photoPlaceholder(),
                     Positioned(
                       right: 8,
                       bottom: 8,
@@ -126,6 +129,20 @@ class StudioCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _photoPlaceholder() {
+    return Container(
+      color: ColorSeed.boldOrangeLight.color,
+      alignment: Alignment.center,
+      child: Text(
+        '사진을 준비중이에요',
+        style: TextStyle(
+          fontSize: 12,
+          color: ColorSeed.organizedBlackLight.color,
         ),
       ),
     );

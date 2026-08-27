@@ -32,7 +32,7 @@ class StudioLikeService {
 
     final res = await _supabase
         .from('studio_likes')
-        .select('studios(id, studio_name, region, rooms)')
+        .select('studios(id, studio_name, region, rooms, studio_photos)')
         .eq('user_id', userId)
         .order('liked_at', ascending: false);
 

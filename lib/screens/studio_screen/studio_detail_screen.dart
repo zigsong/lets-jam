@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,6 +7,7 @@ import 'package:lets_jam/screens/studio_screen/studio_like_service.dart';
 import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
+import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/like_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -59,7 +59,7 @@ class _StudioDetailScreenState extends State<StudioDetailScreen> {
     final res = await _supabase
         .from('studios')
         .select(
-            'id, studio_name, region, rooms, address, studio_phone, reservation_method, reservation_method_link, studio_photo')
+            'id, studio_name, region, rooms, address, studio_phone, reservation_method, reservation_method_link, studio_photos')
         .eq('id', widget.studioId)
         .single();
     return StudioDetail.fromMap(res);
@@ -120,7 +120,7 @@ class _StudioDetailScreenState extends State<StudioDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildPhoto(studio?.photo),
+                      _buildPhoto(studio?.photos ?? const []),
                       if (waiting) ...[
                         if (widget.studioName != null) ...[
                           const SizedBox(height: 25),
@@ -170,19 +170,10 @@ class _StudioDetailScreenState extends State<StudioDetailScreen> {
     );
   }
 
-  Widget _buildPhoto(String? photo) {
-    if (photo != null) {
-      return CachedNetworkImage(
-        imageUrl: photo,
-        width: double.infinity,
-        height: _imageHeight,
-        fit: BoxFit.cover,
-        placeholder: (_, __) =>
-            Container(color: ColorSeed.boldOrangeLight.color),
-        errorWidget: (_, __, ___) => _photoPlaceholder(),
-      );
-    }
-    return _photoPlaceholder();
+  Widget _buildPhoto(List<String> photos) {
+    if (photos.isEmpty) return _photoPlaceholder();
+    // post 상세와 동일한 캐러셀 (인디케이터 + 전체화면 보기)
+    return ImageSlider(images: photos);
   }
 
   Widget _photoPlaceholder() {

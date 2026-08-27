@@ -18,6 +18,9 @@ class Studio {
   /// 룸들 중 최저 가격(원). 가격 정보가 하나도 없으면 null.
   final int? minPrice;
 
+  /// 사진 목록 (DB `studio_photos`).
+  final List<String> photos;
+
   const Studio({
     required this.id,
     required this.name,
@@ -25,11 +28,16 @@ class Studio {
     required this.district,
     required this.roomCount,
     required this.minPrice,
+    required this.photos,
   });
+
+  /// 카드 썸네일용 첫 번째 사진. 없으면 null.
+  String? get firstPhoto => photos.isEmpty ? null : photos.first;
 
   factory Studio.fromMap(Map<String, dynamic> map) {
     final region = (map['region'] as String?)?.trim();
     final rooms = (map['rooms'] as List?) ?? const [];
+    final photos = (map['studio_photos'] as List?) ?? const [];
 
     final prices = rooms
         .whereType<Map>()
@@ -45,6 +53,11 @@ class Studio {
       district: region == null ? null : _byLabel[region],
       roomCount: rooms.length,
       minPrice: prices.isEmpty ? null : prices.reduce((a, b) => a < b ? a : b),
+      photos: photos
+          .whereType<String>()
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList(),
     );
   }
 

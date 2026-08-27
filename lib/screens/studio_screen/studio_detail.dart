@@ -19,8 +19,8 @@ class StudioDetail {
   /// 예약/문의 링크 (DB `reservation_method_link`).
   final String? reservationLink;
 
-  /// 대표 사진 (DB `studio_photo`). null이면 플레이스홀더 노출.
-  final String? photo;
+  /// 사진 목록 (DB `studio_photos`). 비어있으면 플레이스홀더 노출.
+  final List<String> photos;
 
   /// 룸 목록.
   final List<StudioRoom> rooms;
@@ -33,13 +33,14 @@ class StudioDetail {
     required this.phone,
     required this.reservationMethod,
     required this.reservationLink,
-    required this.photo,
+    required this.photos,
     required this.rooms,
   });
 
   factory StudioDetail.fromMap(Map<String, dynamic> map) {
     final region = (map['region'] as String?)?.trim();
     final rooms = (map['rooms'] as List?) ?? const [];
+    final photos = (map['studio_photos'] as List?) ?? const [];
 
     return StudioDetail(
       id: map['id'] as String,
@@ -49,7 +50,11 @@ class StudioDetail {
       phone: _nonEmpty(map['studio_phone'] as String?),
       reservationMethod: _nonEmpty(map['reservation_method'] as String?),
       reservationLink: _nonEmpty(map['reservation_method_link'] as String?),
-      photo: _nonEmpty(map['studio_photo'] as String?),
+      photos: photos
+          .whereType<String>()
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList(),
       rooms: rooms
           .whereType<Map>()
           .map((e) => StudioRoom.fromMap(e.cast<String, dynamic>()))

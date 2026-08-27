@@ -66,7 +66,7 @@ class _StudioScreenState extends State<StudioScreen>
     try {
       final res = await Supabase.instance.client
           .from('studios')
-          .select('id, studio_name, region, rooms')
+          .select('id, studio_name, region, rooms, studio_photos')
           .order('studio_name');
       final list = (res as List)
           .map((e) => Studio.fromMap(e as Map<String, dynamic>))
