@@ -9,6 +9,7 @@ import 'package:lets_jam/screens/default_navigation.dart';
 import 'package:lets_jam/screens/profile_screen/gradient_screen.dart';
 import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
 import 'package:lets_jam/screens/profile_screen/profile_upload_screen.dart';
+import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/modal.dart';
@@ -93,10 +94,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final url = 'https://letsjam.work/profiles/${profile?.id}';
       final box = context.findRenderObject() as RenderBox;
-      await SharePlus.instance.share(ShareParams(
+      final result = await SharePlus.instance.share(ShareParams(
           uri: Uri.parse(url),
           subject: 'JAM! 째미난 밴드 라이프 커뮤니티 | ${profile?.nickname}님의 프로필',
           sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size));
+      if (result.status == ShareResultStatus.success) {
+        Analytics.share('profile', profile?.id ?? '');
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(customSnackbar('공유 오류: $e'));

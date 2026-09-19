@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/terms_agreement_screen.dart';
+import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/image_utils.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -58,6 +59,13 @@ class SessionController extends GetxController {
         isLoggedIn.value = true;
         _loadDevTesterFlag(sbUser.id);
 
+        final method = sbUser.appMetadata['provider']?.toString() ?? 'unknown';
+        if (_isNewSignUp(sbUser)) {
+          Analytics.signUp(method);
+        } else {
+          Analytics.login(method);
+        }
+
         try {
           final jamUser =
               await supabase.from('profiles').select().eq('id', sbUser.id);
@@ -81,6 +89,16 @@ class SessionController extends GetxController {
         }
       }
     });
+  }
+
+  /// 최초 가입 여부. 계정 생성 시각과 최근 로그인 시각이 거의 같으면 신규 가입으로 본다.
+  bool _isNewSignUp(User sbUser) {
+    final created = DateTime.tryParse(sbUser.createdAt);
+    final lastSignIn = sbUser.lastSignInAt != null
+        ? DateTime.tryParse(sbUser.lastSignInAt!)
+        : null;
+    if (created == null || lastSignIn == null) return false;
+    return lastSignIn.difference(created).inSeconds.abs() < 5;
   }
 
   Future<void> loadUser() async {

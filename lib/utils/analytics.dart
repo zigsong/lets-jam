@@ -19,6 +19,33 @@ class Analytics {
     return instance.logScreenView(screenName: screenName);
   }
 
+  /// 로그인 완료. [method]는 'kakao' / 'apple' / 'email' 등 provider.
+  static Future<void> login(String method) {
+    return instance.logEvent(
+      name: 'login',
+      parameters: {'method': method},
+    );
+  }
+
+  /// 회원가입 완료(최초 로그인). [method]는 'kakao' / 'apple' / 'email' 등.
+  static Future<void> signUp(String method) {
+    return instance.logEvent(
+      name: 'sign_up',
+      parameters: {'method': method},
+    );
+  }
+
+  /// 콘텐츠 공유. [contentType]은 'profile' 등, [itemId]는 대상 id.
+  static Future<void> share(String contentType, String itemId) {
+    return instance.logEvent(
+      name: 'share',
+      parameters: {
+        'content_type': contentType,
+        'item_id': itemId,
+      },
+    );
+  }
+
   /// 프로필 작성 완료
   static Future<void> writeProfile() {
     return instance.logEvent(name: 'write_profile');
