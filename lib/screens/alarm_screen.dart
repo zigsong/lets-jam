@@ -1,9 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import 'package:lets_jam/controllers/notification_controller.dart';
+import 'package:lets_jam/models/notification_model.dart';
+import 'package:lets_jam/screens/post_detail_screen/post_detail_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
-class AlarmScreen extends StatelessWidget {
+class AlarmScreen extends StatefulWidget {
   const AlarmScreen({super.key});
+
+  @override
+  State<AlarmScreen> createState() => _AlarmScreenState();
+}
+
+class _AlarmScreenState extends State<AlarmScreen> {
+  final NotificationController controller = Get.find<NotificationController>();
+
+  @override
+  void initState() {
+    super.initState();
+    // 화면 진입 시 최신 알림을 다시 불러온다.
+    controller.fetchNotifications();
+  }
+
+  void _onTapNotification(NotificationModel notification) {
+    controller.markAsRead(notification);
+
+    final postId = notification.postId;
+    if (postId == null) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        settings: const RouteSettings(name: 'PostDetailScreen'),
+        builder: (context) => PostDetailScreen(
+          postId: postId,
+          userId: notification.recipientId,
+        ),
+      ),
+    );
+  }
+
+  String _buildMessage(NotificationModel notification) {
+    final title = notification.postTitle ?? '내';
+    return '[$title] 게시글에 새 댓글이 달렸어요';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,31 +59,40 @@ class AlarmScreen extends StatelessWidget {
               TextStyle(fontSize: 18, color: ColorSeed.boldOrangeMedium.color),
         ),
       ),
-      body: ListView.separated(
-        itemCount: 2,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return ListTile(
-              title: const Text('JAM에 오신 걸 환영해요!'),
-              subtitle: const Text('JAM에서 함께 음악을 할 밴드와 멤버를 구해보세요 :)'),
-              onTap: () {},
-            );
-          }
-          return ListTile(
-            title: const Text('앱 업데이트 안내 2026ver.'),
-            subtitle: const Text('11.01 버전'),
-            onTap: () {},
+      body: Obx(() {
+        final notifications = controller.notifications;
+
+        if (notifications.isEmpty) {
+          return Center(
+            child: Text(
+              '새로운 알림이 없어요',
+              style: TextStyle(
+                fontSize: 15,
+                color: ColorSeed.meticulousGrayMedium.color,
+              ),
+            ),
           );
-        },
-        separatorBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Divider(
-            color: ColorSeed.meticulousGrayLight.color,
-            thickness: 1,
-            height: 1,
+        }
+
+        return ListView.separated(
+          itemCount: notifications.length,
+          itemBuilder: (context, index) {
+            final notification = notifications[index];
+            return ListTile(
+              title: Text(_buildMessage(notification)),
+              onTap: () => _onTapNotification(notification),
+            );
+          },
+          separatorBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(
+              color: ColorSeed.meticulousGrayLight.color,
+              thickness: 1,
+              height: 1,
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

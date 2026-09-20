@@ -4,7 +4,7 @@ import 'package:lets_jam/controllers/explore_filter_controller.dart';
 import 'package:lets_jam/controllers/explore_posts_controller.dart';
 import 'package:lets_jam/main.dart';
 import 'package:lets_jam/models/post_model.dart';
-import 'package:lets_jam/screens/alarm_screen.dart';
+import 'package:lets_jam/widgets/notification_bell.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_bar.dart';
 import 'package:lets_jam/screens/explore_screen/explore_filter_sheet.dart';
 import 'package:lets_jam/screens/explore_screen/explore_posts.dart';
@@ -133,25 +133,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                       child: Image.asset('assets/icons/jam_logo.png')),
                   Row(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                settings:
-                                    const RouteSettings(name: 'AlarmScreen'),
-                                builder: (context) => const AlarmScreen()),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 0, vertical: 2),
-                          child: SizedBox(
-                              width: 28,
-                              height: 28,
-                              child:
-                                  Image.asset('assets/icons/bell_orange.png')),
-                        ),
-                      ),
+                      const NotificationBell(),
                       const SizedBox(
                         width: 12,
                       ),

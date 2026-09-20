@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_jam/screens/alarm_screen.dart';
+import 'package:lets_jam/widgets/notification_bell.dart';
 import 'package:lets_jam/screens/liked_screen/liked_posts.dart';
 import 'package:lets_jam/screens/liked_screen/liked_studios.dart';
 import 'package:lets_jam/screens/settings_screen/settings_screen.dart';
@@ -46,22 +46,7 @@ class _LikedScreenState extends State<LikedScreen>
               ),
               Row(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => const AlarmScreen()),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 0, vertical: 2),
-                      child: SizedBox(
-                          width: 28,
-                          height: 28,
-                          child: Image.asset('assets/icons/bell_orange.png')),
-                    ),
-                  ),
+                  const NotificationBell(),
                   const SizedBox(
                     width: 12,
                   ),

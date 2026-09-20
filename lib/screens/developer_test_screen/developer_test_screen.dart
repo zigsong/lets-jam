@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lets_jam/controllers/notification_controller.dart';
 import 'package:lets_jam/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
@@ -9,6 +11,8 @@ class DeveloperTestScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final notificationController = Get.find<NotificationController>();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -58,6 +62,27 @@ class DeveloperTestScreen extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => const OnboardingScreen(),
               ),
+            ),
+          ),
+          Obx(
+            () => SwitchListTile(
+              title: const Text(
+                '댓글 알림',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  '내 게시글에 댓글이 달리면 알림을 받아요',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: ColorSeed.meticulousGrayMedium.color,
+                  ),
+                ),
+              ),
+              activeColor: ColorSeed.boldOrangeMedium.color,
+              value: notificationController.enabled.value,
+              onChanged: notificationController.setEnabled,
             ),
           ),
         ],
