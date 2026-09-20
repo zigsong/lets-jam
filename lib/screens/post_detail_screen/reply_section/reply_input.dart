@@ -85,12 +85,8 @@ class _ReplyInputState extends State<ReplyInput> {
                 _value = value;
               });
             },
-            suffixButton: Image.asset(
-              'assets/icons/send.png',
-              width: 20,
-            ),
             onSubmit: _submit,
-            keyboardType: TextInputType.multiline,
+            keyboardType: TextInputType.text,
           ),
         ),
       ],

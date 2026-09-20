@@ -24,19 +24,10 @@ class PostDetailInfo extends StatelessWidget {
               borderRadius: BorderRadius.circular(10)),
           child: Column(
             children: [
-              if (post.postType == PostTypeEnum.findMember)
-                _filterDataList(
-                    '세션',
-                    post.sessions
-                        .map((session) => sessionMap[session]!)
-                        .toList()),
-              const SizedBox(height: 8),
-              if (post.regions?.isNotEmpty ?? false)
-                _filterDataList('지역',
-                    post.regions?.map((region) => region.displayName).toList()),
-              const SizedBox(height: 8),
-              if (post.tags?.isNotEmpty ?? false)
-                _listHashTags('해시태그', post.tags),
+              for (final (index, row) in _infoRows().indexed) ...[
+                if (index > 0) const SizedBox(height: 8),
+                row,
+              ],
             ],
           ),
         ),
@@ -50,6 +41,18 @@ class PostDetailInfo extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  List<Widget> _infoRows() {
+    return [
+      if (post.postType == PostTypeEnum.findMember)
+        _filterDataList('세션',
+            post.sessions.map((session) => sessionMap[session]!).toList()),
+      if (post.regions?.isNotEmpty ?? false)
+        _filterDataList('지역',
+            post.regions?.map((region) => region.displayName).toList()),
+      if (post.tags?.isNotEmpty ?? false) _listHashTags('해시태그', post.tags),
+    ];
   }
 
   Widget _filterDataList(String label, List<String>? tags) {
@@ -91,11 +94,9 @@ class PostDetailInfo extends StatelessWidget {
   }
 
   Widget _listHashTags(String label, List<String>? tags) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
             child: SizedBox(
@@ -120,7 +121,6 @@ class PostDetailInfo extends StatelessWidget {
               ),
             )
         ],
-      ),
     );
   }
 }

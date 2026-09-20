@@ -76,7 +76,7 @@ class _ReplySectionState extends State<ReplySection> {
                   height: 10,
                 ),
                 ListView.separated(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.only(bottom: 40),
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: replys.length,

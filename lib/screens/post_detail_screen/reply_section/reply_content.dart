@@ -104,6 +104,7 @@ class _ReplyContentState extends State<ReplyContent> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
@@ -130,8 +131,8 @@ class _ReplyContentState extends State<ReplyContent> {
                                         text: '수정',
                                         leftIcon: Image.asset(
                                           'assets/icons/edit_grey.png',
-                                          width: 15,
-                                          height: 15,
+                                          width: 12,
+                                          height: 12,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -143,8 +144,8 @@ class _ReplyContentState extends State<ReplyContent> {
                                         text: '삭제',
                                         leftIcon: Image.asset(
                                           'assets/icons/reply_delete.png',
-                                          width: 15,
-                                          height: 15,
+                                          width: 12,
+                                          height: 12,
                                         ),
                                         onPressed: () {
                                           showModal(
@@ -233,6 +234,7 @@ class IconButton extends StatelessWidget {
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (leftIcon != null) ...[
               leftIcon!,
@@ -244,6 +246,8 @@ class IconButton extends StatelessWidget {
                   color: isReversed == false
                       ? ColorSeed.meticulousGrayMedium.color
                       : Colors.white,
+                  height: 1,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500),
             ),
           ],
@@ -283,6 +287,7 @@ class BorderButton extends StatelessWidget {
                   ? Colors.white
                   : ColorSeed.meticulousGrayMedium.color,
               height: 1,
+              fontSize: 12,
               fontWeight: FontWeight.w500),
         ),
       ),

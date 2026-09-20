@@ -198,6 +198,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           child: Column(
                             children: [
                               ImageSlider(images: post.images),
+                              const SizedBox(height: 8),
                               Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -260,6 +261,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               ),
                               Divider(
                                 color: ColorSeed.meticulousGrayLight.color,
+                                thickness: 0.5,
                                 indent: 16,
                                 endIndent: 16,
                               ),
@@ -321,6 +323,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                         children: [
                                           UtilButton(
                                               text: '수정',
+                                              backgroundColor: ColorSeed
+                                                  .organizedBlackLight.color
+                                                  .withOpacity(0.5),
+                                              borderColor: ColorSeed
+                                                  .meticulousGrayLight.color,
                                               color: _scrolledPastThreshold
                                                   ? ColorSeed
                                                       .organizedBlackMedium
@@ -341,6 +348,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                           ),
                                           UtilButton(
                                               text: '삭제',
+                                              backgroundColor: ColorSeed
+                                                  .organizedBlackLight.color
+                                                  .withOpacity(0.5),
+                                              borderColor: ColorSeed
+                                                  .meticulousGrayLight.color,
                                               color: _scrolledPastThreshold
                                                   ? ColorSeed
                                                       .organizedBlackMedium

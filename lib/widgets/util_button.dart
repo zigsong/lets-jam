@@ -5,9 +5,16 @@ class UtilButton extends StatelessWidget {
   final String text;
   final Function() onPressed;
   final Color? color;
+  final Color? backgroundColor;
+  final Color? borderColor;
 
   const UtilButton(
-      {super.key, required this.text, required this.onPressed, this.color});
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.color,
+      this.backgroundColor,
+      this.borderColor});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +23,9 @@ class UtilButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 11.5, vertical: 6.5),
         decoration: BoxDecoration(
-          border: Border.all(color: color ?? ColorSeed.joyfulYellowLight.color),
+          color: backgroundColor,
+          border: Border.all(
+              color: borderColor ?? color ?? ColorSeed.joyfulYellowLight.color),
           borderRadius: BorderRadius.circular(6),
         ),
         child: Text(

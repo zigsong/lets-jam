@@ -59,7 +59,7 @@ class _ModalState extends State<Modal> {
                   child: Text(
                     widget.title!,
                     style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.w500),
+                        fontSize: 18, fontWeight: FontWeight.w700),
                   ),
                 ),
                 const SizedBox(height: 16),

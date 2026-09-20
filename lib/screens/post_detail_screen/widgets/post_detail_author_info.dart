@@ -23,13 +23,11 @@ class PostDetailAuthorInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      padding: const EdgeInsets.only(top: 16, bottom: 8, left: 12, right: 12),
       decoration: BoxDecoration(
           border: Border(
               top: BorderSide(
-                  width: 1, color: ColorSeed.meticulousGrayLight.color),
-              bottom: BorderSide(
-                  width: 1, color: ColorSeed.meticulousGrayLight.color))),
+                  width: 0.5, color: ColorSeed.meticulousGrayLight.color))),
       child: Row(
         children: [
           Expanded(
@@ -50,7 +48,7 @@ class PostDetailAuthorInfo extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(user.nickname,
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                          style: const TextStyle(fontWeight: FontWeight.w700)),
                       Text(
                         user.sessions
                             .map((session) => sessionMap[session])

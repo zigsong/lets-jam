@@ -14,9 +14,10 @@ class WantedSession extends StatelessWidget {
     return Container(
         width: MediaQuery.of(context).size.width,
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-            border: Border.all(color: ColorSeed.boldOrangeRegular.color),
+            border: Border.all(
+                color: ColorSeed.boldOrangeRegular.color, width: 1),
             borderRadius: BorderRadius.circular(10)),
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
