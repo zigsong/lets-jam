@@ -66,6 +66,7 @@ class _PostFormScreenState extends State<PostFormScreen> {
 
   bool get _isSubmitDisabled =>
       formData.title.trim().isEmpty ||
+      formData.title.characters.length > 30 ||
       formData.sessions.isEmpty ||
       formData.contact.trim().isEmpty ||
       formData.regions.isEmpty;
@@ -106,6 +107,9 @@ class _PostFormScreenState extends State<PostFormScreen> {
 
     if (formData.title.trim().isEmpty) {
       _titleErrorText = '제목을 입력해주세요';
+      hasError = true;
+    } else if (formData.title.characters.length > 30) {
+      _titleErrorText = '제목은 30자까지 입력할 수 있어요';
       hasError = true;
     }
     if (formData.sessions.isEmpty) {
@@ -265,7 +269,9 @@ class _PostFormScreenState extends State<PostFormScreen> {
                       onChanged: (value) {
                         setState(() {
                           formData.title = value;
-                          _titleErrorText = null;
+                          _titleErrorText = value.characters.length > 30
+                              ? '제목은 30자까지 입력할 수 있어요'
+                              : null;
                         });
                       },
                     ),
