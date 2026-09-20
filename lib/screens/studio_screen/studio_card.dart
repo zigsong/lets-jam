@@ -60,7 +60,7 @@ class StudioCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w600),
+                        fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   if (room.regionLabel != null) ...[
                     const SizedBox(height: 6),

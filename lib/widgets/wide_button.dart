@@ -6,13 +6,15 @@ class WideButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool disabled;
   final bool isLoading;
+  final bool showShadow;
 
   const WideButton(
       {super.key,
       required this.text,
       required this.onPressed,
       this.disabled = false,
-      this.isLoading = false});
+      this.isLoading = false,
+      this.showShadow = true});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class WideButton extends StatelessWidget {
 
     return Container(
       width: MediaQuery.of(context).size.width,
-      decoration: isDisabled
+      decoration: (isDisabled || !showShadow)
           ? null
           : BoxDecoration(
               borderRadius: BorderRadius.circular(12),

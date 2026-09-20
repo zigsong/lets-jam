@@ -330,29 +330,37 @@ class _StudioScreenState extends State<StudioScreen>
           bottomRight: Radius.circular(15),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Wrap(
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: districts
-                  .map((district) => Tag(
-                        text: district.displayName,
-                        color: TagColorEnum.black,
-                        selected: _tempDistricts.contains(district),
-                        onToggle: () => _toggleTempDistrict(district),
-                      ))
-                  .toList(),
-            ),
-          ),
-          Divider(height: 0.5, color: ColorSeed.boldOrangeLight.color),
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 20, right: 16, bottom: 20, left: 16),
-            child: WideButton(text: '필터 적용', onPressed: _applyFilter),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 11, horizontal: 16),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: districts
+                      .map((district) => Tag(
+                            text: district.displayName,
+                            color: TagColorEnum.black,
+                            selected: _tempDistricts.contains(district),
+                            onToggle: () => _toggleTempDistrict(district),
+                          ))
+                      .toList(),
+                ),
+              ),
+              Divider(height: 0.5, color: ColorSeed.boldOrangeLight.color),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 20, right: 16, bottom: 20, left: 16),
+                child: WideButton(
+                    text: '필터 적용',
+                    showShadow: false,
+                    onPressed: _applyFilter),
+              ),
+            ],
           ),
         ],
       ),

@@ -38,7 +38,8 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
             children: [
               widget.type == FilterEnum.session
                   ? Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 16),
                       child: Obx(() {
                         final sessions = filterController.tempSessions.toList();
                         return Wrap(
@@ -60,7 +61,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                       final regions = filterController.tempRegions.toList();
                       return Container(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 11, horizontal: 16),
+                              vertical: 16, horizontal: 16),
                           child: RegionFilter(
                             selectedRegions: regions,
                             toggleRegion: (region) {
@@ -70,9 +71,10 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
                     }),
               Padding(
                 padding: const EdgeInsets.only(
-                    top: 20, right: 16, bottom: 20, left: 16),
+                    top: 4, right: 16, bottom: 20, left: 16),
                 child: WideButton(
                     text: '필터 적용',
+                    showShadow: false,
                     onPressed: () {
                       widget.applyFilter();
                     }),
