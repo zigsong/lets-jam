@@ -687,7 +687,7 @@ class _TextInputStepState extends State<_TextInputStep> {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide:
-                  BorderSide(color: ColorSeed.meticulousGrayMedium.color),
+                  BorderSide(color: ColorSeed.meticulousGrayLight.color),
             ),
           ),
         ),
