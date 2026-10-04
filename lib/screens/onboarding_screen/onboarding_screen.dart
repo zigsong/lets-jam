@@ -25,14 +25,32 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 /// 온보딩에서만 쓰는 밴드 취향(장르). 아직 프로필 모델/DB에는 없는 목업 개념이다.
-enum _Genre { rock, jazz, indie, kpop, jpop }
+enum _Genre {
+  rock,
+  pop,
+  rnbSoul,
+  indie,
+  metal,
+  funk,
+  kpop,
+  jpop,
+  cityPop,
+  anime,
+  etc
+}
 
 const Map<_Genre, String> _genreLabels = {
-  _Genre.rock: '락',
-  _Genre.jazz: '재즈',
+  _Genre.rock: '록',
+  _Genre.pop: 'POP',
+  _Genre.rnbSoul: 'R&B/소울',
   _Genre.indie: '인디',
+  _Genre.metal: '메탈',
+  _Genre.funk: '펑크',
   _Genre.kpop: 'K-POP',
   _Genre.jpop: 'J-POP',
+  _Genre.cityPop: '시티팝',
+  _Genre.anime: '애니',
+  _Genre.etc: '그 외',
 };
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
@@ -388,7 +406,7 @@ class _SessionStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final who = honorific(name);
-    final title = who.isEmpty ? '어떤 세션이세요?' : '$who은\n어떤 세션이세요?';
+    final title = who.isEmpty ? '어떤 세션이세요?' : '$who은 어떤 세션이세요?';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -491,13 +509,22 @@ class _GenreStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final who = honorific(name);
-    final title =
-        who.isEmpty ? '멋져요! 밴드 취향을\n알려주세요' : '멋져요! $who의 밴드 취향을\n알려주세요';
+    final title = who.isEmpty
+        ? '멋져요! 🎵\n음악 취향을 알려주세요'
+        : '멋져요! 🎵\n$who의 음악 취향을 알려주세요';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 24),
         _StepTitle(title),
+        const SizedBox(height: 12),
+        Text(
+          '좋아하는 장르를 모두 골라 주세요',
+          style: TextStyle(
+            fontSize: 14,
+            color: ColorSeed.meticulousGrayMedium.color,
+          ),
+        ),
         const SizedBox(height: 32),
         Expanded(
           child: SingleChildScrollView(
@@ -735,25 +762,26 @@ class _ChoiceChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? ColorSeed.boldOrangeLight.color : Colors.white,
+          color: selected ? ColorSeed.boldOrangeStrong.color : Colors.white,
           border: Border.all(
             color: selected
                 ? ColorSeed.boldOrangeStrong.color
                 : ColorSeed.meticulousGrayLight.color,
-            width: selected ? 1.5 : 1,
+            // 선택 시 두께가 바뀌면 border가 레이아웃 크기에 포함돼 칩이 커진다.
+            // 두께를 고정해 크기 변화를 막는다.
+            width: 1,
           ),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
           label,
           style: TextStyle(
             fontSize: 15,
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-            color: selected
-                ? ColorSeed.boldOrangeStrong.color
-                : ColorSeed.organizedBlackLight.color,
+            color:
+                selected ? Colors.white : ColorSeed.organizedBlackMedium.color,
           ),
         ),
       ),
