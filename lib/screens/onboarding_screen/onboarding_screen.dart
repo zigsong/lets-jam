@@ -244,13 +244,13 @@ class _StepFooter extends StatelessWidget {
       children: [
         SizedBox(
           width: double.infinity,
+          height: 60,
           child: ElevatedButton(
             onPressed: enabled ? onConfirm : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: ColorSeed.boldOrangeStrong.color,
               disabledBackgroundColor: ColorSeed.meticulousGrayLight.color,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -301,13 +301,43 @@ class _WelcomeStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    // 원본 비율(1624x1165)로 full width 높이를 계산.
+    final imageHeight = screenWidth * 1165 / 1624;
     return Column(
       children: [
         const Spacer(),
-        const _StepTitle('JAM에 오신 걸 환영해요!'),
-        const SizedBox(height: 16),
+        // 본문 가로 패딩(24)을 OverflowBox로 벗어나 화면 full width로 노출.
+        SizedBox(
+          height: imageHeight,
+          child: OverflowBox(
+            minWidth: screenWidth,
+            maxWidth: screenWidth,
+            minHeight: imageHeight,
+            maxHeight: imageHeight,
+            child: Image.asset(
+              'assets/images/onboarding_welcome.png',
+              width: screenWidth,
+              height: imageHeight,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(height: 32),
+        // 환영 스텝 전용 타이틀 (공용 _StepTitle 미사용).
+        const Text(
+          'JAM에 오신 걸 환영해요!',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            height: 1.4,
+          ),
+        ),
+        const SizedBox(height: 24),
         Text(
-          'JAM에서 함께 음악을 할\n밴드와 멤버를 구해보세요',
+          '함께 합주할 밴드와 멤버를\nJAM에서 찾아보세요',
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 16,
             height: 1.5,
