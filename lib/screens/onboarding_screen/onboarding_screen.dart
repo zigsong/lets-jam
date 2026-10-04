@@ -15,8 +15,8 @@ import 'package:lets_jam/widgets/session_selector.dart';
 ///
 /// - '다음에 작성할게요'를 누르면 어느 스텝에서든 온보딩을 종료하고 홈('/')으로 간다.
 /// - 이전 스텝으로 돌아갈 수 있고, 1번에서 더 뒤로 가면 온보딩을 종료한다.
-/// - 마지막(자기소개) 스텝에서 '확인'하면 홈으로 이동하고, 홈 위에
-///   '작성 완료' 딤드 오버레이를 4초간 띄웠다가 자동으로 사라진다.
+/// - 마지막(자기소개) 스텝에서 '확인'하면 홈 위에 '프로필 완성' 딤드 오버레이를
+///   띄우고, 'JAM 시작하기'를 누르면 오버레이를 닫으며 홈으로 이동한다.
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -142,8 +142,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     navigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 
-  /// 마지막 스텝(자기소개) '확인' → 완료 오버레이를 4초간 띄우고,
-  /// 사라지면서 온보딩 등 쌓인 화면을 모두 닫고 홈 탭으로 이동한다.
+  /// 마지막 스텝(자기소개) '확인' → 완료 오버레이를 띄우고,
+  /// 'JAM 시작하기'를 누르면 온보딩 등 쌓인 화면을 모두 닫고 홈 탭으로 이동한다.
   void _finishToHome() {
     final overlay = navigatorKey.currentState?.overlay;
     if (overlay == null) return;
@@ -680,14 +680,14 @@ class _TextInputStepState extends State<_TextInputStep> {
             // 기본 글자 수 카운터는 숨긴다.
             counterText: '',
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(6),
               borderSide: BorderSide(
                   color: ColorSeed.boldOrangeStrong.color, width: 1.5),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(6),
               borderSide:
-                  BorderSide(color: ColorSeed.meticulousGrayLight.color),
+                  BorderSide(color: ColorSeed.meticulousGrayMedium.color),
             ),
           ),
         ),
@@ -737,7 +737,6 @@ class _CompletionOverlay extends StatefulWidget {
 class _CompletionOverlayState extends State<_CompletionOverlay> {
   static const Duration _fade = Duration(milliseconds: 250);
   double _opacity = 0;
-  Timer? _dismissTimer;
 
   @override
   void initState() {
@@ -746,69 +745,77 @@ class _CompletionOverlayState extends State<_CompletionOverlay> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) setState(() => _opacity = 1);
     });
-    // 4초간 노출 후 페이드 아웃 → 제거
-    _dismissTimer = Timer(const Duration(seconds: 4), () {
-      if (!mounted) return;
-      setState(() => _opacity = 0);
-      Timer(_fade, widget.onDismiss);
-    });
-  }
-
-  @override
-  void dispose() {
-    _dismissTimer?.cancel();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: IgnorePointer(
-        child: AnimatedOpacity(
-          opacity: _opacity,
-          duration: _fade,
-          child: Material(
-            type: MaterialType.transparency,
+      child: AnimatedOpacity(
+        opacity: _opacity,
+        duration: _fade,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Container(
+            color: Colors.black.withOpacity(0.55),
+            alignment: Alignment.center,
             child: Container(
-              color: Colors.black.withOpacity(0.55),
-              alignment: Alignment.center,
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 40),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.celebration,
-                      size: 56,
+              margin: const EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/onboarding_complete.png',
+                    width: 140,
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    '프로필 완성!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
                       color: ColorSeed.boldOrangeStrong.color,
                     ),
-                    const SizedBox(height: 20),
-                    Text(
-                      '프로필 작성을 완료했어요!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: ColorSeed.organizedBlackMedium.color,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '이제 JAM에서 밴드와 멤버를 만나보세요',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: ColorSeed.organizedBlackMedium.color,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: widget.onDismiss,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: ColorSeed.boldOrangeStrong.color,
+                        side: BorderSide(
+                          color: ColorSeed.boldOrangeStrong.color,
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'JAM 시작하기',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'JAM에서 즐거운 시간 보내세요!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: ColorSeed.organizedBlackLight.color,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
