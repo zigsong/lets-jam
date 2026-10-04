@@ -66,6 +66,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final TextEditingController _contactController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
 
+  // 닉네임 중복 검사: profiles.nickname 을 500ms 디바운스로 조회한다.
+  Timer? _nicknameDebounce;
+  String? _nicknameErrorText;
+
   /// 카카오 로그인 계정 이름. 없으면 null → 호칭 생략.
   String? get _name {
     final metadata = Supabase.instance.client.auth.currentUser?.userMetadata;
@@ -82,10 +86,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   void dispose() {
+    _nicknameDebounce?.cancel();
     _nicknameController.dispose();
     _contactController.dispose();
     _bioController.dispose();
     super.dispose();
+  }
+
+  /// 닉네임 입력 변경 → 디바운스 후 Supabase에서 중복 여부 조회.
+  void _onNicknameChanged(String value) {
+    setState(() => _nicknameErrorText = null);
+
+    if (value.trim().isEmpty) return;
+
+    _nicknameDebounce?.cancel();
+    _nicknameDebounce = Timer(const Duration(milliseconds: 500), () async {
+      final isDuplicate = await _isNicknameDuplicate(value);
+      if (!mounted) return;
+      setState(() {
+        _nicknameErrorText = isDuplicate ? '사용 중인 닉네임이에요.' : null;
+      });
+    });
+  }
+
+  Future<bool> _isNicknameDuplicate(String nickname) async {
+    final result = await Supabase.instance.client
+        .from('profiles')
+        .select('id')
+        .eq('nickname', nickname.trim());
+    return (result as List).isNotEmpty;
   }
 
   void _next() {
@@ -210,12 +239,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           onSkip: _goHome,
         );
       case 3:
-        final who = _honorific(_name);
-        final subject = who.isEmpty ? 'JAM!에서' : '$who이 JAM!에서';
+        const title = '좋아요! 🥁\n이제 JAM에서 사용할\n닉네임을 정해주세요.';
         return _TextInputStep(
-          title: '취향을 저장했어요.\n$subject 사용하고 싶은\n닉네임을 입력해주세요',
+          title: title,
           hintText: '닉네임',
           controller: _nicknameController,
+          errorText: _nicknameErrorText,
+          onChanged: _onNicknameChanged,
           onConfirm: _next,
           onSkip: _goHome,
         );
@@ -509,9 +539,8 @@ class _GenreStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final who = honorific(name);
-    final title = who.isEmpty
-        ? '멋져요! 🎵\n음악 취향을 알려주세요'
-        : '멋져요! 🎵\n$who의 음악 취향을 알려주세요';
+    final title =
+        who.isEmpty ? '멋져요! 🎵\n음악 취향을 알려주세요' : '멋져요! 🎵\n$who의 음악 취향을 알려주세요';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -558,6 +587,12 @@ class _TextInputStep extends StatefulWidget {
   final VoidCallback onConfirm;
   final VoidCallback? onSkip;
 
+  /// 입력 하단에 노출할 에러 메시지. null이면 숨김. 값이 있으면 '확인'도 비활성화된다.
+  final String? errorText;
+
+  /// 입력값이 바뀔 때마다 호출. (닉네임 중복 검사 등 외부 검증용)
+  final ValueChanged<String>? onChanged;
+
   const _TextInputStep({
     required this.title,
     required this.hintText,
@@ -567,6 +602,8 @@ class _TextInputStep extends StatefulWidget {
     this.maxLines = 1,
     this.allowEmptyConfirm = false,
     this.onSkip,
+    this.errorText,
+    this.onChanged,
   });
 
   @override
@@ -597,12 +634,16 @@ class _TextInputStepState extends State<_TextInputStep> {
     super.dispose();
   }
 
-  void _onChanged() => setState(() {});
+  void _onChanged() {
+    setState(() {});
+    widget.onChanged?.call(widget.controller.text);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final enabled =
+    final hasText =
         widget.allowEmptyConfirm || widget.controller.text.trim().isNotEmpty;
+    final enabled = hasText && widget.errorText == null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -638,6 +679,26 @@ class _TextInputStepState extends State<_TextInputStep> {
             ),
           ),
         ),
+        if (widget.errorText != null) ...[
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(
+                Icons.info,
+                size: 16,
+                color: ColorSeed.boldOrangeStrong.color,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                widget.errorText!,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: ColorSeed.boldOrangeStrong.color,
+                ),
+              ),
+            ],
+          ),
+        ],
         const Spacer(),
         _StepFooter(
           onConfirm: widget.onConfirm,
