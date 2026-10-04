@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_jam/main.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/widgets/session_selector.dart';
 
 /// [개발자 전용/목업] 앱 온보딩 플로우 프로토타입.
 ///
@@ -136,14 +137,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
           bottom: showProgress
               ? PreferredSize(
-                  preferredSize: const Size.fromHeight(4),
-                  child: LinearProgressIndicator(
-                    value: (_step + 1) / _totalSteps,
-                    minHeight: 4,
-                    backgroundColor: ColorSeed.boldOrangeLight.color,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      ColorSeed.boldOrangeStrong.color,
-                    ),
+                  preferredSize: const Size.fromHeight(4 + 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LinearProgressIndicator(
+                        value: (_step + 1) / _totalSteps,
+                        minHeight: 4,
+                        backgroundColor: ColorSeed.boldOrangeLight.color,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          ColorSeed.boldOrangeStrong.color,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 )
               : null,
@@ -261,17 +268,26 @@ class _StepFooter extends StatelessWidget {
             ),
           ),
         ),
-        if (onSkip != null)
+        if (onSkip != null) ...[
+          const SizedBox(height: 22),
           TextButton(
             onPressed: onSkip,
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
             child: Text(
-              '다음에 작성할게요',
+              '다음에 작성하기',
               style: TextStyle(
                 fontSize: 14,
                 color: ColorSeed.meticulousGrayMedium.color,
+                decoration: TextDecoration.underline,
+                decorationColor: ColorSeed.meticulousGrayMedium.color,
               ),
             ),
           ),
+        ],
       ],
     );
   }
@@ -372,13 +388,20 @@ class _SessionStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final who = honorific(name);
-    final title =
-        who.isEmpty ? '밴드에서 어떤 세션을\n맡고 계신가요?' : '$who은 밴드에서 어떤 세션을\n맡고 계신가요?';
+    final title = who.isEmpty ? '어떤 세션이세요?' : '$who은\n어떤 세션이세요?';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 24),
         _StepTitle(title),
+        const SizedBox(height: 12),
+        Text(
+          '다룰 수 있는 세션을 모두 선택해 주세요',
+          style: TextStyle(
+            fontSize: 14,
+            color: ColorSeed.meticulousGrayMedium.color,
+          ),
+        ),
         const SizedBox(height: 32),
         Expanded(
           child: SingleChildScrollView(
@@ -386,8 +409,8 @@ class _SessionStep extends StatelessWidget {
               spacing: 10,
               runSpacing: 10,
               children: SessionEnum.values.map((session) {
-                return _ChoiceChip(
-                  label: sessionMap[session] ?? session.name,
+                return _SessionCard(
+                  session: session,
                   selected: selected.contains(session),
                   onTap: () => onToggle(session),
                 );
@@ -398,6 +421,52 @@ class _SessionStep extends StatelessWidget {
         _StepFooter(onConfirm: onConfirm, onSkip: onSkip),
         const SizedBox(height: 12),
       ],
+    );
+  }
+}
+
+/// 세션 선택 카드. session_selector.dart의 카드 디자인(80x80 이미지 + 하단 라벨,
+/// 선택 시 active 이미지로 토글)을 그대로 따른다.
+class _SessionCard extends StatelessWidget {
+  final SessionEnum session;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _SessionCard({
+    required this.session,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 80,
+        height: 80,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Stack(
+          alignment: AlignmentDirectional.bottomEnd,
+          children: [
+            Image.asset(
+              selected
+                  ? sessionImagesActive[session]!
+                  : sessionImagesDefault[session]!,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 10),
+              child: Text(
+                sessionMap[session]!,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
