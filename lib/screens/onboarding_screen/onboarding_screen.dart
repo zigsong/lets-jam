@@ -251,28 +251,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         );
       case 4:
         final nickname = _nicknameController.text.trim();
-        final greeting =
-            nickname.isEmpty ? '이제 거의 다 왔어요.' : '$nickname님, 이제 거의 다 왔어요.';
+        final greeting = nickname.isEmpty
+            ? '거의 다 왔어요! 🙌'
+            : '$nickname님, 거의 다 왔어요! 🙌';
         return _TextInputStep(
-          title: '$greeting\nJAM에서 소통할 연락처를 입력해주세요',
-          description: '카카오톡 오픈채팅방, SNS 계정 등\n공개 가능한 연락처로 작성해 주세요',
+          title: '$greeting\nJAM에서 소통할 연락처를 입력해 주세요',
+          description: '카카오톡 오픈채팅방, SNS 계정 등\n공개 가능한 연락처로 작성해 주세요.',
           hintText: '연락처',
           controller: _contactController,
+          allowEmptyConfirm: true,
           onConfirm: _next,
           onSkip: _goHome,
         );
       case 5:
       default:
         return _TextInputStep(
-          title: '마지막으로 남기고 싶은\n자기소개가 있나요?',
-          hintText: '자기소개 (선택)',
+          title: '마지막이에요!\n자기소개를 작성해 주세요✍️',
+          description: '50자 이내로 작성해 주세요 (선택)',
+          hintText: '예시)주말마다 합주하고 싶은 직장인 드러머예요 🥁',
           controller: _bioController,
           maxLines: 4,
+          maxLength: 50,
           allowEmptyConfirm: true,
           // 자기소개 '확인' → 홈으로 이동 후 완료 오버레이 노출.
           onConfirm: _finishToHome,
-          // 자기소개 스텝에는 '다음에 작성할게요'가 없다.
-          onSkip: null,
+          onSkip: _goHome,
         );
     }
   }
@@ -587,6 +590,9 @@ class _TextInputStep extends StatefulWidget {
   final VoidCallback onConfirm;
   final VoidCallback? onSkip;
 
+  /// 입력 글자 수 제한. null이면 제한 없음. (기본 카운터는 숨긴다)
+  final int? maxLength;
+
   /// 입력 하단에 노출할 에러 메시지. null이면 숨김. 값이 있으면 '확인'도 비활성화된다.
   final String? errorText;
 
@@ -602,6 +608,7 @@ class _TextInputStep extends StatefulWidget {
     this.maxLines = 1,
     this.allowEmptyConfirm = false,
     this.onSkip,
+    this.maxLength,
     this.errorText,
     this.onChanged,
   });
@@ -664,9 +671,14 @@ class _TextInputStepState extends State<_TextInputStep> {
         TextField(
           controller: widget.controller,
           maxLines: widget.maxLines,
+          maxLength: widget.maxLength,
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: TextStyle(color: ColorSeed.meticulousGrayMedium.color),
+            // 가로/세로 여백을 동일하게.
+            contentPadding: const EdgeInsets.all(16),
+            // 기본 글자 수 카운터는 숨긴다.
+            counterText: '',
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
