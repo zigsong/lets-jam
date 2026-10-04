@@ -680,12 +680,12 @@ class _TextInputStepState extends State<_TextInputStep> {
             // 기본 글자 수 카운터는 숨긴다.
             counterText: '',
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(
                   color: ColorSeed.boldOrangeStrong.color, width: 1.5),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(8),
               borderSide:
                   BorderSide(color: ColorSeed.meticulousGrayMedium.color),
             ),
