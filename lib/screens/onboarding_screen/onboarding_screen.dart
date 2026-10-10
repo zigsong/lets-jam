@@ -117,12 +117,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return (result as List).isNotEmpty;
   }
 
+  /// 스텝 전환 전 키보드를 내린다. (텍스트 입력 스텝에서 포커스가 남아
+  /// 다음 스텝/오버레이 위로 키보드가 계속 떠 있는 것을 막는다.)
+  void _dismissKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
   void _next() {
     if (_step >= _totalSteps - 1) return;
+    _dismissKeyboard();
     setState(() => _step++);
   }
 
   void _back() {
+    _dismissKeyboard();
     if (_step == 0) {
       _exit();
       return;
@@ -139,12 +147,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   /// '다음에 작성할게요' → 온보딩 등 쌓인 화면을 모두 닫고 홈 탭으로 복귀.
   void _goHome() {
+    _dismissKeyboard();
     navigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 
   /// 마지막 스텝(자기소개) '확인' → 완료 오버레이를 띄우고,
   /// 'JAM 시작하기'를 누르면 온보딩 등 쌓인 화면을 모두 닫고 홈 탭으로 이동한다.
   void _finishToHome() {
+    _dismissKeyboard();
     final overlay = navigatorKey.currentState?.overlay;
     if (overlay == null) return;
     late OverlayEntry entry;
@@ -251,11 +261,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         );
       case 4:
         final nickname = _nicknameController.text.trim();
-        final greeting = nickname.isEmpty
-            ? '거의 다 왔어요! 🙌'
-            : '$nickname님, 거의 다 왔어요! 🙌';
+        final greeting =
+            nickname.isEmpty ? '거의 다 왔어요! 🙌' : '$nickname님, 거의 다 왔어요! 🙌';
         return _TextInputStep(
-          title: '$greeting\nJAM에서 소통할 연락처를 입력해 주세요',
+          title: '$greeting\nJAM에서 소통할 연락처를\n입력해 주세요',
           description: '카카오톡 오픈채팅방, SNS 계정 등\n공개 가능한 연락처로 작성해 주세요.',
           hintText: '연락처',
           controller: _contactController,
@@ -302,13 +311,15 @@ class _StepFooter extends StatelessWidget {
       children: [
         SizedBox(
           width: double.infinity,
-          height: 60,
+          height: 52,
           child: ElevatedButton(
             onPressed: enabled ? onConfirm : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: ColorSeed.boldOrangeStrong.color,
               disabledBackgroundColor: ColorSeed.meticulousGrayLight.color,
               foregroundColor: Colors.white,
+              elevation: 0,
+              shadowColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
