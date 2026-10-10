@@ -6,6 +6,7 @@ import 'package:lets_jam/screens/studio_screen/studio_detail.dart';
 import 'package:lets_jam/screens/studio_screen/studio_like_service.dart';
 import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/utils/josa.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/image_slider.dart';
 import 'package:lets_jam/widgets/like_button.dart';
@@ -282,7 +283,8 @@ class _StudioDetailScreenState extends State<StudioDetailScreen> {
       if (studio.reservationMethod != null)
         _infoRow(
           icon: Icons.today_outlined,
-          text: '${studio.reservationMethod}으로 문의',
+          text:
+              '${josa(studio.reservationMethod!, '으로', '로', rieulAsVowel: true)} 문의',
           onTap: studio.reservationLink == null
               ? null
               : () {
