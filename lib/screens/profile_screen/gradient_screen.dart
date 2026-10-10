@@ -42,10 +42,10 @@ class GradientSplitScreen extends StatelessWidget {
 
           // 2. 이미지 위에 검정색 그라데이션 덮기 (블렌딩 효과)
           Positioned(
-            top: halfHeight * 0.5,
+            top: halfHeight * 0.35,
             left: 0,
             right: 0,
-            height: halfHeight * 0.5,
+            height: halfHeight * 0.65,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
