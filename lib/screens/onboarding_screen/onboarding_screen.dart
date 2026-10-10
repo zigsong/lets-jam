@@ -99,6 +99,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     if (value.trim().isEmpty) return;
 
+    // 8자 초과는 즉시 에러로 안내하고 중복 검사는 건너뛴다.
+    if (value.trim().length > 8) {
+      _nicknameDebounce?.cancel();
+      setState(() => _nicknameErrorText = '닉네임은 8자까지 입력할 수 있어요');
+      return;
+    }
+
     _nicknameDebounce?.cancel();
     _nicknameDebounce = Timer(const Duration(milliseconds: 500), () async {
       final isDuplicate = await _isNicknameDuplicate(value);
