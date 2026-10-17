@@ -71,6 +71,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Timer? _nicknameDebounce;
   String? _nicknameErrorText;
 
+  /// 8글자 제한 안내 문구. 에러와 달리 '확인'을 막지 않는다.
+  String? _nicknameLengthNotice;
+
+  /// 8글자 초과 입력을 잘라낼 때 컨트롤러를 되돌리는 과정에서 리스너가
+  /// 재진입하는 것을 막는 가드.
+  bool _suppressNicknameListener = false;
+
   /// 카카오 로그인 계정 이름. 없으면 null → 호칭 생략.
   String? get _name {
     final metadata = Supabase.instance.client.auth.currentUser?.userMetadata;
@@ -94,25 +101,63 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
-  /// 닉네임 입력 변경 → 디바운스 후 Supabase에서 중복 여부 조회.
+  /// 닉네임 허용 문자: 영어, 한글(자모 포함), 숫자, 특수문자(_ - + =).
+  static final RegExp _nicknameAllowed =
+      RegExp(r'^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ_+=\-]+$');
+
+  /// 닉네임 로컬 검증. 우선순위대로 첫 번째 위반 메시지를 반환, 없으면 null.
+  /// (8글자 초과는 입력 단계에서 잘라내므로 여기선 다루지 않는다.
+  ///  중복 검사도 네트워크가 필요해 별도로 처리한다.)
+  String? _localNicknameError(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return '입력이 필요해요';
+    if (value.contains(RegExp(r'\s'))) return '띄어쓰기 없이 입력해주세요';
+    if (trimmed.length < 2) return '2글자 이상 입력해 주세요';
+    if (!_nicknameAllowed.hasMatch(trimmed)) {
+      return '영어, 한글, 숫자, 특수문자(_, -, +, =)만 입력할 수 있어요';
+    }
+    return null;
+  }
+
+  /// 닉네임 입력 변경. 8글자를 넘기면 입력을 잘라 하드 제한하고
+  /// '8글자까지 입력할 수 있어요' 안내를 띄운다(확인은 막지 않음).
+  /// 8글자 이하면 안내를 지우고 로컬 검증→중복 검사를 진행한다.
   void _onNicknameChanged(String value) {
-    setState(() => _nicknameErrorText = null);
+    if (_suppressNicknameListener) return;
 
-    if (value.trim().isEmpty) return;
-
-    // 8자 초과는 즉시 에러로 안내하고 중복 검사는 건너뛴다.
-    if (value.trim().length > 8) {
-      _nicknameDebounce?.cancel();
-      setState(() => _nicknameErrorText = '닉네임은 8자까지 입력할 수 있어요');
+    if (value.length > 8) {
+      final capped = value.substring(0, 8);
+      _suppressNicknameListener = true;
+      _nicknameController.value = TextEditingValue(
+        text: capped,
+        selection: TextSelection.collapsed(offset: capped.length),
+      );
+      _suppressNicknameListener = false;
+      setState(() => _nicknameLengthNotice = '8글자까지 입력할 수 있어요');
+      _validateNickname(capped);
       return;
     }
 
+    setState(() => _nicknameLengthNotice = null);
+    _validateNickname(value);
+  }
+
+  /// 로컬 검증 후 통과하면 디바운스로 중복 여부를 조회한다.
+  void _validateNickname(String value) {
     _nicknameDebounce?.cancel();
+
+    final localError = _localNicknameError(value);
+    if (localError != null) {
+      setState(() => _nicknameErrorText = localError);
+      return;
+    }
+
+    setState(() => _nicknameErrorText = null);
     _nicknameDebounce = Timer(const Duration(milliseconds: 500), () async {
       final isDuplicate = await _isNicknameDuplicate(value);
       if (!mounted) return;
       setState(() {
-        _nicknameErrorText = isDuplicate ? '사용 중인 닉네임이에요.' : null;
+        _nicknameErrorText = isDuplicate ? '사용 중인 닉네임 이에요.' : null;
       });
     });
   }
@@ -283,6 +328,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           hintText: '닉네임',
           controller: _nicknameController,
           errorText: _nicknameErrorText,
+          noticeText: _nicknameLengthNotice,
           onChanged: _onNicknameChanged,
           onConfirm: _next,
           onSkip: _confirmSkip,
@@ -635,6 +681,10 @@ class _TextInputStep extends StatefulWidget {
   /// 입력 하단에 노출할 에러 메시지. null이면 숨김. 값이 있으면 '확인'도 비활성화된다.
   final String? errorText;
 
+  /// 입력 하단에 노출할 안내 메시지. 에러와 달리 '확인'을 막지 않는다.
+  /// (예: 8글자 제한 안내처럼 현재 값은 유효하지만 알려줄 내용이 있을 때)
+  final String? noticeText;
+
   /// 입력값이 바뀔 때마다 호출. (닉네임 중복 검사 등 외부 검증용)
   final ValueChanged<String>? onChanged;
 
@@ -649,6 +699,7 @@ class _TextInputStep extends StatefulWidget {
     this.onSkip,
     this.maxLength,
     this.errorText,
+    this.noticeText,
     this.onChanged,
   });
 
@@ -690,6 +741,8 @@ class _TextInputStepState extends State<_TextInputStep> {
     final hasText =
         widget.allowEmptyConfirm || widget.controller.text.trim().isNotEmpty;
     final enabled = hasText && widget.errorText == null;
+    // 에러가 우선, 없으면 안내 문구를 같은 자리에 노출한다.
+    final message = widget.errorText ?? widget.noticeText;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -730,7 +783,7 @@ class _TextInputStepState extends State<_TextInputStep> {
             ),
           ),
         ),
-        if (widget.errorText != null) ...[
+        if (message != null) ...[
           const SizedBox(height: 8),
           Row(
             children: [
@@ -741,7 +794,7 @@ class _TextInputStepState extends State<_TextInputStep> {
               ),
               const SizedBox(width: 6),
               Text(
-                widget.errorText!,
+                message,
                 style: TextStyle(
                   fontSize: 13,
                   color: ColorSeed.boldOrangeStrong.color,
