@@ -158,6 +158,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     navigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 
+  /// '다음에 작성하기' → 작성 중인 내용이 사라진다는 확인 알럿을 띄운다.
+  /// '다음에 하기'면 온보딩을 종료하고 홈으로, '계속하기'면 알럿만 닫는다.
+  void _confirmSkip() {
+    _dismissKeyboard();
+    showDialog(
+      context: context,
+      builder: (dialogContext) => _SkipConfirmDialog(
+        onLeave: () {
+          Navigator.of(dialogContext).pop();
+          _goHome();
+        },
+        onContinue: () => Navigator.of(dialogContext).pop(),
+      ),
+    );
+  }
+
   /// 마지막 스텝(자기소개) '확인' → 완료 오버레이를 띄우고,
   /// 'JAM 시작하기'를 누르면 온보딩 등 쌓인 화면을 모두 닫고 홈 탭으로 이동한다.
   void _finishToHome() {
@@ -242,7 +258,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             _sessions.contains(s) ? _sessions.remove(s) : _sessions.add(s);
           }),
           onConfirm: _next,
-          onSkip: _goHome,
+          onSkip: _confirmSkip,
         );
       case 2:
         return _GenreStep(
@@ -253,7 +269,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             _genres.contains(g) ? _genres.remove(g) : _genres.add(g);
           }),
           onConfirm: _next,
-          onSkip: _goHome,
+          onSkip: _confirmSkip,
         );
       case 3:
         const title = '좋아요! 🥁\n이제 JAM에서 사용할\n닉네임을 정해주세요.';
@@ -264,7 +280,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           errorText: _nicknameErrorText,
           onChanged: _onNicknameChanged,
           onConfirm: _next,
-          onSkip: _goHome,
+          onSkip: _confirmSkip,
         );
       case 4:
         final nickname = _nicknameController.text.trim();
@@ -277,7 +293,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           controller: _contactController,
           allowEmptyConfirm: true,
           onConfirm: _next,
-          onSkip: _goHome,
+          onSkip: _confirmSkip,
         );
       case 5:
       default:
@@ -291,7 +307,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           allowEmptyConfirm: true,
           // 자기소개 '확인' → 홈으로 이동 후 완료 오버레이 노출.
           onConfirm: _finishToHome,
-          onSkip: _goHome,
+          onSkip: _confirmSkip,
         );
     }
   }
@@ -737,6 +753,96 @@ class _TextInputStepState extends State<_TextInputStep> {
         ),
         const SizedBox(height: 12),
       ],
+    );
+  }
+}
+
+/// '다음에 작성하기' 확인 알럿. 작성 중인 내용이 저장되지 않음을 안내하고,
+/// 온보딩을 떠날지('다음에 하기') 계속 작성할지('계속하기') 고르게 한다.
+class _SkipConfirmDialog extends StatelessWidget {
+  final VoidCallback onLeave;
+  final VoidCallback onContinue;
+
+  const _SkipConfirmDialog({required this.onLeave, required this.onContinue});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 40),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '작성 중인 내용이 있어요',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: ColorSeed.organizedBlackMedium.color,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              '지금까지 작성한 내용은 저장되지 않아요',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                color: ColorSeed.organizedBlackLight.color,
+              ),
+            ),
+            const SizedBox(height: 28),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: onLeave,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: ColorSeed.boldOrangeStrong.color,
+                      side: BorderSide(color: ColorSeed.boldOrangeLight.color),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      '다음에 하기',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: onContinue,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorSeed.boldOrangeStrong.color,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shadowColor: Colors.transparent,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      '계속하기',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
