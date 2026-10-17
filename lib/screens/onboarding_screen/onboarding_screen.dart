@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_jam/main.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/widgets/confirm_dialog.dart';
 import 'package:lets_jam/widgets/session_selector.dart';
 
 /// [개발자 전용/목업] 앱 온보딩 플로우 프로토타입.
@@ -164,12 +165,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _dismissKeyboard();
     showDialog(
       context: context,
-      builder: (dialogContext) => _SkipConfirmDialog(
-        onLeave: () {
+      builder: (dialogContext) => ConfirmDialog(
+        title: '작성 중인 내용이 있어요',
+        message: '지금까지 작성한 내용은 저장되지 않아요',
+        leftText: '다음에 하기',
+        rightText: '계속하기',
+        onLeft: () {
           Navigator.of(dialogContext).pop();
           _goHome();
         },
-        onContinue: () => Navigator.of(dialogContext).pop(),
+        onRight: () => Navigator.of(dialogContext).pop(),
       ),
     );
   }
@@ -753,96 +758,6 @@ class _TextInputStepState extends State<_TextInputStep> {
         ),
         const SizedBox(height: 12),
       ],
-    );
-  }
-}
-
-/// '다음에 작성하기' 확인 알럿. 작성 중인 내용이 저장되지 않음을 안내하고,
-/// 온보딩을 떠날지('다음에 하기') 계속 작성할지('계속하기') 고르게 한다.
-class _SkipConfirmDialog extends StatelessWidget {
-  final VoidCallback onLeave;
-  final VoidCallback onContinue;
-
-  const _SkipConfirmDialog({required this.onLeave, required this.onContinue});
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.white,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 40),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '작성 중인 내용이 있어요',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: ColorSeed.organizedBlackMedium.color,
-              ),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              '지금까지 작성한 내용은 저장되지 않아요',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 15,
-                color: ColorSeed.organizedBlackLight.color,
-              ),
-            ),
-            const SizedBox(height: 28),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: onLeave,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: ColorSeed.boldOrangeStrong.color,
-                      side: BorderSide(color: ColorSeed.boldOrangeLight.color),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      '다음에 하기',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: onContinue,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorSeed.boldOrangeStrong.color,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shadowColor: Colors.transparent,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      '계속하기',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/image_upload.dart';
+import 'package:lets_jam/widgets/confirm_dialog.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:lets_jam/widgets/multiple_image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -71,6 +72,24 @@ class _PostFormScreenState extends State<PostFormScreen> {
       formData.contact.trim().isEmpty ||
       formData.regions.isEmpty;
 
+  /// 뒤로가기 시점에 작성 내용이 바뀌었는지 비교하기 위한 초기 스냅샷.
+  /// create 모드면 빈 폼, edit 모드면 원본 글의 서명이 된다.
+  late final String _initialSignature;
+
+  /// 폼 내용을 문자열로 직렬화해 변경 여부 비교에 사용한다.
+  String _signatureOf(FindSessionUploadModel d) => [
+        d.title,
+        d.sessions.map((e) => e.name).join(','),
+        d.regions.map((e) => e.name).join(','),
+        d.contact,
+        d.description,
+        d.tags.join(','),
+        d.images.join(','),
+      ].join('|');
+
+  /// 초기 상태와 비교해 작성 중인 내용이 있는지 여부.
+  bool get _isDirty => _signatureOf(formData) != _initialSignature;
+
   @override
   void initState() {
     super.initState();
@@ -82,6 +101,28 @@ class _PostFormScreenState extends State<PostFormScreen> {
       postType = widget.initialPostType ?? PostTypeEnum.findMember;
       formData = FindSessionUploadModel.init();
     }
+
+    _initialSignature = _signatureOf(formData);
+  }
+
+  /// 뒤로가기 시 작성 중인 내용이 있으면 확인 알럿을 띄운다.
+  /// '나가기'면 화면을 닫고, '계속 작성하기'면 알럿만 닫는다.
+  void _confirmLeave() {
+    FocusScope.of(context).unfocus();
+    showDialog(
+      context: context,
+      builder: (dialogContext) => ConfirmDialog(
+        title: '작성 중인 글이 있어요',
+        message: '지금까지 작성한 내용은 저장되지 않아요',
+        leftText: '나가기',
+        rightText: '계속 작성하기',
+        onLeft: () {
+          Navigator.of(dialogContext).pop();
+          Navigator.of(context).pop();
+        },
+        onRight: () => Navigator.of(dialogContext).pop(),
+      ),
+    );
   }
 
   void _selectUploadType(PostTypeEnum type) {
@@ -224,209 +265,221 @@ class _PostFormScreenState extends State<PostFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.mode == PostFormMode.create ? '글쓰기' : '수정하기',
-          style: TextStyle(
-              fontSize: 16,
-              color: ColorSeed.boldOrangeStrong.color,
-              fontWeight: FontWeight.w500),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        if (_isDirty) {
+          _confirmLeave();
+        } else {
+          Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            widget.mode == PostFormMode.create ? '글쓰기' : '수정하기',
+            style: TextStyle(
+                fontSize: 16,
+                color: ColorSeed.boldOrangeStrong.color,
+                fontWeight: FontWeight.w500),
+          ),
+          forceMaterialTransparency: true,
+          backgroundColor: ColorSeed.boldOrangeLight.color,
+          elevation: 0,
+          iconTheme:
+              IconThemeData(color: ColorSeed.boldOrangeStrong.color, size: 20),
         ),
-        forceMaterialTransparency: true,
-        backgroundColor: ColorSeed.boldOrangeLight.color,
-        elevation: 0,
-        iconTheme:
-            IconThemeData(color: ColorSeed.boldOrangeStrong.color, size: 20),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
-          child: Column(
-            children: [
-              if (widget.mode == PostFormMode.create)
-                Column(
-                  children: [
-                    UploadTypeToggler(
-                      onSelect: _selectUploadType,
-                      selectedType: postType,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                  ],
-                ),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextInput(
-                      label: '제목',
-                      focusNode: _titleFocus,
-                      initialValue: formData.title,
-                      isRequired: true,
-                      errorText: _titleErrorText,
-                      onChanged: (value) {
-                        setState(() {
-                          formData.title = value;
-                          _titleErrorText = value.characters.length > 30
-                              ? '제목은 30자까지 입력할 수 있어요'
-                              : null;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    CustomForm(
-                      key: _sessionKey,
-                      label: '세션',
-                      subTitle: postType == PostTypeEnum.findBand
-                          ? '밴드에서 하고 싶은 세션을 선택해주세요 (최대 2개)'
-                          : '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
-                      isRequired: true,
-                      content: SessionSelector(
-                        selectedSessions: formData.sessions,
-                        onChange: (session) {
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
+            child: Column(
+              children: [
+                if (widget.mode == PostFormMode.create)
+                  Column(
+                    children: [
+                      UploadTypeToggler(
+                        onSelect: _selectUploadType,
+                        selectedType: postType,
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextInput(
+                        label: '제목',
+                        focusNode: _titleFocus,
+                        initialValue: formData.title,
+                        isRequired: true,
+                        errorText: _titleErrorText,
+                        onChanged: (value) {
                           setState(() {
-                            if (formData.sessions.contains(session)) {
-                              formData.sessions.remove(session);
-                            } else {
-                              if (postType == PostTypeEnum.findBand &&
-                                  formData.sessions.length >= 2) {
-                                return;
-                              }
-                              formData.sessions.add(session);
-                            }
-                            _sessionError = false;
+                            formData.title = value;
+                            _titleErrorText = value.characters.length > 30
+                                ? '제목은 30자까지 입력할 수 있어요'
+                                : null;
                           });
                         },
                       ),
-                    ),
-                    if (_sessionError)
-                      const FormErrorMessage(message: '1개 이상 선택해주세요'),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    CustomForm(
-                      label: '지역',
-                      isRequired: true,
-                      subTitle: '합주할 수 있는 지역을 선택해 주세요 (최대 3개)',
-                      content: RegionSelector(
-                        selectedRegions: formData.regions,
-                        onChange: (region) {
-                          setState(() {
-                            if (formData.regions.contains(region)) {
-                              formData.regions.remove(region);
-                            } else {
-                              if (formData.regions.length >= 3) {
-                                _regionErrorText = '3개까지 선택할 수 있어요';
-                                return;
-                              }
-                              _regionErrorText = null;
-                              formData.regions.add(region);
-                            }
-                          });
-                        },
+                      const SizedBox(
+                        height: 30,
                       ),
-                    ),
-                    if (_regionErrorText != null)
-                      FormErrorMessage(message: _regionErrorText!),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    CustomForm(
-                      label: '해시태그',
-                      subTitle: '자유롭게 작성해주세요 (최대 5개) 예) #대학생밴드 #데이식스 #메탈',
-                      content: HashTagSelector(
-                        selectedTags: formData.tags,
-                        onSelect: (tag) {
-                          setState(() {
-                            if (formData.tags.contains(tag)) {
-                              formData.tags.remove(tag);
-                              _hashtagError = false;
-                            } else {
-                              if (formData.tags.length >= 5) {
-                                _hashtagError = true;
-                                return;
-                              }
-                              _hashtagError = false;
-                              formData.tags.add(tag);
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                    if (_hashtagError)
-                      const FormErrorMessage(message: '5개까지 입력할 수 있어요'),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    CustomForm(
-                      label: '사진',
-                      subTitle: '나를 소개할 수 있는 사진을 올려주세요 (최대 5장)',
-                      content: MultipleImagePicker(
-                          onSelect: (file) {
+                      CustomForm(
+                        key: _sessionKey,
+                        label: '세션',
+                        subTitle: postType == PostTypeEnum.findBand
+                            ? '밴드에서 하고 싶은 세션을 선택해주세요 (최대 2개)'
+                            : '밴드가 원하는 멤버의 세션을 모두 선택해주세요.',
+                        isRequired: true,
+                        content: SessionSelector(
+                          selectedSessions: formData.sessions,
+                          onChange: (session) {
                             setState(() {
-                              if (formData.images.contains(file.path)) {
-                                formData.images.remove(file.path);
+                              if (formData.sessions.contains(session)) {
+                                formData.sessions.remove(session);
                               } else {
-                                formData.images.add(file.path);
+                                if (postType == PostTypeEnum.findBand &&
+                                    formData.sessions.length >= 2) {
+                                  return;
+                                }
+                                formData.sessions.add(session);
+                              }
+                              _sessionError = false;
+                            });
+                          },
+                        ),
+                      ),
+                      if (_sessionError)
+                        const FormErrorMessage(message: '1개 이상 선택해주세요'),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      CustomForm(
+                        label: '지역',
+                        isRequired: true,
+                        subTitle: '합주할 수 있는 지역을 선택해 주세요 (최대 3개)',
+                        content: RegionSelector(
+                          selectedRegions: formData.regions,
+                          onChange: (region) {
+                            setState(() {
+                              if (formData.regions.contains(region)) {
+                                formData.regions.remove(region);
+                              } else {
+                                if (formData.regions.length >= 3) {
+                                  _regionErrorText = '3개까지 선택할 수 있어요';
+                                  return;
+                                }
+                                _regionErrorText = null;
+                                formData.regions.add(region);
                               }
                             });
                           },
-                          images: formData.images),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    CustomForm(
-                      label: '연락처',
-                      isRequired: true,
-                      subTitle: '카카오톡 오픈채팅방 링크, SNS 계정 등 공개 가능한 연락처를 적어주세요',
-                      content: TextInput(
-                        focusNode: _contactFocus,
-                        initialValue: formData.contact,
-                        errorText: _contactErrorText,
-                        onChanged: (value) {
-                          setState(() {
-                            formData.contact = value;
-                            _contactErrorText = null;
-                          });
-                        },
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    CustomForm(
-                      label: '자세한 글',
-                      subTitle: '함께 하고 싶은 음악 스타일, 연습 일정 등을 적어 주세요',
-                      content: TextInput(
-                        initialValue: formData.description,
-                        onChanged: (value) {
-                          formData.description = value;
-                        },
-                        keyboardType: TextInputType.multiline,
-                        height: 96,
+                      if (_regionErrorText != null)
+                        FormErrorMessage(message: _regionErrorText!),
+                      const SizedBox(
+                        height: 30,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    WideButton(
-                      text:
-                          widget.mode == PostFormMode.create ? '게시하기' : '수정하기',
-                      onPressed: _submit,
-                      disabled: _isSubmitDisabled,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    )
-                  ],
+                      CustomForm(
+                        label: '해시태그',
+                        subTitle: '자유롭게 작성해주세요 (최대 5개) 예) #대학생밴드 #데이식스 #메탈',
+                        content: HashTagSelector(
+                          selectedTags: formData.tags,
+                          onSelect: (tag) {
+                            setState(() {
+                              if (formData.tags.contains(tag)) {
+                                formData.tags.remove(tag);
+                                _hashtagError = false;
+                              } else {
+                                if (formData.tags.length >= 5) {
+                                  _hashtagError = true;
+                                  return;
+                                }
+                                _hashtagError = false;
+                                formData.tags.add(tag);
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      if (_hashtagError)
+                        const FormErrorMessage(message: '5개까지 입력할 수 있어요'),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      CustomForm(
+                        label: '사진',
+                        subTitle: '나를 소개할 수 있는 사진을 올려주세요 (최대 5장)',
+                        content: MultipleImagePicker(
+                            onSelect: (file) {
+                              setState(() {
+                                if (formData.images.contains(file.path)) {
+                                  formData.images.remove(file.path);
+                                } else {
+                                  formData.images.add(file.path);
+                                }
+                              });
+                            },
+                            images: formData.images),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      CustomForm(
+                        label: '연락처',
+                        isRequired: true,
+                        subTitle: '카카오톡 오픈채팅방 링크, SNS 계정 등 공개 가능한 연락처를 적어주세요',
+                        content: TextInput(
+                          focusNode: _contactFocus,
+                          initialValue: formData.contact,
+                          errorText: _contactErrorText,
+                          onChanged: (value) {
+                            setState(() {
+                              formData.contact = value;
+                              _contactErrorText = null;
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      CustomForm(
+                        label: '자세한 글',
+                        subTitle: '함께 하고 싶은 음악 스타일, 연습 일정 등을 적어 주세요',
+                        content: TextInput(
+                          initialValue: formData.description,
+                          onChanged: (value) {
+                            formData.description = value;
+                          },
+                          keyboardType: TextInputType.multiline,
+                          height: 96,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      WideButton(
+                        text: widget.mode == PostFormMode.create
+                            ? '게시하기'
+                            : '수정하기',
+                        onPressed: _submit,
+                        disabled: _isSubmitDisabled,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
