@@ -16,8 +16,7 @@ class ProfileModel {
       : id = json['id'],
         nickname = json['nickname'],
         sessions = (json['sessions'] as List<dynamic>?)
-                ?.map((e) => SessionEnum.values
-                    .firstWhere((s) => s.toString() == 'SessionEnum.$e'))
+                ?.map((e) => SessionEnum.values.byName(e as String))
                 .toList() ??
             [],
         contact = json['contact'] ?? '',

@@ -42,8 +42,12 @@ class PostModel {
       userId: json['user_id'],
       postType: _postTypeFromString(json['post_type']),
       title: json['title'],
-      sessions: _sesssionsFromJson(json['sessions']),
-      regions: _regionsFromJson(json['regions']),
+      sessions: (json['sessions'] as List<dynamic>)
+          .map((session) => SessionEnum.values.byName(session as String))
+          .toList(),
+      regions: (json['regions'] as List<dynamic>)
+          .map((regionName) => District.fromDisplayName(regionName as String))
+          .toList(),
       contact: json['contact'],
       description: json['description'],
       tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
@@ -55,22 +59,6 @@ class PostModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'userId': userId,
-      'postType': postType,
-      'title': title,
-      'sessions': sessions,
-      'regions': regions,
-      'contact': contact,
-      'description': description,
-      'tags': tags,
-      'images': images,
-      'replyCount': replyCount
-    };
-  }
-
   static PostTypeEnum _postTypeFromString(String postType) {
     switch (postType) {
       case 'findBand':
@@ -80,39 +68,5 @@ class PostModel {
       default:
         throw Exception('Invalid postType value: $postType');
     }
-  }
-
-  static List<SessionEnum> _sesssionsFromJson(List<dynamic> sessionsJson) {
-    return sessionsJson
-        .map((session) => _sessionFromString(session as String))
-        .toList();
-  }
-
-  static SessionEnum _sessionFromString(String session) {
-    switch (session) {
-      case 'vocalM':
-        return SessionEnum.vocalM;
-      case 'vocalF':
-        return SessionEnum.vocalF;
-      case 'drum':
-        return SessionEnum.drum;
-      case 'guitar':
-        return SessionEnum.guitar;
-      case 'bass':
-        return SessionEnum.bass;
-      case 'keyboard':
-        return SessionEnum.keyboard;
-      case 'etc':
-        return SessionEnum.etc;
-      default:
-        throw Exception('Invalid session value: $session');
-    }
-  }
-
-  static List<District> _regionsFromJson(List<dynamic> regionsJson) {
-    return (regionsJson)
-        .map((regionName) => District.values.firstWhere(
-            (district) => district.displayName == regionName as String))
-        .toList();
   }
 }

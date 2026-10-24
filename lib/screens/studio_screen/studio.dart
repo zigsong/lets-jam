@@ -50,7 +50,7 @@ class Studio {
       id: map['id'] as String,
       name: (map['studio_name'] as String?)?.trim() ?? '',
       regionLabel: (region == null || region.isEmpty) ? null : region,
-      district: region == null ? null : _byLabel[region],
+      district: region == null ? null : District.tryFromDisplayName(region),
       roomCount: rooms.length,
       minPrice: prices.isEmpty ? null : prices.reduce((a, b) => a < b ? a : b),
       photos: photos
@@ -60,9 +60,4 @@ class Studio {
           .toList(),
     );
   }
-
-  /// displayName -> District 역방향 조회 테이블.
-  static final Map<String, District> _byLabel = {
-    for (final d in District.values) d.displayName: d,
-  };
 }

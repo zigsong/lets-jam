@@ -37,6 +37,24 @@ enum District {
   final String displayName;
   final Province province;
 
+  // displayName -> District 역방향 조회 테이블.
+  static final Map<String, District> _byDisplayName = {
+    for (final d in District.values) d.displayName: d,
+  };
+
+  // displayName으로 District 조회. 일치하는 값이 없으면 null.
+  static District? tryFromDisplayName(String displayName) =>
+      _byDisplayName[displayName];
+
+  // displayName으로 District 조회. 일치하는 값이 없으면 예외.
+  static District fromDisplayName(String displayName) {
+    final district = _byDisplayName[displayName];
+    if (district == null) {
+      throw ArgumentError('Invalid region displayName: $displayName');
+    }
+    return district;
+  }
+
   // "전체" 옵션인지 확인
   bool get isAll => name.endsWith('All');
 
