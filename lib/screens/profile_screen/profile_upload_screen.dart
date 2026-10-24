@@ -14,6 +14,7 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/utils/image_upload.dart';
 import 'package:lets_jam/utils/image_utils.dart';
+import 'package:lets_jam/utils/nickname_validator.dart';
 import 'package:lets_jam/widgets/custom_form.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_jam/utils/photo_permission_dialog.dart';
@@ -125,11 +126,16 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
 
     _nicknameDebounce?.cancel();
     _nicknameDebounce = Timer(const Duration(milliseconds: 500), () async {
-      final isDuplicate = await _isNicknameDuplicate(value);
+      final isDuplicate = await NicknameValidator.isDuplicate(
+        supabase,
+        value,
+        excludeId: isEditMode ? widget.profile!.id : null,
+      );
       if (!mounted) return;
       setState(() {
         _nicknameDuplicated = isDuplicate;
-        _nicknameErrorText = isDuplicate ? '사용중인 닉네임이에요' : null;
+        _nicknameErrorText =
+            isDuplicate ? NicknameValidator.duplicateMessage : null;
       });
     });
   }
@@ -156,18 +162,6 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
     }
   }
 
-  Future<bool> _isNicknameDuplicate(String nickname) async {
-    var query =
-        supabase.from('profiles').select('id').eq('nickname', nickname.trim());
-
-    if (isEditMode) {
-      query = query.neq('id', widget.profile!.id);
-    }
-
-    final result = await query;
-    return (result as List).isNotEmpty;
-  }
-
   Future<void> _submit() async {
     if (_isSubmitting) return;
 
@@ -183,7 +177,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       _nicknameErrorText = '닉네임을 입력해주세요';
       hasError = true;
     } else if (_nicknameDuplicated) {
-      _nicknameErrorText = '사용중인 닉네임이에요';
+      _nicknameErrorText = NicknameValidator.duplicateMessage;
       hasError = true;
     }
     if (formData.sessions.isEmpty) {

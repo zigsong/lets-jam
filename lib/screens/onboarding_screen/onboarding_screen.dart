@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lets_jam/main.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
+import 'package:lets_jam/utils/nickname_validator.dart';
 import 'package:lets_jam/widgets/confirm_dialog.dart';
 import 'package:lets_jam/widgets/session_selector.dart';
 
@@ -101,39 +102,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
-  /// 닉네임 허용 문자: 영어, 한글(자모 포함), 숫자, 특수문자(_ - + =).
-  static final RegExp _nicknameAllowed =
-      RegExp(r'^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ_+=\-]+$');
-
-  /// 닉네임 로컬 검증. 우선순위대로 첫 번째 위반 메시지를 반환, 없으면 null.
-  /// (8글자 초과는 입력 단계에서 잘라내므로 여기선 다루지 않는다.
-  ///  중복 검사도 네트워크가 필요해 별도로 처리한다.)
-  String? _localNicknameError(String value) {
-    final trimmed = value.trim();
-    if (trimmed.isEmpty) return '입력이 필요해요';
-    if (value.contains(RegExp(r'\s'))) return '띄어쓰기 없이 입력해주세요';
-    if (trimmed.length < 2) return '2글자 이상 입력해 주세요';
-    if (!_nicknameAllowed.hasMatch(trimmed)) {
-      return '영어, 한글, 숫자, 특수문자(_, -, +, =)만 입력할 수 있어요';
-    }
-    return null;
-  }
-
-  /// 닉네임 입력 변경. 8글자를 넘기면 입력을 잘라 하드 제한하고
-  /// '8글자까지 입력할 수 있어요' 안내를 띄운다(확인은 막지 않음).
-  /// 8글자 이하면 안내를 지우고 로컬 검증→중복 검사를 진행한다.
+  /// 닉네임 입력 변경. 최대 글자 수를 넘기면 입력을 잘라 하드 제한하고
+  /// 안내를 띄운다(확인은 막지 않음).
+  /// 제한 이하면 안내를 지우고 로컬 검증→중복 검사를 진행한다.
   void _onNicknameChanged(String value) {
     if (_suppressNicknameListener) return;
 
-    if (value.length > 8) {
-      final capped = value.substring(0, 8);
+    if (value.length > NicknameValidator.maxLength) {
+      final capped = value.substring(0, NicknameValidator.maxLength);
       _suppressNicknameListener = true;
       _nicknameController.value = TextEditingValue(
         text: capped,
         selection: TextSelection.collapsed(offset: capped.length),
       );
       _suppressNicknameListener = false;
-      setState(() => _nicknameLengthNotice = '8글자까지 입력할 수 있어요');
+      setState(() => _nicknameLengthNotice =
+          '${NicknameValidator.maxLength}글자까지 입력할 수 있어요');
       _validateNickname(capped);
       return;
     }
@@ -146,7 +130,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _validateNickname(String value) {
     _nicknameDebounce?.cancel();
 
-    final localError = _localNicknameError(value);
+    final localError = NicknameValidator.localError(value);
     if (localError != null) {
       setState(() => _nicknameErrorText = localError);
       return;
@@ -154,20 +138,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     setState(() => _nicknameErrorText = null);
     _nicknameDebounce = Timer(const Duration(milliseconds: 500), () async {
-      final isDuplicate = await _isNicknameDuplicate(value);
+      final isDuplicate = await NicknameValidator.isDuplicate(
+        Supabase.instance.client,
+        value,
+      );
       if (!mounted) return;
       setState(() {
-        _nicknameErrorText = isDuplicate ? '사용 중인 닉네임 이에요.' : null;
+        _nicknameErrorText =
+            isDuplicate ? NicknameValidator.duplicateMessage : null;
       });
     });
-  }
-
-  Future<bool> _isNicknameDuplicate(String nickname) async {
-    final result = await Supabase.instance.client
-        .from('profiles')
-        .select('id')
-        .eq('nickname', nickname.trim());
-    return (result as List).isNotEmpty;
   }
 
   /// 스텝 전환 전 키보드를 내린다. (텍스트 입력 스텝에서 포커스가 남아
