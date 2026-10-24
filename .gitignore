@@ -56,3 +56,7 @@ ios/build/
 
 # MCP config (may contain tokens)
 .mcp.json
+
+# Claude Code 로컬 아티팩트
+.claude/.cc-writes/
+**/.claude/.cc-writes/
