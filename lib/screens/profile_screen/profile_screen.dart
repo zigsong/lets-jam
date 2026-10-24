@@ -14,17 +14,9 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/widgets/modal.dart';
 import 'package:lets_jam/widgets/profile_avatar.dart';
+import 'package:lets_jam/widgets/session_selector.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-Map<SessionEnum, String> sessionImagesActive = {
-  SessionEnum.vocalM: 'assets/images/session_selector/vocal_m_active.png',
-  SessionEnum.vocalF: 'assets/images/session_selector/vocal_fm_active.png',
-  SessionEnum.drum: 'assets/images/session_selector/drum_active.png',
-  SessionEnum.keyboard: 'assets/images/session_selector/keyboard_active.png',
-  SessionEnum.bass: 'assets/images/session_selector/bass_active.png',
-  SessionEnum.guitar: 'assets/images/session_selector/guitar_active.png',
-};
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, this.profileId});
