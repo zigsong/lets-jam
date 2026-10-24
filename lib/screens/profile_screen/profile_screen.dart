@@ -124,12 +124,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _deleteProfile(String id) async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
     try {
       await supabase.from('profiles').delete().eq('id', id);
       await sessionController.loadUser();
 
       scaffoldMessenger.showSnackBar(customSnackbar("프로필을 삭제했어요"));
-      Navigator.pushReplacement(context,
+      navigator.pushReplacement(
           MaterialPageRoute(builder: (context) => const DefaultNavigation()));
     } catch (error) {
       debugPrint('프로필 삭제 에러 : $error');
