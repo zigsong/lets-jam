@@ -21,7 +21,7 @@ class UtilButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 11.5, vertical: 6.5),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: backgroundColor,
           border: Border.all(
@@ -30,7 +30,12 @@ class UtilButton extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: TextStyle(color: color ?? ColorSeed.joyfulYellowLight.color),
+          style: TextStyle(
+            color: color ?? ColorSeed.joyfulYellowLight.color,
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            height: 1,
+          ),
         ),
       ),
     );

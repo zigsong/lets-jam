@@ -292,7 +292,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                   end: Alignment.bottomCenter,
                                   colors: [
                                     ColorSeed.organizedBlackMedium.color
-                                        .withOpacity(0.5),
+                                        .withOpacity(0.8),
                                     ColorSeed.organizedBlackMedium.color
                                         .withOpacity(0),
                                   ],
@@ -323,16 +323,22 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                         children: [
                                           UtilButton(
                                               text: '수정',
-                                              backgroundColor: ColorSeed
-                                                  .organizedBlackLight.color
-                                                  .withOpacity(0.5),
-                                              borderColor: ColorSeed
-                                                  .meticulousGrayLight.color,
+                                              backgroundColor:
+                                                  _scrolledPastThreshold
+                                                      ? Colors.transparent
+                                                      : ColorSeed
+                                                          .meticulousGrayMedium
+                                                          .color
+                                                          .withOpacity(0.5),
+                                              borderColor: _scrolledPastThreshold
+                                                  ? ColorSeed
+                                                      .meticulousGrayMedium.color
+                                                  : Colors.white,
                                               color: _scrolledPastThreshold
                                                   ? ColorSeed
                                                       .organizedBlackMedium
                                                       .color
-                                                  : null,
+                                                  : Colors.white,
                                               onPressed: () async {
                                                 final edited = await pushScreen(
                                                   context,
@@ -348,16 +354,22 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                           ),
                                           UtilButton(
                                               text: '삭제',
-                                              backgroundColor: ColorSeed
-                                                  .organizedBlackLight.color
-                                                  .withOpacity(0.5),
-                                              borderColor: ColorSeed
-                                                  .meticulousGrayLight.color,
+                                              backgroundColor:
+                                                  _scrolledPastThreshold
+                                                      ? Colors.transparent
+                                                      : ColorSeed
+                                                          .meticulousGrayMedium
+                                                          .color
+                                                          .withOpacity(0.5),
+                                              borderColor: _scrolledPastThreshold
+                                                  ? ColorSeed
+                                                      .meticulousGrayMedium.color
+                                                  : Colors.white,
                                               color: _scrolledPastThreshold
                                                   ? ColorSeed
                                                       .organizedBlackMedium
                                                       .color
-                                                  : null,
+                                                  : Colors.white,
                                               onPressed: () {
                                                 showModal(
                                                   context: context,
