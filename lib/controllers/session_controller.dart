@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:lets_jam/controllers/push_notification_controller.dart';
 import 'package:lets_jam/models/profile_model.dart';
 import 'package:lets_jam/screens/terms_agreement_screen.dart';
 import 'package:lets_jam/utils/analytics.dart';
@@ -194,6 +195,11 @@ class SessionController extends GetxController {
 
   Future<void> signOut() async {
     try {
+      // auth.signOut 이후에는 RLS로 토큰 삭제가 막히므로 먼저 제거한다.
+      if (Get.isRegistered<PushNotificationController>()) {
+        await Get.find<PushNotificationController>().removeToken();
+      }
+
       await supabase.auth.signOut();
 
       user.value = null;

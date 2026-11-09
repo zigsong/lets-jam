@@ -21,11 +21,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.2</string>
+	<string>1.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>16</string>
+	<string>25</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 	<dict>
@@ -89,5 +89,9 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>프로필 사진, 배경 이미지, 밴드 모집 게시글 사진을 선택하고 업로드하기 위해 사진 라이브러리에 접근합니다. 선택한 사진은 JAM 서비스 내 프로필 및 게시글 표시에만 사용됩니다.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>
