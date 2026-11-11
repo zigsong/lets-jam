@@ -73,7 +73,7 @@ async function sendToToken(
   title: string,
   body: string,
   data: Record<string, string>,
-): Promise<{ invalid: boolean }> {
+): Promise<{ invalid: boolean; status: number; detail: string }> {
   const res = await fetch(
     `https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`,
     {
@@ -95,16 +95,18 @@ async function sendToToken(
     },
   );
 
-  if (res.ok) return { invalid: false };
+  const text = await res.text();
+  if (res.ok) return { invalid: false, status: res.status, detail: text.slice(0, 200) };
 
-  const err = await res.json().catch(() => ({}));
-  const status = err?.error?.details?.[0]?.errorCode ?? err?.error?.status;
-  // 등록 해제/무효 토큰은 정리 대상
+  let status: string | undefined;
+  try {
+    const err = JSON.parse(text);
+    status = err?.error?.details?.[0]?.errorCode ?? err?.error?.status;
+  } catch (_) { /* noop */ }
   const invalid = res.status === 404 ||
     status === "UNREGISTERED" ||
     status === "INVALID_ARGUMENT";
-  console.error(`FCM 발송 실패 (${res.status}): ${JSON.stringify(err)}`);
-  return { invalid };
+  return { invalid, status: res.status, detail: text.slice(0, 300) };
 }
 
 Deno.serve(async (req) => {
@@ -159,16 +161,18 @@ Deno.serve(async (req) => {
 
     const accessToken = await getAccessToken();
     const invalidTokens: string[] = [];
+    const results: Array<{ status: number; detail: string }> = [];
     await Promise.all(
       devices.map(async (d) => {
-        const { invalid } = await sendToToken(
+        const r = await sendToToken(
           accessToken,
           d.fcm_token,
           title,
           body || "새 댓글이 달렸어요",
           data,
         );
-        if (invalid) invalidTokens.push(d.fcm_token);
+        results.push({ status: r.status, detail: r.detail });
+        if (r.invalid) invalidTokens.push(d.fcm_token);
       }),
     );
 
@@ -181,7 +185,10 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ sent: devices.length - invalidTokens.length }),
+      JSON.stringify({
+        sent: devices.length - invalidTokens.length,
+        results,
+      }),
       { headers: { "Content-Type": "application/json" } },
     );
   } catch (e) {

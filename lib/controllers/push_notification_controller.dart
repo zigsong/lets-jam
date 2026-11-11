@@ -79,7 +79,7 @@ class PushNotificationController extends GetxController {
           'user_id': userId,
           'fcm_token': token,
           'platform': 'ios',
-          'updated_at': DateTime.now().toIso8601String(),
+          'updated_at': DateTime.now().toUtc().toIso8601String(),
         },
         onConflict: 'fcm_token',
       );
