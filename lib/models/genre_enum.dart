@@ -1,4 +1,5 @@
-/// 온보딩에서만 쓰는 밴드 취향(장르). 아직 프로필 모델/DB에는 없는 목업 개념이다.
+/// 밴드 취향(장르) 도메인 enum.
+/// profiles.genres(text[]) 컬럼에 `.name` 문자열로 저장된다.
 enum Genre {
   rock,
   pop,
@@ -13,6 +14,7 @@ enum Genre {
   etc
 }
 
+/// 사용자 노출 라벨 (enum과 분리해 관리)
 const Map<Genre, String> genreLabels = {
   Genre.rock: '록',
   Genre.pop: 'POP',

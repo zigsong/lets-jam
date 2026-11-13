@@ -1,3 +1,4 @@
+import 'package:lets_jam/models/genre_enum.dart';
 import 'package:lets_jam/models/session_enum.dart';
 
 class ProfileModel {
@@ -8,6 +9,7 @@ class ProfileModel {
   late String contact;
 
   /// Optional Fields
+  late List<Genre> genres = [];
   late String? bio;
   late String? profileImage;
   late List<String>? backgroundImages = [];
@@ -19,6 +21,10 @@ class ProfileModel {
                 ?.map((e) => SessionEnum.values.byName(e as String))
                 .toList() ??
             [],
+        genres = (json['genres'] as List<dynamic>?)
+                ?.map((e) => Genre.values.byName(e as String))
+                .toList() ??
+            [],
         contact = json['contact'] ?? '',
         profileImage = json['profile_image'] as String?,
         backgroundImages = (json['background_images'] as List<dynamic>?)
@@ -26,5 +32,4 @@ class ProfileModel {
                 .toList() ??
             [],
         bio = json['bio'];
-
 }

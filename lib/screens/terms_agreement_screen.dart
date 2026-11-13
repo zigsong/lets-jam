@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lets_jam/screens/welcome_screen.dart';
+import 'package:lets_jam/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:lets_jam/widgets/terms_bottom_sheet.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -35,8 +35,8 @@ class _TermsAgreementScreenState extends State<TermsAgreementScreen> {
           await Supabase.instance.client.from('user_consents').upsert({
             'user_id': widget.user.id,
           });
-          // 약관 동의 후 회원가입 완료 화면으로 이동
-          Get.off(() => WelcomeScreen(user: widget.user));
+          // 약관 동의 후 온보딩(프로필 작성)으로 이동
+          Get.off(() => const OnboardingScreen());
         },
         onClose: () {
           Navigator.pop(context);

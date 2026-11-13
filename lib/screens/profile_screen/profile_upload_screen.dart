@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' hide TextInput;
 import 'package:get/get.dart';
+import 'package:lets_jam/models/genre_enum.dart';
 import 'package:lets_jam/models/profile_upload_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lets_jam/models/profile_model.dart';
@@ -149,6 +150,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       formData = ProfileUploadModel.init()
         ..nickname = p.nickname
         ..sessions = List.from(p.sessions)
+        ..genres = List.from(p.genres)
         ..contact = p.contact
         ..bio = p.bio ?? ''
         ..profileImage =
@@ -252,6 +254,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
       'id': userId,
       'nickname': formData.nickname,
       'sessions': formData.sessions.map((e) => e.name).toList(),
+      'genres': formData.genres.map((e) => e.name).toList(),
       'contact': formData.contact,
       'bio': formData.bio,
       'profile_image': profileImageUrl,
@@ -272,6 +275,7 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
     await supabase.from('profiles').update({
       'nickname': formData.nickname,
       'sessions': formData.sessions.map((e) => e.name).toList(),
+      'genres': formData.genres.map((e) => e.name).toList(),
       'contact': formData.contact,
       'bio': formData.bio,
       'profile_image': profileImageUrl,
@@ -437,6 +441,58 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
                         ),
                         if (_sessionError)
                           const FormErrorMessage(message: '1개 이상 선택해주세요'),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        CustomForm(
+                          label: '장르',
+                          subTitle: '좋아하는 장르를 모두 선택해주세요',
+                          content: Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: Genre.values.map((genre) {
+                              final selected = formData.genres.contains(genre);
+                              return GestureDetector(
+                                onTap: () => setState(() {
+                                  if (selected) {
+                                    formData.genres.remove(genre);
+                                  } else {
+                                    formData.genres.add(genre);
+                                  }
+                                }),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 150),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 18, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: selected
+                                        ? ColorSeed.boldOrangeStrong.color
+                                        : Colors.white,
+                                    border: Border.all(
+                                      color: selected
+                                          ? ColorSeed.boldOrangeStrong.color
+                                          : ColorSeed.meticulousGrayLight.color,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    genreLabels[genre]!,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: selected
+                                          ? FontWeight.w700
+                                          : FontWeight.w500,
+                                      color: selected
+                                          ? Colors.white
+                                          : ColorSeed.organizedBlackMedium.color,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                         const SizedBox(
                           height: 30,
                         ),

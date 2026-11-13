@@ -19,6 +19,7 @@ import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
@@ -168,6 +169,8 @@ class _MyAppState extends State<MyApp> {
     // 카카오/Supabase 로그인 콜백
     if (uri.host == 'login-callback') {
       await Supabase.instance.client.auth.getSessionFromUrl(uri);
+      // 인앱 Safari View Controller를 닫는다.
+      await closeInAppWebView();
       return;
     }
 

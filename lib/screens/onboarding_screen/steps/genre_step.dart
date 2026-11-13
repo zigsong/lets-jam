@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lets_jam/screens/onboarding_screen/steps/onboarding_genre.dart';
+import 'package:lets_jam/models/genre_enum.dart';
 import 'package:lets_jam/screens/onboarding_screen/steps/step_footer.dart';
 import 'package:lets_jam/screens/onboarding_screen/steps/step_title.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';

@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/main.dart';
 import 'package:lets_jam/models/session_enum.dart';
+import 'package:lets_jam/utils/analytics.dart';
+import 'package:lets_jam/utils/custom_snackbar.dart';
 import 'package:lets_jam/screens/onboarding_screen/steps/completion_overlay.dart';
 import 'package:lets_jam/screens/onboarding_screen/steps/genre_step.dart';
-import 'package:lets_jam/screens/onboarding_screen/steps/onboarding_genre.dart';
+import 'package:lets_jam/models/genre_enum.dart';
 import 'package:lets_jam/screens/onboarding_screen/steps/session_step.dart';
 import 'package:lets_jam/screens/onboarding_screen/steps/text_input_step.dart';
 import 'package:lets_jam/screens/onboarding_screen/steps/welcome_step.dart';
@@ -15,16 +19,15 @@ import 'package:lets_jam/utils/color_seed_enum.dart';
 import 'package:lets_jam/utils/nickname_validator.dart';
 import 'package:lets_jam/widgets/confirm_dialog.dart';
 
-/// [개발자 전용/목업] 앱 온보딩 플로우 프로토타입.
+/// 로그인(약관 동의) 직후 진입하는 프로필 작성 온보딩 플로우.
 ///
-/// 순수 UI 목업이라 어떤 값도 Supabase에 저장하지 않는다.
-/// 설정 > JAM 개발자 테스트 > '앱 온보딩'에서 진입한다.
-///
-/// - '다음에 작성할게요'를 누르면 어느 스텝에서든 온보딩을 종료하고 홈('/')으로 간다.
+/// - 환영·세션·장르·닉네임·연락처·자기소개 6개 스텝.
+/// - 마지막(자기소개) 스텝에서 '확인'하면 입력값을 `profiles`에 저장하고
+///   세션을 갱신한 뒤, 홈 위에 '프로필 완성' 오버레이를 띄우고 홈으로 이동한다.
+/// - '다음에 작성하기'를 누르면 저장하지 않고 홈으로 간다(프로필 없이 둘러보기).
 /// - 이전 스텝으로 돌아갈 수 있고, 1번에서 더 뒤로 가면 온보딩을 종료한다.
-/// - 마지막(자기소개) 스텝에서 '확인'하면 홈 위에 '프로필 완성' 딤드 오버레이를
-///   띄우고, 'JAM 시작하기'를 누르면 오버레이를 닫으며 홈으로 이동한다.
 ///
+/// 주의: 장르(genre)는 `profiles`에 대응 컬럼이 없어 아직 저장되지 않는다.
 /// 각 스텝 UI는 `steps/` 하위 위젯으로 분리돼 있다.
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -39,7 +42,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   int _step = 0;
 
-  // 목업 입력값 (저장하지 않음)
+  /// 프로필 저장 중복 호출 방지 플래그.
+  bool _isSaving = false;
+
+  // 온보딩 입력값
   final Set<SessionEnum> _sessions = {};
   final Set<Genre> _genres = {};
   final TextEditingController _nicknameController = TextEditingController();
@@ -182,10 +188,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  /// 마지막 스텝(자기소개) '확인' → 완료 오버레이를 띄우고,
-  /// 'JAM 시작하기'를 누르면 온보딩 등 쌓인 화면을 모두 닫고 홈 탭으로 이동한다.
-  void _finishToHome() {
+  /// 마지막 스텝(자기소개) '확인' → 입력값을 profiles에 저장하고,
+  /// 완료 오버레이를 띄운 뒤 'JAM 시작하기'를 누르면 홈 탭으로 이동한다.
+  Future<void> _finishToHome() async {
+    if (_isSaving) return;
     _dismissKeyboard();
+    setState(() => _isSaving = true);
+
+    try {
+      final supabase = Supabase.instance.client;
+      final userId = supabase.auth.currentUser!.id;
+      final contact = _contactController.text.trim();
+      final bio = _bioController.text.trim();
+
+      await supabase.from('profiles').upsert({
+        'id': userId,
+        'nickname': _nicknameController.text.trim(),
+        'sessions': _sessions.map((e) => e.name).toList(),
+        'genres': _genres.map((e) => e.name).toList(),
+        'contact': contact,
+        'bio': bio.isEmpty ? null : bio,
+      });
+
+      // 세션 컨트롤러에 새 프로필을 반영한다.
+      await Get.find<SessionController>().loadUser();
+      Analytics.writeProfile();
+    } catch (e) {
+      debugPrint('온보딩 프로필 저장 에러: $e');
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        customSnackbar('프로필 저장에 실패했어요. 다시 시도해 주세요.'),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    setState(() => _isSaving = false);
+
     final overlay = navigatorKey.currentState?.overlay;
     if (overlay == null) return;
     late OverlayEntry entry;
@@ -300,7 +340,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           description: '카카오톡 오픈채팅방, SNS 계정 등\n공개 가능한 연락처로 작성해 주세요.',
           hintText: '연락처',
           controller: _contactController,
-          allowEmptyConfirm: true,
           onConfirm: _next,
           onSkip: _confirmSkip,
         );

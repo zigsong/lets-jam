@@ -148,6 +148,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
               WideButton(
                 text: 'JAM 시작하기',
                 onPressed: _canProceed ? widget.onAgree : null,
+                showShadow: false,
               ),
             ],
           ),

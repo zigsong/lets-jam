@@ -133,9 +133,10 @@ class SessionController extends GetxController {
 
   Future<void> _signInWithOAuth(OAuthProvider provider) async {
     try {
+      // 외부 브라우저 대신 인앱 Safari View Controller로 연다. (App Store 심사 4.0 대응)
       await supabase.auth.signInWithOAuth(
         provider,
-        authScreenLaunchMode: LaunchMode.externalApplication,
+        authScreenLaunchMode: LaunchMode.inAppBrowserView,
         redirectTo: 'io.supabase.letsjam://login-callback',
       );
     } on PlatformException catch (err) {

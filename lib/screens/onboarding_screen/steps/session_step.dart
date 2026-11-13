@@ -57,7 +57,11 @@ class SessionStep extends StatelessWidget {
             ),
           ),
         ),
-        StepFooter(onConfirm: onConfirm, onSkip: onSkip),
+        StepFooter(
+          onConfirm: onConfirm,
+          onSkip: onSkip,
+          enabled: selected.isNotEmpty,
+        ),
         const SizedBox(height: 12),
       ],
     );

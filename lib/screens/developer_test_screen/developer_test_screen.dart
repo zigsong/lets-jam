@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/notification_controller.dart';
-import 'package:lets_jam/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
 /// [개발자 전용] isDev 유저만 볼 수 있는 미배포 기능을
@@ -38,32 +37,6 @@ class DeveloperTestScreen extends StatelessWidget {
               ),
             ),
           ),
-          ListTile(
-            title: const Text(
-              '앱 온보딩',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Text(
-                '처음 설치 온보딩 플로우를 미리 확인해요',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: ColorSeed.meticulousGrayMedium.color,
-                ),
-              ),
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              size: 12,
-              color: ColorSeed.organizedBlackLight.color,
-            ),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const OnboardingScreen(),
-              ),
-            ),
-          ),
           Obx(
             () => SwitchListTile(
               title: const Text(
@@ -80,7 +53,7 @@ class DeveloperTestScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              activeColor: ColorSeed.boldOrangeMedium.color,
+              activeThumbColor: ColorSeed.boldOrangeMedium.color,
               value: notificationController.enabled.value,
               onChanged: notificationController.setEnabled,
             ),
