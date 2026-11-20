@@ -51,13 +51,20 @@ class StepFooter extends StatelessWidget {
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            child: Text(
-              '다음에 작성하기',
-              style: TextStyle(
-                fontSize: 14,
-                color: ColorSeed.meticulousGrayMedium.color,
-                decoration: TextDecoration.underline,
-                decorationColor: ColorSeed.meticulousGrayMedium.color,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: ColorSeed.meticulousGrayMedium.color,
+                  ),
+                ),
+              ),
+              child: Text(
+                '다음에 작성하기',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: ColorSeed.meticulousGrayMedium.color,
+                ),
               ),
             ),
           ),
