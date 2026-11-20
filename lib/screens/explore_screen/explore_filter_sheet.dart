@@ -23,7 +23,7 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final sheet = Container(
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
           color: Colors.white,
@@ -84,5 +84,8 @@ class _ExploreFilterSheetState extends State<ExploreFilterSheet> {
         ],
       ),
     );
+    return widget.type == FilterEnum.region
+        ? SingleChildScrollView(primary: false, child: sheet)
+        : sheet;
   }
 }
