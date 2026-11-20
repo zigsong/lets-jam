@@ -159,10 +159,8 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: BottomAppBarItem(
                             isActive: _selectedIndex == 3,
-                            defaultIcon: Image.asset(
-                                'assets/icons/bottom_nav/add_default.png'),
-                            activeIcon: Image.asset(
-                                'assets/icons/bottom_nav/add_active.png'),
+                            defaultIcon: const SizedBox.shrink(),
+                            activeIcon: const SizedBox.shrink(),
                             label: '글쓰기',
                             onPressed: () {}),
                       ),
