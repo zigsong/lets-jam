@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lets_jam/controllers/session_controller.dart';
 import 'package:lets_jam/models/notification_model.dart';
@@ -6,8 +9,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class NotificationController extends GetxController
     with WidgetsBindingObserver {
+  static const _badgeChannel = MethodChannel('com.chunkybuddy.letsjam/badge');
+
   final supabase = Supabase.instance.client;
   final SessionController sessionController = Get.find<SessionController>();
+  int _fetchRevision = 0;
+  Future<void> _badgeUpdate = Future.value();
 
   /// 안 읽은 알림 목록 (읽으면 목록에서 제거된다)
   final notifications = <NotificationModel>[].obs;
@@ -22,11 +29,7 @@ class NotificationController extends GetxController
   /// 댓글 알림 기능을 켜고 끈다. 켜면 즉시 조회, 끄면 목록을 비운다.
   void setEnabled(bool value) {
     enabled.value = value;
-    if (value) {
-      fetchNotifications();
-    } else {
-      notifications.clear();
-    }
+    fetchNotifications();
   }
 
   @override
@@ -53,14 +56,11 @@ class NotificationController extends GetxController
   }
 
   Future<void> fetchNotifications() async {
-    if (!enabled.value) {
-      notifications.clear();
-      return;
-    }
-
+    final revision = ++_fetchRevision;
     final userId = sessionController.user.value?.id;
-    if (userId == null) {
+    if (!enabled.value || userId == null) {
       notifications.clear();
+      await _syncBadge();
       return;
     }
 
@@ -72,9 +72,12 @@ class NotificationController extends GetxController
           .eq('is_read', false)
           .order('created_at', ascending: false);
 
+      if (revision != _fetchRevision) return;
+
       notifications.value = (rows as List)
           .map((e) => NotificationModel.fromJson(e as Map<String, dynamic>))
           .toList();
+      await _syncBadge();
     } catch (e) {
       debugPrint('알림 조회 에러: $e');
     }
@@ -82,13 +85,33 @@ class NotificationController extends GetxController
 
   /// 알림을 읽음 처리하고 목록에서 제거한다.
   Future<void> markAsRead(NotificationModel notification) async {
+    final userId = sessionController.user.value?.id;
     try {
       await supabase
           .from('notifications')
           .update({'is_read': true}).eq('id', notification.id);
+      if (!enabled.value || userId != sessionController.user.value?.id) return;
+
+      // 읽음 처리 전에 시작한 조회가 이전 알림을 다시 표시하지 않도록 한다.
+      _fetchRevision++;
       notifications.removeWhere((e) => e.id == notification.id);
+      await _syncBadge();
+      await fetchNotifications();
     } catch (e) {
       debugPrint('알림 읽음 처리 에러: $e');
     }
+  }
+
+  Future<void> _syncBadge() {
+    if (!Platform.isIOS) return Future.value();
+
+    _badgeUpdate = _badgeUpdate.then((_) async {
+      try {
+        await _badgeChannel.invokeMethod<void>('setBadgeCount', unreadCount);
+      } catch (e) {
+        debugPrint('앱 아이콘 배지 갱신 에러: $e');
+      }
+    });
+    return _badgeUpdate;
   }
 }
