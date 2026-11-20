@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,6 +29,9 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  static const _profileShareChannel =
+      MethodChannel('com.chunkybuddy.letsjam/profile_share');
+
   final SessionController sessionController = Get.find<SessionController>();
   final supabase = Supabase.instance.client;
 
@@ -40,6 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _targetUser?.id == sessionController.user.value?.id;
 
   List<Map<String, dynamic>> _posts = [];
+  bool _isSharingProfile = false;
 
   @override
   void initState() {
@@ -82,21 +87,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void onClickShareCourtUrl() async {
+  Future<void> _shareProfile() async {
+    final currentProfile = profile;
+    if (_isSharingProfile ||
+        currentProfile == null ||
+        (widget.profileId != null && widget.profileId != currentProfile.id)) {
+      return;
+    }
+
+    _isSharingProfile = true;
     try {
-      final url = 'https://letsjam.work/profiles/${profile?.id}';
+      final url = Uri.https('letsjam.work', '/profiles/${currentProfile.id}');
+      final title = '${currentProfile.nickname}님의 프로필 | JAM';
       final box = context.findRenderObject() as RenderBox;
-      final result = await SharePlus.instance.share(ShareParams(
-          uri: Uri.parse(url),
-          subject: 'JAM! 째미난 밴드 라이프 커뮤니티 | ${profile?.nickname}님의 프로필',
-          sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size));
-      if (result.status == ShareResultStatus.success) {
-        Analytics.share('profile', profile?.id ?? '');
+      final origin = box.localToGlobal(Offset.zero) & box.size;
+      final bool shared;
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+        shared = await _profileShareChannel.invokeMethod<bool>('shareProfile', {
+              'url': url.toString(),
+              'title': title,
+              'x': origin.left,
+              'y': origin.top,
+              'width': origin.width,
+              'height': origin.height,
+            }) ??
+            false;
+      } else {
+        final result = await SharePlus.instance.share(ShareParams(
+          uri: url,
+          subject: title,
+          sharePositionOrigin: origin,
+        ));
+        shared = result.status == ShareResultStatus.success;
+      }
+      if (shared) {
+        Analytics.share('profile', currentProfile.id);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(customSnackbar('공유 오류: $e'));
       }
+    } finally {
+      _isSharingProfile = false;
     }
   }
 
@@ -244,9 +276,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: 10,
                           ),
                         ElevatedButton(
-                          onPressed: () {
-                            onClickShareCourtUrl();
-                          },
+                          onPressed: _shareProfile,
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 25),
