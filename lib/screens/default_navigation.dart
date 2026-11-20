@@ -172,8 +172,9 @@ class _DefaultNavigationState extends State<DefaultNavigation> {
               ),
             ),
             Positioned(
-                top: -20,
-                right: 28,
+                top: -24,
+                // 하단 바 여백 32 + 글쓰기 여백 12 + 아이콘 중심 14 - 버튼 반폭 32.
+                right: 26,
                 child: SizedBox(
                   width: 64,
                   height: 64,
