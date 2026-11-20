@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lets_jam/utils/color_seed_enum.dart';
 
-/// 홈 위에 딤드로 뜨는 '작성 완료' 오버레이. 페이드 인 후
-/// [onDismiss]로 OverlayEntry를 제거한다.
+/// 온보딩의 '작성 완료' 화면. 페이드 인 후 [onDismiss]로 닫는다.
 class CompletionOverlay extends StatefulWidget {
   final VoidCallback onDismiss;
 

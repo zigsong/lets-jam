@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:lets_jam/controllers/session_controller.dart';
-import 'package:lets_jam/main.dart';
 import 'package:lets_jam/models/session_enum.dart';
 import 'package:lets_jam/utils/analytics.dart';
 import 'package:lets_jam/utils/custom_snackbar.dart';
@@ -156,6 +155,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _back() {
+    if (_isSaving) return;
     _dismissKeyboard();
     if (_step == 0) {
       _exit();
@@ -174,15 +174,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   /// '다음에 작성할게요' → 온보딩 등 쌓인 화면을 모두 닫고 홈 탭으로 복귀.
   void _goHome() {
     _dismissKeyboard();
-    navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   /// '다음에 작성하기' → 작성 중인 내용이 사라진다는 확인 알럿을 띄운다.
   /// '다음에 하기'면 온보딩을 종료하고 홈으로, '계속하기'면 알럿만 닫는다.
   void _confirmSkip() {
+    if (_isSaving) return;
     _dismissKeyboard();
     showDialog(
       context: context,
+      useRootNavigator: false,
       builder: (dialogContext) => ConfirmDialog(
         title: '작성 중인 내용이 있어요',
         message: '지금까지 작성한 내용은 저장되지 않아요',
@@ -233,20 +235,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
 
     if (!mounted) return;
-    setState(() => _isSaving = false);
-
-    final overlay = navigatorKey.currentState?.overlay;
-    if (overlay == null) return;
-    late OverlayEntry entry;
-    entry = OverlayEntry(
-      builder: (_) => CompletionOverlay(
-        onDismiss: () {
-          entry.remove();
-          navigatorKey.currentState?.popUntil((route) => route.isFirst);
-        },
+    await showGeneralDialog<void>(
+      context: context,
+      useRootNavigator: false,
+      barrierColor: Colors.transparent,
+      transitionDuration: Duration.zero,
+      pageBuilder: (dialogContext, _, __) => PopScope(
+        canPop: false,
+        child: Stack(
+          children: [
+            CompletionOverlay(
+              onDismiss: () => Navigator.of(dialogContext).pop(),
+            ),
+          ],
+        ),
       ),
     );
-    overlay.insert(entry);
+    if (mounted) _goHome();
   }
 
   @override
@@ -363,7 +368,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           maxLines: 4,
           maxLength: 50,
           allowEmptyConfirm: true,
-          // 자기소개 '확인' → 홈으로 이동 후 완료 오버레이 노출.
+          canConfirm: !_isSaving,
+          // 자기소개 '확인' → 저장 후 완료 다이얼로그 노출.
           onConfirm: _finishToHome,
           onSkip: _confirmSkip,
         );
