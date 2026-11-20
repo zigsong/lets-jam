@@ -71,7 +71,6 @@ class _LikedScreenState extends State<LikedScreen>
             ],
           ),
         ),
-        const SizedBox(height: 8),
         PreferredSize(
           preferredSize: const Size.fromHeight(36),
           child: TabBar(
