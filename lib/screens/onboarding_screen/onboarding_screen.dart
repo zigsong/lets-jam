@@ -54,14 +54,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // 닉네임 중복 검사: profiles.nickname 을 500ms 디바운스로 조회한다.
   Timer? _nicknameDebounce;
+  int _nicknameValidationRevision = 0;
+  String? _validatedNickname;
   String? _nicknameErrorText;
 
   /// 8글자 제한 안내 문구. 에러와 달리 '확인'을 막지 않는다.
   String? _nicknameLengthNotice;
 
-  /// 8글자 초과 입력을 잘라낼 때 컨트롤러를 되돌리는 과정에서 리스너가
-  /// 재진입하는 것을 막는 가드.
-  bool _suppressNicknameListener = false;
+  bool get _canConfirmNickname =>
+      _validatedNickname == _nicknameController.text;
 
   /// 카카오 로그인 계정 이름. 없으면 null → 호칭 생략.
   String? get _name {
@@ -90,46 +91,53 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   /// 안내를 띄운다(확인은 막지 않음).
   /// 제한 이하면 안내를 지우고 로컬 검증→중복 검사를 진행한다.
   void _onNicknameChanged(String value) {
-    if (_suppressNicknameListener) return;
-
+    String? lengthNotice;
     if (value.length > NicknameValidator.maxLength) {
-      final capped = value.substring(0, NicknameValidator.maxLength);
-      _suppressNicknameListener = true;
+      value = value.substring(0, NicknameValidator.maxLength);
       _nicknameController.value = TextEditingValue(
-        text: capped,
-        selection: TextSelection.collapsed(offset: capped.length),
+        text: value,
+        selection: TextSelection.collapsed(offset: value.length),
       );
-      _suppressNicknameListener = false;
-      setState(() => _nicknameLengthNotice =
-          '${NicknameValidator.maxLength}글자까지 입력할 수 있어요');
-      _validateNickname(capped);
-      return;
+      lengthNotice = '${NicknameValidator.maxLength}글자까지 입력할 수 있어요';
     }
 
-    setState(() => _nicknameLengthNotice = null);
-    _validateNickname(value);
+    _validateNickname(value, lengthNotice);
   }
 
   /// 로컬 검증 후 통과하면 디바운스로 중복 여부를 조회한다.
-  void _validateNickname(String value) {
+  void _validateNickname(String value, String? lengthNotice) {
     _nicknameDebounce?.cancel();
+    final revision = ++_nicknameValidationRevision;
 
     final localError = NicknameValidator.localError(value);
-    if (localError != null) {
-      setState(() => _nicknameErrorText = localError);
-      return;
-    }
+    setState(() {
+      _nicknameLengthNotice = lengthNotice;
+      _nicknameErrorText = localError;
+      _validatedNickname = null;
+    });
+    if (localError != null) return;
 
-    setState(() => _nicknameErrorText = null);
     _nicknameDebounce = Timer(const Duration(milliseconds: 500), () async {
-      final isDuplicate = await NicknameValidator.isDuplicate(
-        Supabase.instance.client,
-        value,
-      );
-      if (!mounted) return;
+      String? errorText;
+      try {
+        final isDuplicate = await NicknameValidator.isDuplicate(
+          Supabase.instance.client,
+          value,
+        );
+        if (isDuplicate) errorText = NicknameValidator.duplicateMessage;
+      } catch (e) {
+        debugPrint('온보딩 닉네임 중복 확인 에러: $e');
+        errorText = '닉네임을 확인하지 못했어요. 다시 입력해 주세요.';
+      }
+
+      if (!mounted ||
+          revision != _nicknameValidationRevision ||
+          value != _nicknameController.text) {
+        return;
+      }
       setState(() {
-        _nicknameErrorText =
-            isDuplicate ? NicknameValidator.duplicateMessage : null;
+        _nicknameErrorText = errorText;
+        _validatedNickname = errorText == null ? value : null;
       });
     });
   }
@@ -142,6 +150,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _next() {
     if (_step >= _totalSteps - 1) return;
+    if (_step == 3 && !_canConfirmNickname) return;
     _dismissKeyboard();
     setState(() => _step++);
   }
@@ -191,7 +200,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   /// 마지막 스텝(자기소개) '확인' → 입력값을 profiles에 저장하고,
   /// 완료 오버레이를 띄운 뒤 'JAM 시작하기'를 누르면 홈 탭으로 이동한다.
   Future<void> _finishToHome() async {
-    if (_isSaving) return;
+    if (_isSaving || !_canConfirmNickname) return;
     _dismissKeyboard();
     setState(() => _isSaving = true);
 
@@ -327,6 +336,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           controller: _nicknameController,
           errorText: _nicknameErrorText,
           noticeText: _nicknameLengthNotice,
+          canConfirm: _canConfirmNickname,
           onChanged: _onNicknameChanged,
           onConfirm: _next,
           onSkip: _confirmSkip,

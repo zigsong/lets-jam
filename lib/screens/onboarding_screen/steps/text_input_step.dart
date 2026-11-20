@@ -11,6 +11,7 @@ class TextInputStep extends StatefulWidget {
   final TextEditingController controller;
   final int maxLines;
   final bool allowEmptyConfirm;
+  final bool canConfirm;
   final VoidCallback onConfirm;
   final VoidCallback? onSkip;
 
@@ -36,6 +37,7 @@ class TextInputStep extends StatefulWidget {
     this.description,
     this.maxLines = 1,
     this.allowEmptyConfirm = false,
+    this.canConfirm = true,
     this.onSkip,
     this.maxLength,
     this.errorText,
@@ -51,7 +53,7 @@ class _TextInputStepState extends State<TextInputStep> {
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(_onChanged);
+    widget.controller.addListener(_refresh);
   }
 
   @override
@@ -60,27 +62,24 @@ class _TextInputStepState extends State<TextInputStep> {
     // 닉네임·연락처·자기소개 스텝은 같은 위젯 타입이라 State가 재사용된다.
     // 컨트롤러가 바뀌면 리스너도 새 컨트롤러로 옮겨줘야 '확인' 활성화가 동작한다.
     if (oldWidget.controller != widget.controller) {
-      oldWidget.controller.removeListener(_onChanged);
-      widget.controller.addListener(_onChanged);
+      oldWidget.controller.removeListener(_refresh);
+      widget.controller.addListener(_refresh);
     }
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_onChanged);
+    widget.controller.removeListener(_refresh);
     super.dispose();
   }
 
-  void _onChanged() {
-    setState(() {});
-    widget.onChanged?.call(widget.controller.text);
-  }
+  void _refresh() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
     final hasText =
         widget.allowEmptyConfirm || widget.controller.text.trim().isNotEmpty;
-    final enabled = hasText && widget.errorText == null;
+    final enabled = widget.canConfirm && hasText && widget.errorText == null;
     // 에러가 우선, 없으면 안내 문구를 같은 자리에 노출한다.
     final message = widget.errorText ?? widget.noticeText;
     return Column(
@@ -102,6 +101,7 @@ class _TextInputStepState extends State<TextInputStep> {
         const SizedBox(height: 32),
         TextField(
           controller: widget.controller,
+          onChanged: widget.onChanged,
           maxLines: widget.maxLines,
           maxLength: widget.maxLength,
           decoration: InputDecoration(
