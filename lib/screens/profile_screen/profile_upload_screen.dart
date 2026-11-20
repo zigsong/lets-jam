@@ -295,8 +295,10 @@ class _ProfileUploadScreenState extends State<ProfileUploadScreen> {
               color: ColorSeed.boldOrangeStrong.color,
               fontWeight: FontWeight.w500),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
+        scrolledUnderElevation: 0,
         iconTheme:
             IconThemeData(color: ColorSeed.boldOrangeStrong.color, size: 20),
       ),
